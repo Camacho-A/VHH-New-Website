@@ -1,0 +1,119 @@
+---
+// Statically generated at build time (getStaticPaths), one page per real Wix Blog post —
+// per README § SEO: "Blog posts must be statically generated, not client-fetched."
+//
+// No design mockup exists for a post detail page (design-source only specs the Blog
+// listing). Built plainly with the site's established tokens/typography rather than
+// guessing at an unspecified layout. contentText (Wix's plain-text rendering of the
+// post's rich content) is used for the body — a full Ricos rich-content renderer (real
+// formatting, embedded images/quotes) would be a reasonable follow-up enhancement.
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ImagePlate from "../../components/ImagePlate.astro";
+import { getWixClient, wixImageUrl, formatPostDate } from "../../lib/wixClient";
+
+export async function getStaticPaths() {
+  const wixClient = getWixClient();
+  const { items: allPosts } = await wixClient.posts.queryPosts().find();
+
+  return Promise.all(
+    allPosts.map(async (summary) => {
+      const { post } = await wixClient.posts.getPostBySlug(summary.slug!, {
+        fieldsets: ["CONTENT_TEXT"],
+      });
+      return { params: { slug: summary.slug }, props: { post } };
+    })
+  );
+}
+
+const { post } = Astro.props;
+const paragraphs = (post.contentText ?? "").split(/\n{2,}/).filter(Boolean);
+const coverUrl = wixImageUrl(post.media?.wixMedia?.image);
+const meta = [formatPostDate(post.firstPublishedDate), post.minutesToRead ? `${post.minutesToRead} min read` : null]
+  .filter(Boolean)
+  .join(" · ");
+---
+
+<BaseLayout
+  currentPage="blog"
+  title={`${post.title} | The Virtual Helping Hand Blog`}
+  description={post.excerpt ?? post.title ?? ""}
+>
+  <article class="post">
+    <div class="post__head">
+      <a href="/blog" class="post__back">&larr; Back to Blog</a>
+      <h1 class="post__title">{post.title}</h1>
+      <p class="post__meta">{meta}</p>
+    </div>
+
+    {coverUrl && (
+      <div class="post__cover">
+        <ImagePlate src={coverUrl} alt={post.title ?? ""} aspectRatio="16/9" eager />
+      </div>
+    )}
+
+    <div class="post__body">
+      {paragraphs.map((p) => (
+        <p>{p}</p>
+      ))}
+    </div>
+
+    <div class="post__footer">
+      <a href="/blog" class="btn btn--sm">
+        &larr; Back to All Posts
+      </a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(48px, 7vw, 90px) var(--section-pad-x) clamp(64px, 8vw, 110px);
+  }
+
+  .post__head {
+    margin-bottom: 36px;
+  }
+
+  .post__back {
+    display: inline-block;
+    font-size: 13.5px;
+    color: var(--accent-deep);
+    margin-bottom: 22px;
+  }
+
+  .post__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 14px;
+  }
+
+  .post__meta {
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .post__cover {
+    margin-bottom: 40px;
+  }
+
+  .post__body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    font-size: 16.5px;
+    line-height: 1.8;
+    color: var(--text-body);
+  }
+
+  .post__footer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+  }
+</style>

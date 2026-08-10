@@ -1,24 +1,272 @@
 ---
+// Wired to @wix/blog (build order step 6) — fetched at build time (top-level await runs
+// during `astro build` for this static site), not client-fetched, so crawlers see full
+// HTML per README § SEO ("Blog posts must be statically generated, not client-fetched").
+
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ImagePlate from "../components/ImagePlate.astro";
+import { getWixClient, wixImageUrl, formatPostDate } from "../lib/wixClient";
+
+const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+
+const wixClient = getWixClient();
+const { items: allPosts } = await wixClient.posts.queryPosts().descending("firstPublishedDate").find();
+
+const [featured, ...rest] = allPosts;
+const gridPosts = rest.slice(0, 6);
 ---
 
 <BaseLayout
   currentPage="blog"
   title="Blog | The Virtual Helping Hand"
-  description="Insights on strategy, systems, and growth for entrepreneurs."
+  description="Expert insights for solopreneurs and businesses. Tips, strategies, and industry insights to streamline operations, boost productivity, and scale with confidence."
 >
-  <section id="top" class="placeholder">
-    <p>Blog page content — wired to @wix/blog in a later build step.</p>
+  <!-- ============ HERO ============ -->
+  <section id="top" class="hero">
+    <p class="kicker kicker--rule" style="margin-bottom:26px;">Blog</p>
+    <h1 class="hero__title">Expert Insights for Solopreneurs &amp; Businesses: Learn, Grow, and Succeed</h1>
+    <p class="hero__lede">
+      Stay ahead with expert-written blogs designed to help you streamline operations, boost productivity, and
+      scale your business with confidence. Whether you're a solopreneur or running a growing company, our tips,
+      strategies, and industry insights will guide you toward success!
+    </p>
+  </section>
+
+  <!-- ============ FEATURED ============ -->
+  {
+    featured && (
+      <section class="section section--tight">
+        <article class="featured">
+          <div class="featured__photo">
+            <ImagePlate
+              src={wixImageUrl(featured.media?.wixMedia?.image)}
+              alt={featured.title ?? ""}
+              aspectRatio="4/3"
+              label="Featured post image"
+            />
+          </div>
+          <div>
+            <p class="kicker" style="margin-bottom:12px;">Featured Post</p>
+            <h2 class="featured__title">{featured.title}</h2>
+            <p class="featured__excerpt">{featured.excerpt}</p>
+            <p class="featured__meta">
+              {formatPostDate(featured.firstPublishedDate)}
+              {featured.minutesToRead ? ` · ${featured.minutesToRead} min read` : ""}
+            </p>
+            <a href={`/blog/${featured.slug}`} class="btn btn--sm">
+              Read the Post
+            </a>
+          </div>
+        </article>
+      </section>
+    )
+  }
+
+  <!-- ============ POST GRID ============ -->
+  <section class="section section--tight">
+    <div class="grid-head">
+      <h2 class="grid-head__title">latest posts</h2>
+    </div>
+    {
+      gridPosts.length > 0 ? (
+        <div class="post-grid">
+          {gridPosts.map((post) => (
+            <a href={`/blog/${post.slug}`} class="post-card">
+              <ImagePlate
+                src={wixImageUrl(post.media?.wixMedia?.image)}
+                alt={post.title ?? ""}
+                aspectRatio="3/2"
+                label="Post image"
+              />
+              <h3 class="post-card__title">{post.title}</h3>
+              <p class="post-card__excerpt">{post.excerpt}</p>
+              <p class="post-card__meta">
+                {formatPostDate(post.firstPublishedDate)}
+                {post.minutesToRead ? ` · ${post.minutesToRead} min read` : ""}
+              </p>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="section-lede">More posts are on the way — check back soon.</p>
+      )
+    }
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="contact" class="band final-cta">
+    <h2 class="final-cta__title">want this handled for you?</h2>
+    <p class="final-cta__body">
+      Are you ready to hit the ground running right now? Let's discuss how we can assist you and your business.
+      Schedule your 30 minute consultation, for free!
+    </p>
+    <a href={CTA_HREF} class="btn btn--sm">Schedule Your FREE Consultation</a>
   </section>
 </BaseLayout>
 
 <style>
-  .placeholder {
+  .hero {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: var(--section-pad-y) var(--section-pad-x);
-    font-size: 15px;
+    padding: clamp(48px, 7vw, 90px) var(--section-pad-x) clamp(32px, 4vw, 48px);
+  }
+
+  .hero__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    max-width: 18ch;
+    margin-bottom: 28px;
+  }
+
+  .hero__lede {
+    font-size: clamp(17px, 1.6vw, 19px);
+    line-height: 1.75;
     color: var(--text-muted);
-    min-height: 40vh;
+    max-width: 660px;
+    text-wrap: pretty;
+  }
+
+  .section {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--section-pad-x) clamp(56px, 7vw, 90px);
+  }
+
+  .section--tight {
+    padding-bottom: clamp(40px, 5vw, 64px);
+  }
+
+  /* ---- Featured post ---- */
+  .featured {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  .featured__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .featured__excerpt {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    max-width: 520px;
+    margin-bottom: 22px;
+    text-wrap: pretty;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .featured__meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+
+  /* ---- Post grid ---- */
+  .grid-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .grid-head__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    letter-spacing: -0.01em;
+  }
+
+  .post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .post-card {
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 26px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: var(--text);
+  }
+
+  .post-card:hover {
+    background: rgba(182, 130, 53, 0.07);
+    color: var(--text);
+  }
+
+  .post-card__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.3;
+  }
+
+  .post-card__excerpt {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-card__meta {
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
+  /* ---- CTA ---- */
+  .band {
+    border-top: 1px solid var(--rule);
+    background: var(--bg-alt);
+    padding: clamp(64px, 8vw, 110px) var(--section-pad-x);
+  }
+
+  .final-cta {
+    max-width: 820px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .final-cta__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+
+  .final-cta__body {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--text-body);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    text-wrap: pretty;
   }
 </style>
