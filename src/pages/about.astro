@@ -189,9 +189,11 @@ const SOCIAL_LINKS = [
 </BaseLayout>
 
 <script>
-  // Front-end only for now: validate-on-blur + submit states, matching README § Contact
-  // form spec. Wired to @wix/forms in a later build order step (step 5) so submissions
-  // land in the client's Wix dashboard — right now this doesn't send anywhere.
+  // Validate-on-blur + submit states per README § Contact form. Submission itself goes
+  // through src/lib/wixForms.ts (@wix/forms) once PUBLIC_WIX_CONTACT_FORM_ID is set —
+  // until then it falls back to a simulated delay so the visual states stay testable.
+  import { submitContactForm, isContactFormConfigured } from "../lib/wixForms";
+
   const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
   if (form) {
     const submitBtn = form.querySelector<HTMLButtonElement>("[data-submit-btn]");
@@ -231,12 +233,33 @@ const SOCIAL_LINKS = [
       }
       fields.forEach((f) => (f.disabled = true));
 
-      // Placeholder submit — replaced with a real @wix/forms submission in step 5.
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      try {
+        if (isContactFormConfigured()) {
+          const values = Object.fromEntries(fields.map((f) => [f.dataset.field, f.value]));
+          await submitContactForm({
+            name: values.name ?? "",
+            email: values.email ?? "",
+            message: values.message ?? "",
+          });
+        } else {
+          // No live Wix form wired yet (PUBLIC_WIX_CONTACT_FORM_ID unset) — simulate so
+          // the visual states stay testable in dev.
+          console.warn("[contact form] PUBLIC_WIX_CONTACT_FORM_ID not set — simulating submit.");
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
 
-      if (submitBtn) submitBtn.textContent = "Thank You, We'll Be in Touch";
-      if (successMsg) successMsg.hidden = false;
-      // Submitted values stay visible per the design spec (not cleared on success).
+        if (submitBtn) submitBtn.textContent = "Thank You, We'll Be in Touch";
+        if (successMsg) successMsg.hidden = false;
+        // Submitted values stay visible per the design spec (not cleared on success).
+      } catch (err) {
+        console.error("Contact form submission failed:", err);
+        if (errorBanner) errorBanner.hidden = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Submit";
+        }
+        fields.forEach((f) => (f.disabled = false));
+      }
     });
   }
 </script>

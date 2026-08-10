@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "verify:wix": "node --env-file=.env scripts/verify-wix.mjs"
+    "verify:wix": "node --env-file=.env scripts/verify-wix.mjs",
+    "wix:forms": "node --env-file=.env scripts/list-wix-forms.mjs"
   },
   "dependencies": {
     "@wix/blog": "^1.0.630",

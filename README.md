@@ -64,8 +64,33 @@ Current status:
 - [x] 2. Verify the SDK reads real blog posts and products from the existing site (`npm run verify:wix`)
 - [x] 3. Build the shared shell — nav, footer, design tokens as CSS custom properties
 - [x] 4. Static pages first: Homepage, About, Business Consulting
-- [ ] 5. Wire the contact form (`@wix/forms`)
+- [~] 5. Wire the contact form (`@wix/forms`) — code done, **blocked on a missing Wix form**, see below
 - [ ] 6. Wire Blog (`@wix/blog`) and Shop (`@wix/stores`)
 - [ ] 7. Create CMS collections; wire Services, testimonials, logos, credentials
 - [ ] 8. Deploy to Wix hosting with the Wix CLI
 - [ ] 9. Add production URLs to Wix redirect settings, then repoint the domain last
+
+### ⚠️ Step 5 blocker: no headless-accessible contact form exists yet
+
+The About page's contact form (Name/Email/Message) is fully built and wired to
+`@wix/forms` (`src/lib/wixForms.ts`) — it just has nowhere to submit to yet.
+
+The live site's footer "Send an Email" form isn't a Wix Forms app instance: checked
+every form namespace active on the site via the API (`npm run wix:forms`) and it isn't
+in any of them. It's a native/classic Wix Editor element, which doesn't expose a
+queryable form ID or schema through `@wix/forms` — so it can't be wired up headlessly
+as-is.
+
+**To unblock:** Danielle needs to create a new form in the site's **Wix Forms app**
+(Dashboard → Forms, not the Editor element) with:
+- **Name** — text, required
+- **Email** — email, required
+- **Message** — long answer / paragraph, required
+- **CAPTCHA enabled** (README § Contact form spec)
+
+Once it exists, run `npm run wix:forms` to find its ID (Wix doesn't surface form IDs in
+the dashboard UI directly), then set `PUBLIC_WIX_CONTACT_FORM_ID` in `.env`. No code
+changes needed after that — the submission code resolves field IDs by label at runtime.
+
+Until then, the form works in the browser (validation, states) but submissions are
+simulated (`console.warn` fires, nothing is sent) rather than 404ing.
