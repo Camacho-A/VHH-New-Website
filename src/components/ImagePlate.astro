@@ -18,17 +18,37 @@ export interface Props {
    * the design's fixed aspect-ratio plates; use "contain" when a source photo's native
    * aspect ratio doesn't match the slot and cropping cuts off part of the subject. */
   fit?: "cover" | "contain";
+  /** Skip the plate mat (padding/background/outline) entirely — the design source omits
+   * it for one photo (About's "meet Danielle" portrait: "940px centered block, 360px
+   * portrait, no border" per the handoff README), unlike every other image-slot. */
+  bare?: boolean;
+  /** Raw CSS `border` value applied directly to the image, independent of the plate's
+   * own outline — e.g. a white frame around a photo sitting on a busy/dark background. */
+  imgBorder?: string;
 }
 
-const { src, alt = "", label, aspectRatio, filtered = true, eager = false, fit = "cover" } = Astro.props;
+const {
+  src,
+  alt = "",
+  label,
+  aspectRatio,
+  filtered = true,
+  eager = false,
+  fit = "cover",
+  bare = false,
+  imgBorder,
+} = Astro.props;
+
+const imgStyle = imgBorder ? `border:${imgBorder};` : undefined;
 ---
 
-<figure class="plate" style={`aspect-ratio:${aspectRatio}`}>
+<figure class:list={["plate", { "plate--bare": bare }]} style={`aspect-ratio:${aspectRatio}`}>
   {
     src ? (
       <img
         src={src}
         alt={alt}
+        style={imgStyle}
         class:list={["plate__img", { "plate__img--filtered": filtered, "plate__img--contain": fit === "contain" }]}
         loading={eager ? "eager" : "lazy"}
       />
@@ -47,6 +67,12 @@ const { src, alt = "", label, aspectRatio, filtered = true, eager = false, fit =
     background: var(--bg-alt);
     outline: 1px solid var(--rule);
     width: 100%;
+  }
+
+  .plate--bare {
+    padding: 0;
+    background: none;
+    outline: none;
   }
 
   .plate__img {
