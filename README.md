@@ -61,7 +61,7 @@ Tracked in [`design_handoff_vhh_website/README.md`](./design_handoff_vhh_website
 Current status:
 
 - [x] 1. Scaffold Astro + `@wix/sdk`, add the Client ID to `.env`
-- [ ] 2. Verify the SDK reads real blog posts and products from the existing site
+- [x] 2. Verify the SDK reads real blog posts and products from the existing site (`npm run verify:wix`)
 - [ ] 3. Build the shared shell — nav, footer, design tokens as CSS custom properties
 - [ ] 4. Static pages first: Homepage, About, Business Consulting
 - [ ] 5. Wire the contact form (`@wix/forms`)
