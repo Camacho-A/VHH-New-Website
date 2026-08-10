@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    body { margin:0; background:#f9f4ea; }
+    * { box-sizing:border-box; }
+    a { color:#6b4423; text-decoration:none; }
+    a:hover { color:#2b1f16; }
+    ::selection { background:rgba(182,130,53,0.3); }
+  </style>
+</helmet>
+
+<div style="font-family:'Lora',serif; background:#f9f4ea; color:#2b1f16; overflow-x:hidden;">
+
+  <!-- ============ NAV ============ -->
+  <header style="position:sticky; top:0; z-index:100; background:rgba(249,244,234,0.96); backdrop-filter:blur(6px); border-bottom:1px solid rgba(43,31,22,0.16);">
+    <div style="max-width:1360px; margin:0 auto; padding:20px clamp(20px,4vw,32px); display:flex; align-items:center; justify-content:space-between; gap:24px;">
+      <a href="Homepage.dc.html" style="font-family:'Cormorant Garamond',serif; font-size:23px; font-weight:600; letter-spacing:0.2px; color:#2b1f16; white-space:nowrap;">The Virtual Helping Hand</a>
+      <sc-if value="{{ !isMobile }}" hint-placeholder-val="{{ true }}">
+        <nav style="display:flex; align-items:center; gap:22px; flex-shrink:1; min-width:0;">
+          <a href="Homepage.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Home</a>
+          <a href="About.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">About</a>
+          <a href="Services.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Services</a>
+          <a href="Business%20Consulting.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Business Consulting</a>
+          <a href="Homepage.dc.html#portfolio" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Portfolio</a>
+          <a href="#top" style="font-size:14px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px;">Shop</a>
+          <a href="Blog.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Blog</a>
+          <a href="#contact" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Contact</a>
+        </nav>
+        <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:11px 22px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:14.5px; white-space:nowrap; flex-shrink:0;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Schedule a Consultation</a>
+      </sc-if>
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" style="background:none; border:none; font-size:26px; color:#2b1f16; cursor:pointer; line-height:1;">{{ menuIcon }}</button>
+      </sc-if>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#f9f4ea; border-top:1px solid rgba(43,31,22,0.16); padding:16px clamp(18px,5vw,28px) 28px; display:flex; flex-direction:column; gap:2px;">
+        <a href="Homepage.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Home</a>
+        <a href="About.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">About</a>
+        <a href="Services.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Services</a>
+        <a href="Business%20Consulting.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Business Consulting</a>
+        <a href="Homepage.dc.html#portfolio" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Portfolio</a>
+        <a href="#top" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#6b4423; border-bottom:1px solid rgba(43,31,22,0.12);">Shop</a>
+        <a href="Blog.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Blog</a>
+        <a href="#contact" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Contact</a>
+        <a href="https://calendly.com/thevirtualhelpinghand" onClick="{{ toggleMenu }}" style="margin-top:14px; border:1px solid #b68235; color:#6b4423; padding:15px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16px; text-align:center;">Schedule a Consultation</a>
+      </div>
+    </sc-if>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" style="max-width:1360px; margin:0 auto; padding:clamp(48px,7vw,90px) clamp(20px,4vw,32px) clamp(32px,4vw,48px);">
+    <div style="max-width:820px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:26px;">
+        <span style="width:34px; height:1px; background:#b68235;"></span>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#6b4423; margin:0;">Shop</p>
+      </div>
+      <h1 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.6rem,5vw,4.2rem); line-height:1.08; margin:0 0 28px; letter-spacing:-0.01em;">templates and tools you can use today.</h1>
+      <p style="font-size:clamp(17px,1.6vw,19px); line-height:1.75; color:rgba(43,31,22,0.75); max-width:640px; margin:0; text-wrap:pretty;">Enjoy easy editable business card templates, freebies, and more! Buy once, download instantly, and use them whenever you need them.</p>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTS ============ -->
+  <section style="max-width:1360px; margin:0 auto; padding:0 clamp(20px,4vw,32px) clamp(48px,6vw,80px);">
+    <sc-for list="{{ products }}" as="p" hint-placeholder-count="3">
+      <article id="{{ p.anchor }}" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:clamp(28px,4vw,56px); align-items:center; padding:clamp(36px,5vw,56px) 0; border-bottom:1px solid rgba(43,31,22,0.16);">
+        <figure style="margin:0; padding:6px; background:#efe6d3; outline:1px solid rgba(43,31,22,0.16); max-width:420px; width:100%;">
+          <image-slot id="{{ p.slotId }}" shape="rect" style="width:100%;height:100%;aspect-ratio:4/3;" placeholder="{{ p.placeholder }}"></image-slot>
+        </figure>
+        <div>
+          <p style="font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 12px;">{{ p.kicker }}</p>
+          <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.7rem,3vw,2.3rem); margin:0 0 14px; line-height:1.2;">{{ p.name }}</h2>
+          <p style="font-family:'Lora',serif; font-variant-numeric:tabular-nums; font-size:26px; margin:0 0 20px; color:#2b1f16;">{{ p.price }}</p>
+          <p style="font-size:16px; line-height:1.75; color:rgba(43,31,22,0.78); margin:0 0 22px; max-width:520px; text-wrap:pretty;">{{ p.desc }}</p>
+          <div style="display:flex; flex-direction:column; gap:9px; margin-bottom:28px;">
+            <sc-for list="{{ p.includes }}" as="f" hint-placeholder-count="3">
+              <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.78); margin:0; padding-left:15px; border-left:1px solid rgba(182,130,53,0.5);">{{ f }}</p>
+            </sc-for>
+          </div>
+          <a href="{{ p.href }}" style="border:1px solid #b68235; color:#6b4423; padding:14px 28px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15.5px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">{{ p.cta }}</a>
+        </div>
+      </article>
+    </sc-for>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="contact" style="border-top:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:clamp(64px,8vw,110px) clamp(20px,4vw,32px);">
+    <div style="max-width:820px; margin:0 auto; text-align:center;">
+      <h2 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2rem,4vw,3.2rem); margin:0 0 24px; line-height:1.15; letter-spacing:-0.01em;">need more than a template?</h2>
+      <p style="font-size:17px; line-height:1.8; color:rgba(43,31,22,0.78); margin:0 auto 36px; max-width:600px; text-wrap:pretty;">Are you ready to hit the ground running right now? Let's discuss how we can assist you and your business. Schedule your 30 minute consultation, for free!</p>
+      <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:16px 32px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Schedule Your FREE Consultation</a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="border-top:1px solid rgba(43,31,22,0.16); background:#f9f4ea; padding:56px clamp(20px,4vw,32px) 32px;">
+    <div style="max-width:1360px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:40px; margin-bottom:40px;">
+      <div>
+        <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; margin:0 0 14px;">The Virtual Helping Hand</p>
+        <p style="font-size:13.5px; line-height:1.7; color:rgba(43,31,22,0.75); margin:0; max-width:260px;">Strategy, systems, and support for entrepreneurs building stronger businesses.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Explore</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="About.dc.html" style="font-size:14px; color:#2b1f16;">About</a>
+          <a href="Services.dc.html" style="font-size:14px; color:#2b1f16;">Services</a>
+          <a href="Business%20Consulting.dc.html" style="font-size:14px; color:#2b1f16;">Business Consulting</a>
+          <a href="Homepage.dc.html#portfolio" style="font-size:14px; color:#2b1f16;">Portfolio</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Resources</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="#top" style="font-size:14px; color:#2b1f16;">Shop</a>
+          <a href="Homepage.dc.html#resources" style="font-size:14px; color:#2b1f16;">Free Hiring Bundle</a>
+          <a href="Homepage.dc.html#concierge" style="font-size:14px; color:#2b1f16;">Content Concierge</a>
+          <a href="Blog.dc.html" style="font-size:14px; color:#2b1f16;">Blog</a>
+          <a href="#contact" style="font-size:14px; color:#2b1f16;">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Connect</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.instagram.com/virtualhelpingh" target="_blank" rel="noopener" style="font-size:14px; color:#2b1f16;">Instagram</a>
+          <a href="https://www.linkedin.com/company/the-virtual-helping-hand/" target="_blank" rel="noopener" style="font-size:14px; color:#2b1f16;">LinkedIn</a>
+          <a href="https://www.facebook.com/profile.php?id=100091746784096" target="_blank" rel="noopener" style="font-size:14px; color:#2b1f16;">Facebook</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1360px; margin:0 auto; border-top:1px solid rgba(43,31,22,0.16); padding-top:24px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px;">
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">© 2026 The Virtual Helping Hand. All rights reserved.</p>
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">Proudly powered by dependable and loyal military spouses and stay-at-home moms.</p>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+class Component extends DCLogic {
+  state = {
+    isMobile: typeof window !== 'undefined' && window.innerWidth < 1180,
+    menuOpen: false,
+  };
+
+  componentDidMount() {
+    this.onResize = () => this.setState({ isMobile: window.innerWidth < 1180, menuOpen: false });
+    window.addEventListener('resize', this.onResize);
+    this.injectSeo();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    const old = document.getElementById('vhh-shop-schema');
+    if (old) old.remove();
+  }
+
+  // Product structured data — this is what lets each item show up
+  // with its own price and name in search results.
+  injectSeo() {
+    if (document.getElementById('vhh-shop-schema')) return;
+    const items = this.productData().filter(p => p.amount != null).map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Product',
+        name: p.name,
+        description: p.desc,
+        url: p.href,
+        brand: { '@type': 'Brand', name: 'The Virtual Helping Hand' },
+        offers: {
+          '@type': 'Offer',
+          price: p.amount,
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          url: p.href,
+        },
+      },
+    }));
+    const s = document.createElement('script');
+    s.id = 'vhh-shop-schema';
+    s.type = 'application/ld+json';
+    s.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'The Virtual Helping Hand Shop',
+      itemListElement: items,
+    });
+    document.head.appendChild(s);
+
+    document.title = 'Shop | Templates & Tools | The Virtual Helping Hand';
+    let m = document.querySelector('meta[name="description"]');
+    if (!m) { m = document.createElement('meta'); m.name = 'description'; document.head.appendChild(m); }
+    m.content = 'Enjoy easy editable business card templates, freebies, and more from The Virtual Helping Hand. Email templates, content vaults, and free hiring guides for small business owners.';
+  }
+
+  productData() {
+    return [
+      {
+        anchor: 'ultimate-hiring-bundle', slotId: 'leadmagnet-photo',
+        kicker: 'Free Resource', name: 'The Ultimate Hiring Bundle',
+        price: 'Free', amount: null, cta: 'Get Your Guide',
+        desc: 'Find the right support for your business. Templates and guidance for hiring your first, or next, virtual team member.',
+        includes: ['Role and task templates', 'Guidance on what to delegate first', 'No cost'],
+        href: 'https://www.thevirtualhelpinghand.com/ultimatehiringbundle',
+        placeholder: 'Guide cover mockup',
+      },
+      {
+        anchor: 'vhh-email-template-vault', slotId: 'shop-1',
+        kicker: 'Digital Product', name: 'VHH Email Template Vault',
+        price: '$27.00', amount: '27.00', cta: 'Buy the Email Template Vault',
+        desc: 'A library of ready-to-send email templates for the messages you write over and over.',
+        includes: ['Editable templates you can reuse', 'Written in a warm, professional voice', 'Instant download'],
+        href: 'https://www.thevirtualhelpinghand.com/product-page/vhh-email-template-vault',
+        placeholder: 'Email Template Vault cover',
+      },
+      {
+        anchor: 'vhh-content-vault', slotId: 'shop-2',
+        kicker: 'Digital Product', name: 'VHH Content Vault',
+        price: '$14.50', amount: '14.50', cta: 'Buy the Content Vault',
+        desc: 'Content prompts and templates to keep your social presence consistent without starting from a blank page.',
+        includes: ['Prompts you can post as written', 'Built for service-based businesses', 'Instant download'],
+        href: 'https://www.thevirtualhelpinghand.com/product-page/vhh-content-vault',
+        placeholder: 'Content Vault cover',
+      },
+    ];
+  }
+
+  renderVals() {
+    return {
+      isMobile: this.state.isMobile,
+      menuOpen: this.state.menuOpen,
+      menuIcon: this.state.menuOpen ? '✕' : '☰',
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      products: this.productData(),
+    };
+  }
+}
+</script>
+</body>
+</html>

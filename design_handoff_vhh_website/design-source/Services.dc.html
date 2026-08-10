@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+<template id="__bundler_thumbnail" data-bg-color="#f9f4ea">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#f9f4ea"/>
+    <rect x="180" y="250" width="840" height="300" fill="#efe6d3" stroke="#2b1f16" stroke-opacity="0.16"/>
+    <text x="600" y="430" font-family="Georgia, 'Times New Roman', serif" font-size="200" font-weight="600" fill="#6b4423" text-anchor="middle">VHH</text>
+    <rect x="470" y="500" width="260" height="4" fill="#b68235"/>
+  </svg>
+</template>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f9f4ea; }
+    * { box-sizing:border-box; }
+    a { color:#6b4423; text-decoration:none; }
+    a:hover { color:#2b1f16; }
+    ::selection { background:rgba(182,130,53,0.3); }
+    input::placeholder { color:rgba(43,31,22,0.4); }
+  </style>
+</helmet>
+
+<div style="font-family:'Lora',serif; background:#f9f4ea; color:#2b1f16; overflow-x:hidden;">
+
+  <!-- ============ NAV ============ -->
+  <header style="position:sticky; top:0; z-index:100; background:rgba(249,244,234,0.96); backdrop-filter:blur(6px); border-bottom:1px solid rgba(43,31,22,0.16);">
+    <div style="max-width:1360px; margin:0 auto; padding:20px clamp(20px,4vw,32px); display:flex; align-items:center; justify-content:space-between; gap:24px;">
+      <a href="Homepage.dc.html" style="font-family:'Cormorant Garamond',serif; font-size:23px; font-weight:600; letter-spacing:0.2px; color:#2b1f16; white-space:nowrap;">The Virtual Helping Hand</a>
+      <sc-if value="{{ !isMobile }}" hint-placeholder-val="{{ true }}">
+        <nav style="display:flex; align-items:center; gap:22px; flex-shrink:1; min-width:0;">
+          <a href="Homepage.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Home</a>
+          <a href="About.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">About</a>
+          <a href="#top" style="font-size:14px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px;">Services</a>
+          <a href="Business%20Consulting.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Business Consulting</a>
+          <a href="Homepage.dc.html#portfolio" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Portfolio</a>
+          <a href="Shop.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Shop</a>
+          <a href="Blog.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Blog</a>
+          <a href="#contact" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Contact</a>
+        </nav>
+        <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:11px 22px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:14.5px; white-space:nowrap; flex-shrink:0;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Schedule a Consultation</a>
+      </sc-if>
+      <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ toggleMenu }}" style="background:none; border:none; font-size:26px; color:#2b1f16; cursor:pointer; line-height:1;">{{ menuIcon }}</button>
+      </sc-if>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#f9f4ea; border-top:1px solid rgba(43,31,22,0.16); padding:16px clamp(18px,5vw,28px) 28px; display:flex; flex-direction:column; gap:2px;">
+        <a href="Homepage.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Home</a>
+        <a href="About.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">About</a>
+        <a href="#top" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#6b4423; border-bottom:1px solid rgba(43,31,22,0.12);">Services</a>
+        <a href="Business%20Consulting.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Business Consulting</a>
+        <a href="Homepage.dc.html#portfolio" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Portfolio</a>
+        <a href="Shop.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Shop</a>
+        <a href="Blog.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Blog</a>
+        <a href="#contact" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Contact</a>
+        <a href="https://calendly.com/thevirtualhelpinghand" onClick="{{ toggleMenu }}" style="margin-top:14px; border:1px solid #b68235; color:#6b4423; padding:15px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16px; text-align:center;">Schedule a Consultation</a>
+      </div>
+    </sc-if>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section id="top" style="max-width:1360px; margin:0 auto; padding:clamp(48px,7vw,90px) clamp(20px,4vw,32px) clamp(32px,4vw,48px);">
+    <div style="max-width:820px;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:26px;">
+        <span style="width:34px; height:1px; background:#b68235;"></span>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#6b4423; margin:0;">Services</p>
+      </div>
+      <h1 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.6rem,5vw,4.2rem); line-height:1.08; margin:0 0 28px; letter-spacing:-0.01em;">let's find exactly what your business needs.</h1>
+      <p style="font-size:clamp(17px,1.6vw,19px); line-height:1.75; color:rgba(43,31,22,0.72); max-width:660px; margin:0; text-align:justify;">Every service we offer sits inside one of four pillars. Browse by what you're trying to solve, or search below if you already have something specific in mind.</p>
+    </div>
+  </section>
+
+  <!-- ============ FILTER ============ -->
+  <section style="max-width:1360px; margin:0 auto; padding:0 clamp(20px,4vw,32px) clamp(32px,4vw,48px);">
+    <div style="border:1px solid rgba(43,31,22,0.16); border-radius:6px; padding:clamp(20px,3vw,30px); display:flex; flex-direction:column; gap:18px;">
+      <div style="display:flex; align-items:center; gap:12px; border:1px solid rgba(43,31,22,0.28); border-radius:4px; padding:12px 15px; background:#fdfaf3;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#b68235" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 17px;"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        <input type="text" value="{{ query }}" onChange="{{ onQuery }}" placeholder="Search a service, e.g. logo, calendar, website, invoicing" style="flex:1; border:none; outline:none; background:transparent; font-family:'Lora',serif; font-size:15.5px; color:#2b1f16; min-width:0;"/>
+        <sc-if value="{{ hasQuery }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ clearQuery }}" style="background:none; border:none; cursor:pointer; font-size:13px; color:#6b4423; font-family:'Lora',serif; white-space:nowrap;">Clear</button>
+        </sc-if>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:9px; align-items:center;">
+        <span style="font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(43,31,22,0.75); margin-right:4px;">Filter</span>
+        <sc-for list="{{ filterChips }}" as="f" hint-placeholder-count="5">
+          <button onClick="{{ f.onClick }}" style="{{ f.css }}">{{ f.label }}</button>
+        </sc-for>
+      </div>
+      <p style="margin:0; font-size:13.5px; color:rgba(43,31,22,0.75);">{{ resultLine }}</p>
+    </div>
+  </section>
+
+  <!-- ============ SERVICE PILLARS ============ -->
+  <section style="max-width:1360px; margin:0 auto; padding:0 clamp(20px,4vw,32px);">
+    <sc-for list="{{ visiblePillars }}" as="p" hint-placeholder-count="4">
+      <div id="{{ p.anchor }}" style="margin-bottom:clamp(28px,3vw,40px); border-bottom:1px solid rgba(43,31,22,0.16); padding-bottom:clamp(20px,2.5vw,28px); scroll-margin-top:96px;">
+        <button onClick="{{ p.toggle }}" style="width:100%; background:none; border:none; cursor:pointer; text-align:left; padding:0; display:flex; align-items:baseline; gap:16px; color:#2b1f16;" style-focus="outline:2px solid #b68235; outline-offset:4px;">
+          <span style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:38px; color:#6b4423; line-height:1; flex:0 0 auto;">{{ p.numeral }}</span>
+          <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,3.2vw,2.5rem); margin:0; letter-spacing:-0.01em; flex:1 1 auto;">{{ p.title }}</h2>
+          <span style="font-size:12.5px; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; flex:0 0 auto; white-space:nowrap;">{{ p.countLabel }}</span>
+          <span style="font-family:'Lora',serif; font-size:22px; color:#6b4423; flex:0 0 auto; line-height:1;">{{ p.sign }}</span>
+        </button>
+        <p style="margin:14px 0 8px; max-width:620px; font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.7); text-align:justify;">{{ p.problem }}</p>
+        <p style="margin:0; font-family:'Cormorant Garamond',serif; font-style:italic; font-size:17px; color:#6b4423;">{{ p.promise }}</p>
+        <sc-if value="{{ p.open }}" hint-placeholder-val="{{ true }}">
+        <div style="border-top:1px solid rgba(43,31,22,0.16); margin-top:28px;">
+          <sc-for list="{{ p.services }}" as="s" hint-placeholder-count="6">
+            <div style="display:flex; flex-wrap:wrap; gap:6px 24px; align-items:baseline; padding:20px 0; border-bottom:1px solid rgba(43,31,22,0.16);">
+              <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:18.5px; margin:0; line-height:1.35; flex:1 1 220px; min-width:0;">{{ s.name }}</h3>
+              <p style="font-size:14.5px; line-height:1.65; color:rgba(43,31,22,0.68); margin:0; flex:1.6 1 280px; min-width:0;">{{ s.desc }}</p>
+              <p style="font-family:'Lora',serif; font-variant-numeric:tabular-nums; font-size:14.5px; margin:0; color:#6b4423; flex:1 0 130px; text-align:right;">{{ s.price }}</p>
+            </div>
+          </sc-for>
+        </div>
+        </sc-if>
+      </div>
+    </sc-for>
+    <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+      <div style="border:1px solid rgba(43,31,22,0.16); border-radius:6px; padding:clamp(32px,5vw,56px); text-align:center;">
+        <p style="font-family:'Cormorant Garamond',serif; font-size:25px; margin:0 0 12px;">Nothing matched that search.</p>
+        <p style="font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.7); margin:0 auto 26px; max-width:440px;">If you need something that isn't listed, ask. Much of what we do started as a custom request.</p>
+        <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:14px 26px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);">Ask About a Custom Service</a>
+      </div>
+    </sc-if>
+  </section>
+
+  <!-- ============ BUSINESS CONSULTING PACKAGES ============ -->
+  <section style="max-width:1360px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(20px,4vw,32px);">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:10px;">
+      <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.9rem,3.4vw,2.6rem); margin:0; letter-spacing:-0.01em;">business consulting</h2>
+    </div>
+    <p style="margin:0 0 44px; max-width:600px; font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.68);">Coaching and strategic consulting for owners who want clarity before they build. Choose the experience that fits where you are right now.</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:0; border-top:1px solid rgba(43,31,22,0.16); border-left:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16);">
+      <sc-for list="{{ consultingTiers }}" as="t" hint-placeholder-count="2">
+        <div style="border-right:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); padding:36px 30px; display:flex; flex-direction:column; gap:14px;">
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <p style="font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0;">{{ t.term }}</p>
+            <sc-if value="{{ t.popular }}" hint-placeholder-val="{{ false }}">
+              <span style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; border:1px solid rgba(182,130,53,0.6); border-radius:3px; padding:4px 9px;">Most Popular</span>
+            </sc-if>
+          </div>
+          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:23px; margin:0; line-height:1.25;">{{ t.name }}</h3>
+          <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:38px; margin:0; line-height:1; font-variant-numeric:tabular-nums;">{{ t.price }}</p>
+          <p style="font-size:14.5px; line-height:1.65; color:rgba(43,31,22,0.7); margin:0;">{{ t.desc }}</p>
+          <div style="display:flex; flex-direction:column; gap:9px; flex:1; margin-top:4px;">
+            <sc-for list="{{ t.features }}" as="ft" hint-placeholder-count="5">
+              <p style="font-size:14px; line-height:1.5; color:rgba(43,31,22,0.72); margin:0; padding-left:14px; border-left:1px solid rgba(182,130,53,0.5);">{{ ft }}</p>
+            </sc-for>
+          </div>
+          <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:13px 24px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15px; align-self:flex-start; margin-top:6px;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Get Started</a>
+        </div>
+      </sc-for>
+    </div>
+    <p style="margin:26px 0 0; font-size:13px; color:rgba(43,31,22,0.75); font-style:italic;">Built for you, not a blueprint. Every plan is shaped around your goals during the consultation.</p>
+  </section>
+
+  <!-- ============ CONSULTING PACKAGES ============ -->
+  <section id="packages" style="border-top:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:clamp(56px,7vw,96px) clamp(20px,4vw,32px);">
+    <div style="max-width:1360px; margin:0 auto;">
+      <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:10px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.9rem,3.4vw,2.6rem); margin:0; letter-spacing:-0.01em;">virtual operations specialist packages</h2>
+      </div>
+      <p style="margin:0 0 44px; max-width:580px; font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.68);">Let us handle the moving parts so you can focus on what matters most, growing your business. Three levels of dependable, behind-the-scenes support.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0; border-top:1px solid rgba(43,31,22,0.2); border-left:1px solid rgba(43,31,22,0.2); border-bottom:1px solid rgba(43,31,22,0.2);">
+        <sc-for list="{{ retainerTiers }}" as="t" hint-placeholder-count="3">
+          <div style="border-right:1px solid rgba(43,31,22,0.2); border-bottom:1px solid rgba(43,31,22,0.2); padding:32px 26px; display:flex; flex-direction:column; gap:14px;">
+            <p style="font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0;">{{ t.name }}</p>
+            <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:34px; margin:0; line-height:1; font-variant-numeric:tabular-nums;">{{ t.price }}</p>
+            <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0; font-style:italic;">{{ t.note }}</p>
+            <div style="display:flex; flex-direction:column; gap:9px; flex:1; margin-top:4px;">
+              <sc-for list="{{ t.features }}" as="f" hint-placeholder-count="5">
+                <p style="font-size:14px; line-height:1.5; color:rgba(43,31,22,0.72); margin:0; padding-left:14px; border-left:1px solid rgba(182,130,53,0.5);">{{ f }}</p>
+              </sc-for>
+            </div>
+            <a href="#contact" style="font-size:13px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px; align-self:flex-start;" style-focus="outline:2px solid #b68235; outline-offset:2px;">{{ t.cta }}</a>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:36px; padding-top:32px; border-top:1px solid rgba(43,31,22,0.2); display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:36px;">
+        <div>
+          <p style="font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Add-On Services</p>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">Website or branding updates</p>
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">Email marketing or newsletter management</p>
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">System setup intensives (ClickUp, CRM, automation mapping)</p>
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">Launch support or project-specific packages</p>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Notes &amp; Policies</p>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">Packages are customized during your consultation. Pricing may vary depending on the size of your team and scope of support.</p>
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">Hours are estimated, not capped. If we consistently exceed the estimate, we'll adjust your plan together.</p>
+            <p style="font-size:14.5px; line-height:1.55; color:rgba(43,31,22,0.75); margin:0;">All packages include ongoing strategy and implementation. No micromanagement or hourly tracking needed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOCIAL MEDIA PACKAGES ============ -->
+  <section id="social" style="border-top:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); background:#f9f4ea; padding:clamp(56px,7vw,96px) clamp(20px,4vw,32px);">
+    <div style="max-width:1360px; margin:0 auto;">
+      <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:10px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.9rem,3.4vw,2.6rem); margin:0; letter-spacing:-0.01em;">social media management packages</h2>
+      </div>
+      <p style="margin:0 0 44px; max-width:580px; font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.68);">For businesses that want the posting handled, not just planned. We create, and you approve!</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:0; border-top:1px solid rgba(43,31,22,0.2); border-left:1px solid rgba(43,31,22,0.2); border-bottom:1px solid rgba(43,31,22,0.2);">
+        <sc-for list="{{ socialTiers }}" as="t" hint-placeholder-count="4">
+          <div style="border-right:1px solid rgba(43,31,22,0.2); border-bottom:1px solid rgba(43,31,22,0.2); padding:32px 26px; display:flex; flex-direction:column; gap:16px;">
+            <p style="font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0;">{{ t.name }}</p>
+            <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:34px; margin:0; line-height:1; font-variant-numeric:tabular-nums;">{{ t.price }}</p>
+            <div style="display:flex; flex-direction:column; gap:9px; flex:1;">
+              <sc-for list="{{ t.features }}" as="f" hint-placeholder-count="6">
+                <p style="font-size:14px; line-height:1.5; color:rgba(43,31,22,0.72); margin:0; padding-left:14px; border-left:1px solid rgba(182,130,53,0.5);">{{ f }}</p>
+              </sc-for>
+            </div>
+            <a href="#contact" style="font-size:13px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px; align-self:flex-start;" style-focus="outline:2px solid #b68235; outline-offset:2px;">{{ t.cta }}</a>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-top:32px;">
+        <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:14px 26px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15px;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Book a Social Media Consultation</a>
+        <p style="font-size:13px; line-height:1.6; color:rgba(43,31,22,0.75); margin:0; max-width:420px;">Choose the <strong style="font-weight:600;">Virtual Operations Specialist</strong> consultation. Social media management sits with our specialist team.</p>
+      </div>
+      <div style="margin-top:36px; padding-top:32px; border-top:1px solid rgba(43,31,22,0.2); display:flex; flex-wrap:wrap; align-items:center; gap:20px; justify-content:space-between;">
+        <div style="max-width:520px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <span style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; border:1px solid rgba(182,130,53,0.6); border-radius:3px; padding:4px 9px;">Subscription</span>
+            <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; margin:0;">Content Concierge</p>
+          </div>
+          <p style="font-size:14.5px; line-height:1.7; color:rgba(43,31,22,0.75); margin:0;">Rather we just create and you post? Receive 20 social media posts, captions, and hashtags each month.</p>
+        </div>
+        <a href="https://www.thevirtualhelpinghand.com/contentconcierge" style="border:1px solid #b68235; color:#6b4423; padding:14px 26px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15px; white-space:nowrap;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Subscribe to Content Concierge</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BRANDING PACKAGES ============ -->
+  <section id="branding" style="max-width:1360px; margin:0 auto; padding:clamp(56px,7vw,96px) clamp(20px,4vw,32px);">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:10px;">
+      <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.9rem,3.4vw,2.6rem); margin:0; letter-spacing:-0.01em;">branding packages</h2>
+    </div>
+    <p style="margin:0 0 44px; max-width:580px; font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.68);">Everything your business needs to look consistent everywhere it shows up.</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0; border-top:1px solid rgba(43,31,22,0.16); border-left:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16);">
+      <sc-for list="{{ brandingTiers }}" as="t" hint-placeholder-count="3">
+        <div style="border-right:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); padding:32px 26px; display:flex; flex-direction:column; gap:16px;">
+          <p style="font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0;">{{ t.name }}</p>
+          <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:34px; margin:0; line-height:1; font-variant-numeric:tabular-nums;">{{ t.price }}</p>
+          <div style="display:flex; flex-direction:column; gap:9px; flex:1;">
+            <sc-for list="{{ t.features }}" as="f" hint-placeholder-count="8">
+              <p style="font-size:14px; line-height:1.5; color:rgba(43,31,22,0.72); margin:0; padding-left:14px; border-left:1px solid rgba(182,130,53,0.5);">{{ f }}</p>
+            </sc-for>
+          </div>
+          <a href="#contact" style="font-size:13px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px; align-self:flex-start;" style-focus="outline:2px solid #b68235; outline-offset:2px;">Start This Package</a>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ FULL INDEX ============ -->
+  <section id="index" style="border-top:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:clamp(56px,7vw,90px) clamp(20px,4vw,32px);">
+    <div style="max-width:1360px; margin:0 auto;">
+      <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:10px;">
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.9rem,3.4vw,2.6rem); margin:0; letter-spacing:-0.01em;">all services, a to z</h2>
+      </div>
+      <p style="margin:0 0 36px; max-width:580px; font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.68);">Every service, alphabetically, for anyone who would rather just scan.</p>
+      <div style="columns:4 190px; column-gap:36px;">
+        <sc-for list="{{ alphabetical }}" as="s" hint-placeholder-count="30">
+          <p style="margin:0 0 11px; font-size:14.5px; line-height:1.5; color:rgba(43,31,22,0.78); break-inside:avoid;">{{ s }}</p>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section id="contact" style="max-width:900px; margin:0 auto; padding:clamp(72px,9vw,120px) clamp(20px,4vw,32px); text-align:center;">
+    <h2 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.1rem,4vw,3.2rem); margin:0 0 24px; line-height:1.15; letter-spacing:-0.01em;">not sure which of these you actually need?</h2>
+    <p style="font-size:17px; line-height:1.75; color:rgba(43,31,22,0.72); max-width:600px; margin:0 auto 36px; text-align:justify;">That is exactly what the consultation is for. Are you ready to hit the ground running right now? Let's discuss how we can assist you and your business. Schedule your 30 minute consultation, for free!</p>
+    <div style="display:flex; flex-wrap:wrap; gap:16px; justify-content:center;">
+      <a href="https://calendly.com/thevirtualhelpinghand" style="border:1px solid #b68235; color:#6b4423; padding:16px 32px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Schedule Your FREE Consultation</a>
+      <a href="Business%20Consulting.dc.html" style="border:1px solid rgba(43,31,22,0.3); color:#2b1f16; padding:16px 32px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px;" style-hover="background:rgba(43,31,22,0.06);">Explore Business Consulting</a>
+    </div>
+    <p style="font-size:13px; line-height:1.6; color:rgba(43,31,22,0.75); margin:20px auto 0; max-width:560px;">Four consultations to choose from: business coaching, virtual operations, branding &amp; rebranding, or logo &amp; web design.</p>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="border-top:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:56px clamp(20px,4vw,32px) 32px;">
+    <div style="max-width:1360px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:40px; margin-bottom:40px;">
+      <div>
+        <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; margin:0 0 14px;">The Virtual Helping Hand</p>
+        <p style="font-size:13.5px; line-height:1.7; color:rgba(43,31,22,0.65); margin:0; max-width:260px;">Strategy, systems, and support for entrepreneurs building stronger businesses.</p>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Explore</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="About.dc.html" style="font-size:14px; color:#2b1f16;">About</a>
+          <a href="Services.dc.html" style="font-size:14px; color:#2b1f16;">Services</a>
+          <a href="Business%20Consulting.dc.html" style="font-size:14px; color:#2b1f16;">Business Consulting</a>
+          <a href="Homepage.dc.html#portfolio" style="font-size:14px; color:#2b1f16;">Portfolio</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Resources</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="Shop.dc.html" style="font-size:14px; color:#2b1f16;">Shop</a>
+          <a href="Homepage.dc.html#resources" style="font-size:14px; color:#2b1f16;">Free Hiring Bundle</a>
+          <a href="Homepage.dc.html#concierge" style="font-size:14px; color:#2b1f16;">Content Concierge</a>
+          <a href="Blog.dc.html" style="font-size:14px; color:#2b1f16;">Blog</a>
+          <a href="#contact" style="font-size:14px; color:#2b1f16;">Contact</a>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Connect</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="https://www.instagram.com/virtualhelpingh" target="_blank" rel="noopener" style="font-size:14px; color:#2b1f16;">Instagram</a>
+          <a href="https://www.linkedin.com/company/the-virtual-helping-hand/" target="_blank" rel="noopener" style="font-size:14px; color:#2b1f16;">LinkedIn</a>
+          <a href="https://www.facebook.com/profile.php?id=100091746784096" target="_blank" rel="noopener" style="font-size:14px; color:#2b1f16;">Facebook</a>
+        </div>
+      </div>
+    </div>
+    <div style="max-width:1360px; margin:0 auto; border-top:1px solid rgba(43,31,22,0.16); padding-top:24px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px;">
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">© 2026 The Virtual Helping Hand. All rights reserved.</p>
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">Proudly powered by dependable and loyal military spouses and stay-at-home moms.</p>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440}}">
+const PILLARS = [
+  {
+    key: 'Consulting',
+    numeral: 'I.',
+    title: 'Business Consulting & Strategy',
+    problem: "You know the business could be doing better, but you're not sure where to push first, or what to stop doing entirely.",
+    promise: 'We help you figure out what comes next.',
+    services: [
+      { name: 'Strategy Session', desc: 'A focused working call on one pressing decision, with written takeaways.', price: 'Free consultation' },
+      { name: 'Business Audit', desc: 'A full review of operations, offers, and systems with written findings and priorities.', price: 'From $1,497' },
+      { name: 'Growth Planning', desc: 'Long-term growth roadmap. Included in the 6-month experience.', price: 'From $3,500' },
+      { name: 'Startup Guidance', desc: 'Clarity and confidence for a business finding its footing.', price: 'From $1,497' },
+      { name: 'Offer Development', desc: 'Define your offers, pricing, messaging, and ideal client.', price: 'From $1,497' },
+      { name: 'Pricing Strategy', desc: 'Structure and price your offers so the value is clear.', price: 'From $1,497' },
+      { name: 'Scaling Strategy', desc: 'Hiring, delegation, and a sustainable plan to scale without burning out.', price: 'From $3,500' },
+      { name: 'Ongoing Business Consulting', desc: 'Strategic operations planning included in the Scale package.', price: 'From $1,450/mo' },
+    ],
+  },
+  {
+    key: 'Brand',
+    numeral: 'II.',
+    title: 'Brand & Digital Presence',
+    problem: "Your business has outgrown how it looks and reads. The right clients can't tell what you do, or why you're the one to do it.",
+    promise: 'Create a brand and online presence that supports your growth.',
+    services: [
+      { name: 'Logo Design', desc: 'The right mark for your business, with unlimited edits until it is right.', price: '$297' },
+      { name: 'Build a Website', desc: 'Built on Wix, Shopify, or Squarespace around how customers actually move through your business.', price: 'From $1,150' },
+      { name: 'Website Maintenance', desc: 'Keeping your site updated, secure, and running smoothly.', price: '$297' },
+      { name: 'Email Marketing', desc: 'Campaign design and automated sequences set up for you.', price: '$397, or $1,000 for 3 months' },
+      { name: 'Graphic Design', desc: 'Social posts, announcements, banners, and one-off pieces.', price: '$65 to $75' },
+      { name: 'eBook Design', desc: 'Workbooks, guides, and journals for coaches and consultants.', price: 'From $379' },
+      { name: 'PowerPoint Presentation', desc: 'A professional deck for your upcoming presentation.', price: 'From $197' },
+      { name: 'Content Concierge', desc: '20 posts, captions, and hashtags each month. We create, you post.', price: 'Subscription' },
+      { name: 'SEO & Website Copy', desc: 'Words and structure that help the right people find you.', price: 'Quoted at consultation' },
+    ],
+  },
+  {
+    key: 'Operations',
+    numeral: 'III.',
+    title: 'Operations & Business Systems',
+    problem: 'The work gets done because you remember to do it. Nothing is written down, and nothing runs without you.',
+    promise: 'Build systems that make your business easier to run.',
+    services: [
+      { name: 'Workflow Optimization', desc: 'Workflow creation and process documentation. Included in Optimize.', price: 'From $950/mo' },
+      { name: 'SOP Development', desc: 'SOP creation and ongoing documentation updates. Included in Scale.', price: 'From $1,450/mo' },
+      { name: 'Process Mapping', desc: 'Seeing the whole operation on one page before changing it. Included in Optimize.', price: 'From $950/mo' },
+      { name: 'CRM Implementation', desc: 'Dubsado, HoneyBook, or similar, configured and populated. Included in Optimize.', price: 'From $950/mo' },
+      { name: 'Business Automation', desc: 'Automation setup in Optimize; advanced integrations in Scale.', price: 'From $950/mo' },
+      { name: 'AI Implementation', desc: 'Practical AI tooling where it genuinely saves time.', price: 'Quoted at consultation' },
+      { name: 'Client Onboarding Systems', desc: 'Client onboarding and offboarding systems. Included in Scale.', price: 'From $1,450/mo' },
+      { name: 'Project Management Setup', desc: 'Project and team management with progress tracking. Included in Optimize.', price: 'From $950/mo' },
+      { name: 'Internal Documentation', desc: 'Ongoing documentation updates. Included in Scale.', price: 'From $1,450/mo' },
+    ],
+  },
+  {
+    key: 'Support',
+    numeral: 'IV.',
+    title: 'Ongoing Business Support',
+    problem: "The strategy exists and the systems are built. Now someone has to actually run them, week after week.",
+    promise: "You don't have to run everything alone.",
+    services: [
+      { name: 'Calendar Management', desc: 'Appointments, reminders, and updates handled monthly. Bundles available.', price: '$347/mo' },
+      { name: 'Client Invoicing Management', desc: 'Your client invoices issued and tracked.', price: 'From $147' },
+      { name: 'Administrative & Data Entry', desc: 'Email organization, scheduling, and file management. Included in Streamline.', price: 'From $700/mo' },
+      { name: 'Executive Assistance', desc: 'A dedicated Virtual Operations Specialist for recurring tasks. Included in Streamline.', price: 'From $700/mo' },
+      { name: 'Email Management', desc: 'Inbox organization and triage. Included in Streamline.', price: 'From $700/mo' },
+      { name: 'Customer Support', desc: 'Responsive, on-brand replies to your clients.', price: 'Quoted at consultation' },
+      { name: 'Project Coordination', desc: 'Task assignment and progress tracking. Included in Optimize.', price: 'From $950/mo' },
+      { name: 'Social Media Management', desc: 'Full posting and engagement, by monthly tier.', price: 'From $550/mo' },
+      { name: 'Virtual Operations Specialist', desc: 'An ongoing partner embedded in how your business runs.', price: 'From $700/mo' },
+    ],
+  },
+];
+
+class Component extends DCLogic {
+  state = {
+    isMobile: typeof window !== 'undefined' && window.innerWidth < 1180,
+    menuOpen: false,
+    openPillar: null,
+    query: '',
+    pillar: 'All',
+  };
+
+  componentDidMount() {
+    this.onResize = () => this.setState({ isMobile: window.innerWidth < 1180, menuOpen: false });
+    window.addEventListener('resize', this.onResize);
+    // deep link: /Services#pillar-brand opens that pillar and scrolls to it
+    this.openFromHash = () => {
+      const m = (window.location.hash || '').match(/^#pillar-(.+)$/);
+      if (!m) return;
+      const key = ['Consulting', 'Brand', 'Operations', 'Support']
+        .find(k => k.toLowerCase() === m[1].toLowerCase());
+      if (!key) return;
+      this.setState({ openPillar: key, pillar: 'All', query: '' }, () => {
+        const el = document.getElementById('pillar-' + key.toLowerCase());
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 96 });
+      });
+    };
+    this.openFromHash();
+    window.addEventListener('hashchange', this.openFromHash);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('hashchange', this.openFromHash);
+  }
+
+  chipCss(active) {
+    return active
+      ? 'font-family:Lora,serif; font-size:13px; padding:8px 15px; border-radius:3px; cursor:pointer; border:1px solid #b68235; background:rgba(182,130,53,0.16); color:#6b4423;'
+      : 'font-family:Lora,serif; font-size:13px; padding:8px 15px; border-radius:3px; cursor:pointer; border:1px solid rgba(43,31,22,0.28); background:transparent; color:rgba(43,31,22,0.75);';
+  }
+
+  renderVals() {
+    const q = this.state.query.trim().toLowerCase();
+    const activePillar = this.state.pillar;
+
+    const visiblePillars = PILLARS
+      .filter(p => activePillar === 'All' || p.key === activePillar)
+      .map(p => ({
+        ...p,
+        services: q
+          ? p.services.filter(s =>
+              s.name.toLowerCase().includes(q) || s.desc.toLowerCase().includes(q))
+          : p.services,
+      }))
+      .filter(p => p.services.length > 0)
+      .map(p => {
+        // a live search or a pillar filter forces the section open
+        const forced = !!q || activePillar !== 'All';
+        const open = forced || this.state.openPillar === p.key;
+        return {
+          ...p,
+          open,
+          anchor: 'pillar-' + p.key.toLowerCase(),
+          sign: open ? '\u2212' : '+',
+          countLabel: p.services.length + (p.services.length === 1 ? ' service' : ' services'),
+          toggle: () => this.setState(st => ({ openPillar: st.openPillar === p.key ? null : p.key })),
+        };
+      });
+
+    const count = visiblePillars.reduce((n, p) => n + p.services.length, 0);
+    const total = PILLARS.reduce((n, p) => n + p.services.length, 0);
+
+    const chipDefs = [
+      { label: 'All Services', key: 'All' },
+      { label: 'Consulting & Strategy', key: 'Consulting' },
+      { label: 'Brand & Digital', key: 'Brand' },
+      { label: 'Operations & Systems', key: 'Operations' },
+      { label: 'Ongoing Support', key: 'Support' },
+    ];
+    const filterChips = chipDefs.map(c => ({
+      label: c.label,
+      css: this.chipCss(activePillar === c.key),
+      onClick: () => this.setState({ pillar: c.key }),
+    }));
+
+    const alphabetical = PILLARS
+      .flatMap(p => p.services.map(s => s.name))
+      .sort((a, b) => a.localeCompare(b));
+
+    const consultingTiers = [
+      { name: 'The 3-Month Business Expansion Experience', term: '3 months', price: '$1,497', popular: false, desc: 'For business owners looking to gain clarity, strengthen their foundation, and build momentum.', features: ['Weekly coaching sessions', 'Personalized action plan', 'Accountability and support', 'Resources and templates'] },
+      { name: 'The 6-Month Business Expansion Experience', term: '6 months', price: '$3,500', popular: true, desc: 'For business owners ready to build a stronger business with long-term strategy, systems, and sustainable growth.', features: ['Everything in the 3-month experience', 'Deeper business strategy', 'Systems and operational guidance', 'Hiring and delegation planning', 'Long-term growth roadmap'] },
+    ];
+
+    const retainerTiers = [
+      { name: 'The Streamline Package', price: '$700/mo', note: 'Solo entrepreneurs and small teams needing consistent support', cta: 'Start with Streamline', features: ['Dedicated Virtual Operations Specialist for recurring tasks', 'Admin support: email organization, scheduling, file management', 'Light system setup or cleanup (Google Workspace, Asana, ClickUp)', 'Basic social media support: scheduling and engagement tracking', 'Monthly check-in and recap report'] },
+      { name: 'The Optimize Package', price: '$950/mo', note: 'CEOs, coaches, and teams ready for structured systems', cta: 'Start with Optimize', features: ['Everything in Streamline, plus:', 'Workflow creation and process documentation', 'CRM and automation setup (Dubsado, HoneyBook, or similar)', 'Project and team management with progress tracking', 'Weekly check-in calls or Slack and Asana updates', 'Monthly analytics or progress dashboard'] },
+      { name: 'The Scale Package', price: '$1,450/mo', note: 'Established businesses and agencies wanting hands-on partnership', cta: 'Start with Scale', features: ['Everything in Optimize, plus:', 'Strategic operations planning with quarterly goals and KPIs', 'Team onboarding and offboarding management', 'Advanced automations and integrations (CRM, marketing, reporting)', 'SOP creation and ongoing documentation updates', 'Client onboarding and offboarding systems', 'Weekly or bi-weekly strategy meetings', 'Priority access and a dedicated Slack channel'] },
+    ];
+
+    const socialTiers = [
+      { name: 'Tier I', price: '$550', cta: 'Start Tier I', features: ['1 social platform', '10 posts a month', 'Caption writing', 'Hashtag research', '6 hours of engagement', 'Bi-weekly report'] },
+      { name: 'Tier II', price: '$675', cta: 'Start Tier II', features: ['2 social platforms', '18 posts a month', 'Caption writing', 'Hashtag research', '10 hours of engagement', 'Weekly report'] },
+      { name: 'Tier III', price: '$800', cta: 'Start Tier III', features: ['3 social platforms', '28 posts a month', 'Caption writing', 'Hashtag research', '15 hours of engagement', 'Weekly report'] },
+      { name: 'Custom', price: "Let's talk", cta: 'Build a Custom Tier', features: ['Built around your platforms, volume, and reporting needs'] },
+    ];
+
+    const brandingTiers = [
+      { name: 'Standard', price: '$699', features: ['Logo design', 'Brand colors', 'Brand fonts', '3 social media templates', 'Business card design'] },
+      { name: 'Elite', price: '$897', features: ['Logo design', 'Brand colors', 'Brand fonts', '6 social media templates', 'Related graphic designs', 'Brand concept board', 'Business card design', '3 email templates', 'Facebook banner'] },
+      { name: 'Premium', price: '$1,499', features: ['Logo design', 'Brand colors', 'Brand fonts', '9 social media templates', 'Related graphic design', 'Brand concept board', 'Business card design', '5 email templates', 'Facebook banner', 'Email signature', 'Website design'] },
+    ];
+
+    let resultLine;
+    if (q && count === 0) resultLine = 'No services matched "' + this.state.query.trim() + '".';
+    else if (q) resultLine = 'Showing ' + count + ' of ' + total + ' services matching "' + this.state.query.trim() + '".';
+    else if (activePillar !== 'All') resultLine = 'Showing ' + count + ' services in this pillar.';
+    else resultLine = 'Showing all ' + total + ' services across four pillars.';
+
+    return {
+      isMobile: this.state.isMobile,
+      menuOpen: this.state.menuOpen,
+      menuIcon: this.state.menuOpen ? '✕' : '☰',
+      toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
+      query: this.state.query,
+      hasQuery: q.length > 0,
+      onQuery: (e) => this.setState({ query: e.target.value }),
+      clearQuery: () => this.setState({ query: '' }),
+      filterChips,
+      resultLine,
+      visiblePillars,
+      noResults: count === 0,
+      alphabetical,
+      consultingTiers,
+      retainerTiers,
+      socialTiers,
+      brandingTiers,
+    };
+  }
+}
+</script>
+</body>
+</html>

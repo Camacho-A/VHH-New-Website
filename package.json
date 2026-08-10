@@ -1,5 +1,5 @@
 {
-  "name": "purple-pegasi",
+  "name": "vhh-website",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -12,6 +12,10 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@wix/blog": "^1.0.630",
+    "@wix/forms": "^1.0.486",
+    "@wix/sdk": "^1.21.14",
+    "@wix/stores": "^1.0.856",
     "astro": "^7.2.0"
   }
 }
