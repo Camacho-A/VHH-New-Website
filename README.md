@@ -66,7 +66,7 @@ Current status:
 - [x] 4. Static pages first: Homepage, About, Business Consulting
 - [~] 5. Wire the contact form (`@wix/forms`) — code done, **blocked on a missing Wix form**, see below
 - [x] 6. Wire Blog (`@wix/blog`) and Shop (`@wix/stores`)
-- [ ] 7. Create CMS collections; wire Services, testimonials, logos, credentials
+- [~] 7. Services page built with real content — **CMS collections blocked**, see below
 - [ ] 8. Deploy to Wix hosting with the Wix CLI
 - [ ] 9. Add production URLs to Wix redirect settings, then repoint the domain last
 
@@ -94,3 +94,23 @@ changes needed after that — the submission code resolves field IDs by label at
 
 Until then, the form works in the browser (validation, states) but submissions are
 simulated (`console.warn` fires, nothing is sent) rather than 404ing.
+
+### ⚠️ Step 7 blocker: CMS collections don't exist yet
+
+The Services page (`/services`) is fully built with real content — four pillar
+accordions (35 services), search/filter, VOS/social/branding tiers, A-Z index — but it's
+**hardcoded**, not CMS-driven. Homepage testimonials, client logos, and credential
+badges are also still hardcoded (they were already real content from step 4, just not
+yet editable via CMS).
+
+Checked whether the six CMS collections in this README's schema section can be created
+via the API: `collections.listDataCollections()` and `collections.createDataCollection()`
+(from `@wix/data`, now installed) both 403 under visitor auth — same story as the step-5
+form. Creating/managing Wix CMS collections requires Danielle's dashboard access
+(Content Manager), not just the headless Client ID.
+
+**To unblock:** Danielle needs to create the six collections in her Wix dashboard's
+**Content Manager**, matching the exact field schema in this README's CMS section
+(`Testimonials`, `CaseStudies`, `Services`, `FAQs`, `ClientLogos`, `Credentials`). Once
+they exist, the pages can be switched from hardcoded arrays to `@wix/data` queries —
+straightforward once the collections and their permissions (public read access) are set.
