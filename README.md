@@ -62,7 +62,7 @@ Current status:
 
 - [x] 1. Scaffold Astro + `@wix/sdk`, add the Client ID to `.env`
 - [x] 2. Verify the SDK reads real blog posts and products from the existing site (`npm run verify:wix`)
-- [ ] 3. Build the shared shell — nav, footer, design tokens as CSS custom properties
+- [x] 3. Build the shared shell — nav, footer, design tokens as CSS custom properties
 - [ ] 4. Static pages first: Homepage, About, Business Consulting
 - [ ] 5. Wire the contact form (`@wix/forms`)
 - [ ] 6. Wire Blog (`@wix/blog`) and Shop (`@wix/stores`)
