@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  currentPage="services"
+  title="Services | The Virtual Helping Hand"
+  description="Every service we offer sits inside one of four pillars: Consulting, Brand, Operations, and Support."
+>
+  <section id="top" class="placeholder">
+    <p>Services page content — coming in a later build step (CMS-backed, build order step 7).</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--section-pad-y) var(--section-pad-x);
+    font-size: 15px;
+    color: var(--text-muted);
+    min-height: 40vh;
+  }
+</style>

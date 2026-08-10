@@ -1,17 +1,28 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout
+  currentPage="home"
+  title="The Virtual Helping Hand | Business Growth Partner"
+  description="Strategy, digital presence, systems, and ongoing support for entrepreneurs building stronger businesses."
+>
+  <section id="top" class="placeholder">
+    <p>Homepage content — build order step 4.</p>
+    <p>Shared shell (nav, footer, design tokens) is wired up; this page's real sections come next.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--section-pad-y) var(--section-pad-x);
+    font-size: 15px;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 40vh;
+  }
+</style>

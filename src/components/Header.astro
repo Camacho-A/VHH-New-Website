@@ -1,0 +1,378 @@
+---
+// Sticky global nav. Behavior sourced from design_handoff_vhh_website/design-source/*.dc.html:
+//  - Whichever page is current gets its nav item linked to "#top" (scroll, not reload) and
+//    styled active (accent color + underline) — EXCEPT "Home", which the source never
+//    marks active, even on the homepage itself.
+//  - "Services" is further special: a hover dropdown (pillars + Content Concierge + All
+//    Services) only on the homepage; a plain active "#top" link on the Services page
+//    itself; a plain link to "/#pillars" everywhere else.
+//  - Nav item list follows the README's "Global Components > Navigation" spec, which
+//    (unlike the design source) doesn't include "Contact" — kept the nav uniform across
+//    pages rather than carrying over the source's inconsistent per-page inclusion of it.
+
+export interface Props {
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "shop" | "blog";
+}
+
+const { currentPage = "home" } = Astro.props;
+
+/** Same-page nav item -> "#top" (scrolls, no reload); otherwise -> its route. */
+const linkTo = (key: Props["currentPage"], path: string) => (currentPage === key ? "#top" : path);
+
+const homeHref = currentPage === "home" ? "#top" : "/";
+const aboutHref = linkTo("about", "/about");
+const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
+const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
+const shopHref = linkTo("shop", "/shop");
+const blogHref = linkTo("blog", "/blog");
+
+const servicesHref =
+  currentPage === "home" ? "/services" : currentPage === "services" ? "#top" : "/#pillars";
+const servicesActive = currentPage === "services";
+
+const PILLARS = [
+  { href: "/services#pillar-consulting", title: "Business Consulting & Strategy" },
+  { href: "/services#pillar-brand", title: "Brand & Digital Presence" },
+  { href: "/services#pillar-operations", title: "Operations & Business Systems" },
+  { href: "/services#pillar-support", title: "Ongoing Business Support" },
+];
+
+const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+---
+
+<header class="site-header">
+  <div class="site-header__bar">
+    <a href={homeHref} class="site-logo">The Virtual Helping Hand</a>
+
+    <nav class="site-nav desktop-only" aria-label="Primary">
+      <a href={homeHref} class="site-nav__link">Home</a>
+      <a href={aboutHref} class="site-nav__link" class:list={{ "is-active": currentPage === "about" }}>
+        About
+      </a>
+
+      {
+        currentPage === "home" ? (
+          <div class="nav-services">
+            <a href={servicesHref} class="site-nav__link nav-services__trigger">
+              Services <span class="nav-services__chevron" aria-hidden="true">▾</span>
+            </a>
+            <div class="nav-services__menu">
+              <div class="nav-services__panel">
+                {PILLARS.map((p) => (
+                  <a href={p.href} class="nav-services__item">
+                    {p.title}
+                  </a>
+                ))}
+                <span class="nav-services__divider" />
+                <a href="#concierge" class="nav-services__item nav-services__item--sub">
+                  <span class="nav-services__sub-label">Sub</span>Content Concierge
+                </a>
+                <a href="/services" class="nav-services__item nav-services__item--all">
+                  All Services
+                </a>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <a href={servicesHref} class="site-nav__link" class:list={{ "is-active": servicesActive }}>
+            Services
+          </a>
+        )
+      }
+
+      <a
+        href={businessConsultingHref}
+        class="site-nav__link"
+        class:list={{ "is-active": currentPage === "business-consulting" }}
+      >
+        Business Consulting
+      </a>
+      <a href={portfolioHref} class="site-nav__link">Portfolio</a>
+      <a href={shopHref} class="site-nav__link" class:list={{ "is-active": currentPage === "shop" }}>
+        Shop
+      </a>
+      <a href={blogHref} class="site-nav__link" class:list={{ "is-active": currentPage === "blog" }}>
+        Blog
+      </a>
+    </nav>
+
+    <a href={CTA_HREF} class="nav-cta desktop-only">Schedule a Consultation</a>
+
+    <button
+      type="button"
+      class="nav-toggle mobile-only"
+      aria-expanded="false"
+      aria-controls="mobile-panel"
+      aria-label="Toggle menu"
+      data-nav-toggle
+    >
+      <span data-nav-toggle-icon aria-hidden="true">☰</span>
+    </button>
+  </div>
+
+  <div class="mobile-panel" id="mobile-panel" data-mobile-panel hidden>
+    <a href={homeHref} class="mobile-panel__link">Home</a>
+    <a href={aboutHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "about" }}>
+      About
+    </a>
+    <a href={servicesHref} class="mobile-panel__link" class:list={{ "is-active": servicesActive }}>
+      Services
+    </a>
+    <a
+      href={businessConsultingHref}
+      class="mobile-panel__link"
+      class:list={{ "is-active": currentPage === "business-consulting" }}
+    >
+      Business Consulting
+    </a>
+    <a href={portfolioHref} class="mobile-panel__link">Portfolio</a>
+    <a href={shopHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "shop" }}>
+      Shop
+    </a>
+    <a href={blogHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "blog" }}>
+      Blog
+    </a>
+    <a href={CTA_HREF} class="mobile-panel__cta">Schedule a Consultation</a>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-mobile-panel]");
+  const icon = document.querySelector("[data-nav-toggle-icon]");
+  const breakpoint = "(min-width: 1180px)";
+
+  if (toggle && panel && icon) {
+    const setOpen = (open: boolean) => {
+      panel.hidden = !open;
+      toggle.setAttribute("aria-expanded", String(open));
+      icon.textContent = open ? "✕" : "☰";
+    };
+
+    toggle.addEventListener("click", () => setOpen(panel.hidden));
+
+    // Close the mobile panel if the viewport crosses back to desktop width.
+    const mq = window.matchMedia(breakpoint);
+    mq.addEventListener("change", (e) => {
+      if (e.matches) setOpen(false);
+    });
+
+    // Closing on link click keeps a stale open panel from persisting across navigations
+    // that land back on the same page (e.g. same-page anchor links).
+    panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .site-header__bar {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 20px var(--section-pad-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .site-logo {
+    font-family: var(--font-heading);
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .site-logo:hover {
+    color: var(--accent-deep);
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .site-nav__link {
+    font-size: 14px;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .site-nav__link:hover {
+    color: var(--accent-deep);
+  }
+
+  .site-nav__link.is-active {
+    color: var(--accent-deep);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+  }
+
+  .nav-cta {
+    border: 1px solid var(--accent);
+    color: var(--accent-deep);
+    padding: 11px 22px;
+    border-radius: var(--radius-control);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 14.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .nav-cta:hover {
+    background: var(--accent-tint-strong);
+    color: var(--accent-deep);
+  }
+
+  /* ---- Services dropdown (homepage only) ---- */
+  .nav-services {
+    position: relative;
+  }
+
+  .nav-services__trigger {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .nav-services__chevron {
+    font-size: 10px;
+  }
+
+  .nav-services__menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: -16px;
+    /* Unbroken hover bridge — do not reintroduce a gap between trigger and menu. */
+    padding-top: 14px;
+    z-index: 20;
+  }
+
+  .nav-services:hover .nav-services__menu,
+  .nav-services:focus-within .nav-services__menu {
+    display: block;
+  }
+
+  .nav-services__panel {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-control);
+    box-shadow: 0 12px 32px rgba(60, 45, 30, 0.22);
+    padding: 8px;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-services__item {
+    padding: 10px 14px;
+    font-size: 13.5px;
+    color: var(--text);
+    border-radius: var(--radius-chip);
+  }
+
+  .nav-services__item:hover {
+    background: var(--accent-tint);
+    color: var(--accent-deep);
+  }
+
+  .nav-services__item--sub {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .nav-services__sub-label {
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  .nav-services__item--all {
+    color: var(--accent-deep);
+  }
+
+  .nav-services__divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 6px 14px;
+  }
+
+  /* ---- Mobile toggle + panel ---- */
+  .nav-toggle {
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: var(--text);
+    cursor: pointer;
+    line-height: 1;
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .mobile-panel {
+    background: var(--bg);
+    border-top: 1px solid var(--rule);
+    padding: 16px clamp(18px, 5vw, 28px) 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .mobile-panel__link {
+    padding: 14px 4px;
+    font-size: 17px;
+    color: var(--text);
+    border-bottom: 1px solid var(--rule-soft);
+    min-height: 44px;
+  }
+
+  .mobile-panel__link.is-active {
+    color: var(--accent-deep);
+  }
+
+  .mobile-panel__cta {
+    margin-top: 14px;
+    border: 1px solid var(--accent);
+    color: var(--accent-deep);
+    padding: 15px;
+    border-radius: var(--radius-control);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  @media (min-width: 1180px) {
+    .desktop-only {
+      display: flex;
+    }
+    .nav-cta.desktop-only {
+      display: inline-block;
+    }
+    .mobile-only,
+    .mobile-panel {
+      display: none !important;
+    }
+  }
+</style>

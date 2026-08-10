@@ -1,0 +1,149 @@
+---
+// Four-column footer, structure and copy from design_handoff_vhh_website/README.md
+// § Global Components > Footer, and design-source/*.dc.html footers.
+//
+// Note: the design source's footer background flips between --bg and --bg-alt
+// depending on the page (an artifact of hand-authoring each page separately, not an
+// intentional per-page variation — the footer is a single global component). Standardized
+// on --bg-alt here, matching the Homepage and Services sources.
+
+export interface Props {
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "shop" | "blog";
+}
+
+const { currentPage = "home" } = Astro.props;
+
+const linkTo = (key: Props["currentPage"], path: string) => (currentPage === key ? "#top" : path);
+
+const aboutHref = linkTo("about", "/about");
+const servicesHref = currentPage === "home" ? "#pillars" : linkTo("services", "/#pillars");
+const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
+const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
+const shopHref = linkTo("shop", "/shop");
+const blogHref = linkTo("blog", "/blog");
+const resourcesHref = currentPage === "home" ? "#resources" : "/#resources";
+const conciergeHref = currentPage === "home" ? "#concierge" : "/#concierge";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="site-footer__grid">
+    <div>
+      <p class="site-footer__brand">The Virtual Helping Hand</p>
+      <p class="site-footer__blurb">
+        Strategy, systems, and support for entrepreneurs building stronger businesses.
+      </p>
+    </div>
+
+    <div>
+      <p class="site-footer__heading">Explore</p>
+      <div class="site-footer__links">
+        <a href={aboutHref}>About</a>
+        <a href={servicesHref}>Services</a>
+        <a href={businessConsultingHref}>Business Consulting</a>
+        <a href={portfolioHref}>Portfolio</a>
+      </div>
+    </div>
+
+    <div>
+      <p class="site-footer__heading">Resources</p>
+      <div class="site-footer__links">
+        <a href={shopHref}>Shop</a>
+        <a href={resourcesHref}>Free Hiring Bundle</a>
+        <a href={conciergeHref}>Content Concierge</a>
+        <a href={blogHref}>Blog</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+
+    <div>
+      <p class="site-footer__heading">Connect</p>
+      <div class="site-footer__links">
+        <a href="https://www.instagram.com/virtualhelpingh" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.linkedin.com/company/the-virtual-helping-hand/" target="_blank" rel="noopener">
+          LinkedIn
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=100091746784096" target="_blank" rel="noopener">
+          Facebook
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="site-footer__bottom">
+    <p>&copy; {year} The Virtual Helping Hand. All rights reserved.</p>
+    <p>Proudly powered by dependable and loyal military spouses and stay-at-home moms.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--rule);
+    background: var(--bg-alt);
+    padding: 56px var(--section-pad-x) 32px;
+  }
+
+  .site-footer__grid {
+    max-width: var(--content-max);
+    margin: 0 auto 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+  }
+
+  .site-footer__brand {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 0 0 14px;
+  }
+
+  .site-footer__blurb {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: rgba(43, 31, 22, 0.65);
+    max-width: 260px;
+  }
+
+  .site-footer__heading {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 16px;
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .site-footer__links a {
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .site-footer__links a:hover {
+    color: var(--accent-deep);
+  }
+
+  .site-footer__bottom {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    border-top: 1px solid var(--rule);
+    padding-top: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .site-footer__bottom p {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+</style>

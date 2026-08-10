@@ -1,0 +1,132 @@
+/*
+  Design tokens — "Classical" editorial system.
+  Source of truth: design_handoff_vhh_website/README.md § Design Tokens.
+  Every page uses these and nothing else — don't introduce one-off colors,
+  radii, or spacing values outside this file.
+*/
+
+:root {
+  /* Color */
+  --bg: #f9f4ea;
+  --bg-alt: #efe6d3;
+  --text: #2b1f16;
+  --text-muted: rgba(43, 31, 22, 0.75);
+  --text-body: rgba(43, 31, 22, 0.78);
+  --accent: #b68235; /* borders, rules, icon strokes ONLY — fails contrast as text */
+  --accent-deep: #6b4423; /* all accent-colored text */
+  --rule: rgba(43, 31, 22, 0.16);
+  --rule-soft: rgba(43, 31, 22, 0.12);
+  --accent-tint: rgba(182, 130, 53, 0.1); /* hover fill, small controls/links */
+  --accent-tint-strong: rgba(182, 130, 53, 0.12); /* hover fill, CTA buttons */
+
+  /* Nav surface: --bg at 96% opacity, matches the sticky header across pages */
+  --nav-bg: rgba(249, 244, 234, 0.96);
+
+  /* Typography */
+  --font-heading: "Cormorant Garamond", serif;
+  --font-body: "Lora", serif;
+
+  /* Spacing & shape */
+  --content-max: 1360px;
+  --prose-max: 640px;
+  --section-pad-y: clamp(56px, 7vw, 110px);
+  --section-pad-x: clamp(20px, 4vw, 32px);
+  --radius-control: 4px; /* buttons, inputs */
+  --radius-card: 6px; /* cards, bordered blocks */
+  --radius-chip: 3px; /* chips */
+
+  /* Single JS/CSS breakpoint: desktop nav <-> hamburger */
+  --nav-breakpoint: 1180px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light; /* this design is a fixed warm-cream palette, not dark-mode aware */
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 400;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--accent-deep);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--text);
+}
+
+/* Required on every interactive element (README § Interaction States) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(182, 130, 53, 0.3);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+/* Never bold — emphasis comes from size and italics (README § Typography) */
+strong,
+b {
+  font-weight: 600;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 12px;
+  z-index: 1000;
+  background: var(--text);
+  color: var(--bg);
+  padding: 12px 18px;
+  border-radius: var(--radius-control);
+  font-size: 14px;
+  transition: top 0.15s ease;
+}
+
+.skip-link:focus {
+  top: 12px;
+  color: var(--bg);
+}

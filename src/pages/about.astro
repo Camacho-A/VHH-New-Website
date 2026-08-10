@@ -1,0 +1,24 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  currentPage="about"
+  title="About | The Virtual Helping Hand"
+  description="Structure, clarity, and balance, brought to your business."
+>
+  <section id="top" class="placeholder">
+    <p>About page content — coming in a later build step.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .placeholder {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--section-pad-y) var(--section-pad-x);
+    font-size: 15px;
+    color: var(--text-muted);
+    min-height: 40vh;
+  }
+</style>
