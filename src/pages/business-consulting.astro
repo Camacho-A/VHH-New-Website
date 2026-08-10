@@ -1,24 +1,507 @@
 ---
+// Note: the README's page-by-page summary describes three consulting offers
+// (Strategy Session / Business Growth Intensive / Ongoing Consulting) plus separate
+// "process" and "FAQ" sections. The design source (Business Consulting.dc.html) — the
+// higher-fidelity reference for actual layout/copy per the handoff README — has neither:
+// it ships exactly two options (3-month / 6-month) and no dedicated FAQ or process
+// section. Built against the design source, since that's the file marked pixel-accurate.
+
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ImagePlate from "../components/ImagePlate.astro";
+import Quote from "../components/Quote.astro";
+
+const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+
+const SIGNALS = [
+  { num: "01", text: "You've hit a growth plateau." },
+  { num: "02", text: "Your business feels disorganized." },
+  { num: "03", text: "You're doing everything yourself." },
+  { num: "04", text: "Your offers or pricing aren't clear." },
+  { num: "05", text: "Your systems don't scale." },
+  { num: "06", text: "Your marketing feels disconnected." },
+  { num: "07", text: "You're not sure what to prioritize." },
+  { num: "08", text: "You've grown faster than your operations." },
+];
+
+const FOCUS_AREAS = [
+  { numeral: "I", title: "Clarity", desc: "Define your offers, pricing, messaging, and ideal client so you know exactly who you're serving." },
+  { numeral: "II", title: "Confidence", desc: "Overcome imposter syndrome, communicate your value, and confidently lead your business." },
+  { numeral: "III", title: "Clients", desc: "Develop a strategy to consistently attract, nurture, and convert the right clients." },
+  { numeral: "IV", title: "Structure", desc: "Create systems, workflows, and processes that make your business easier to manage." },
+  { numeral: "V", title: "Growth", desc: "Build a sustainable plan for scaling your business without burning yourself out." },
+];
+
+const OPTIONS = [
+  {
+    term: "3 months",
+    popular: false,
+    name: "The 3-Month Business Expansion Experience",
+    price: "$1,497",
+    desc: "For business owners looking to gain clarity, strengthen their foundation, and build momentum.",
+    features: ["Weekly coaching sessions", "Personalized action plan", "Accountability and support", "Resources and templates"],
+  },
+  {
+    term: "6 months",
+    popular: true,
+    name: "The 6-Month Business Expansion Experience",
+    price: "$3,500",
+    desc: "For business owners ready to build a stronger business with long-term strategy, systems, and sustainable growth.",
+    features: [
+      "Everything in the 3-month experience",
+      "Deeper business strategy",
+      "Systems and operational guidance",
+      "Hiring and delegation planning",
+      "Long-term growth roadmap",
+    ],
+  },
+];
+
+const READY_TO = [
+  "Gain clarity in their business",
+  "Feel more confident as a business owner",
+  "Attract more of the right clients",
+  "Build better systems and processes",
+  "Grow with intention instead of overwhelm",
+];
 ---
 
 <BaseLayout
   currentPage="business-consulting"
   title="Business Consulting | The Virtual Helping Hand"
-  description="Strategy Session, Business Growth Intensive, and Ongoing Consulting for entrepreneurs ready to scale."
+  description="Business consulting for entrepreneurs ready to grow with intention — strategy, systems, and structure built for you, not a blueprint."
 >
-  <section id="top" class="placeholder">
-    <p>Business Consulting page content — build order step 4.</p>
+  <!-- ============ HERO ============ -->
+  <section id="top" class="hero">
+    <div class="hero__grid">
+      <div>
+        <p class="kicker kicker--rule" style="margin-bottom:26px;">Business Consulting &amp; Strategy</p>
+        <h1 class="hero__title">Business Consulting for Entrepreneurs Ready to Grow With Intention</h1>
+        <p class="hero__lede">
+          You've built the business. Now let's make sure the strategy, systems, and structure behind it can
+          support where you're going.
+        </p>
+        <div class="hero__ctas">
+          <a href={CTA_HREF} class="btn">Schedule a Strategy Call</a>
+          <a href="#options" class="btn btn--secondary">See Consulting Options</a>
+        </div>
+      </div>
+      <div class="hero__photo">
+        <ImagePlate label="Business owner reviewing strategy notes" aspectRatio="1/1" filtered={false} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RECOGNITION ============ -->
+  <section class="band recognition">
+    <h2 class="section-title" style="margin-bottom:48px;">you may need consulting if</h2>
+    <div class="signals">
+      {
+        SIGNALS.map((s) => (
+          <div class="signals__item">
+            <span class="signals__num">{s.num}</span>
+            <p class="signals__text">{s.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ============ WHAT WE WORK ON ============ -->
+  <section class="section">
+    <h2 class="section-title" style="margin-bottom:12px;">what we build together</h2>
+    <p class="section-lede" style="margin-bottom:48px;">
+      Every business is different, but our focus always comes back to five key areas.
+    </p>
+    <div class="focus-grid">
+      {
+        FOCUS_AREAS.map((a) => (
+          <div class="focus-grid__cell">
+            <p class="focus-grid__numeral">{a.numeral}</p>
+            <h3 class="focus-grid__title">{a.title}</h3>
+            <p class="focus-grid__desc">{a.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+    <p class="focus-grid__tagline">Built for you, not a blueprint.</p>
+  </section>
+
+  <!-- ============ CONSULTING OPTIONS ============ -->
+  <section id="options" class="section">
+    <h2 class="section-title" style="margin-bottom:12px;">consulting options</h2>
+    <p class="section-lede" style="margin-bottom:48px;">Choose the experience that fits where you are right now.</p>
+    <div class="options">
+      {
+        OPTIONS.map((o) => (
+          <div class="options__card">
+            <div class="options__meta">
+              <p class="options__term">{o.term}</p>
+              {o.popular && <span class="options__badge">Most Popular</span>}
+            </div>
+            <h3 class="options__name">{o.name}</h3>
+            <p class="options__price">{o.price}</p>
+            <p class="options__desc">{o.desc}</p>
+            <div class="options__features">
+              {o.features.map((f) => (
+                <p class="options__feature">{f}</p>
+              ))}
+            </div>
+            <a href={CTA_HREF} class="btn btn--sm options__cta">
+              Get Started
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="section">
+    <h2 class="section-title" style="margin-bottom:52px;">client success stories</h2>
+    <div class="testimonials">
+      <Quote
+        quote="Danielle is amazing. She pointed out gaps in my onboarding system. She also helped me better explain exactly what my services are, which helped me gain three new clients in our first month of working together."
+        name="Lisa Moore"
+        role="Marketing Firm"
+      />
+      <Quote
+        quote="I knew Danielle could help me from just one consultation. She helped me build my offers, structure them better, and add value to make them irresistible. She also helped with my confidence. I'm now able to clearly talk about what I do and lead discovery calls with confidence."
+        name="Kenya R."
+        role="Sleep Coach"
+      />
+    </div>
+  </section>
+
+  <!-- ============ WHO IT'S FOR ============ -->
+  <section class="band fit">
+    <div class="fit__inner">
+      <h2 class="section-title" style="margin-bottom:20px;">is this right for you?</h2>
+      <p class="fit__lede">Business consulting with VHH is for service-based business owners who are ready to:</p>
+      <div class="fit__list">
+        {READY_TO.map((r) => <p class="fit__list-item">{r}</p>)}
+      </div>
+      <p class="fit__callout">If that sounds like you, we'd love to help!</p>
+      <a href={CTA_HREF} class="btn">Schedule a Consultation</a>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="contact" class="final-cta">
+    <h2 class="final-cta__title">let's figure out what's next.</h2>
+    <p class="final-cta__body">
+      Are you ready to hit the ground running right now? Whether you're looking for clarity,
+      accountability, or a strategy to grow, we'll build a plan that fits your goals and not someone
+      else's. Schedule your 30 minute consultation, for free!
+    </p>
+    <a href={CTA_HREF} class="btn btn--lg">Schedule Your FREE Consultation</a>
+    <p class="final-cta__note">Choose the <strong>BEE Consultation</strong> when booking.</p>
   </section>
 </BaseLayout>
 
 <style>
-  .placeholder {
+  .section {
     max-width: var(--content-max);
     margin: 0 auto;
     padding: var(--section-pad-y) var(--section-pad-x);
+  }
+
+  .band {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: var(--section-pad-y) var(--section-pad-x);
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(48px, 7vw, 90px) 32px 0;
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+
+  .hero__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.6rem, 5vw, 4.3rem);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    max-width: 20ch;
+    margin-bottom: 28px;
+  }
+
+  .hero__lede {
+    font-size: clamp(17px, 1.6vw, 19px);
+    line-height: 1.75;
+    color: rgba(43, 31, 22, 0.75);
+    max-width: 520px;
+    margin-bottom: 36px;
+    text-align: justify;
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .hero__photo {
+    margin: 40px 0 -30px;
+    align-self: start;
+  }
+
+  /* ---- Recognition ---- */
+  .recognition {
+    background: var(--bg-alt);
+    padding-top: clamp(80px, 9vw, 120px);
+    padding-bottom: clamp(56px, 7vw, 96px);
+  }
+
+  .signals {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    border-top: 1px solid rgba(43, 31, 22, 0.2);
+    border-bottom: 1px solid rgba(43, 31, 22, 0.2);
+  }
+
+  .signals__item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 22px 24px 22px 0;
+    border-bottom: 1px solid rgba(43, 31, 22, 0.2);
+  }
+
+  .signals__num {
+    font-variant-numeric: tabular-nums;
+    font-size: 12.5px;
+    color: var(--accent-deep);
+    padding-top: 3px;
+    flex: 0 0 24px;
+  }
+
+  .signals__text {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ---- What we build together ---- */
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    border-top: 1px solid rgba(43, 31, 22, 0.2);
+    border-left: 1px solid rgba(43, 31, 22, 0.2);
+    border-bottom: 1px solid rgba(43, 31, 22, 0.2);
+  }
+
+  .focus-grid__cell {
+    border-right: 1px solid rgba(43, 31, 22, 0.2);
+    border-bottom: 1px solid rgba(43, 31, 22, 0.2);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .focus-grid__numeral {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 500;
     font-size: 15px;
+    color: var(--accent-deep);
+    letter-spacing: 0.05em;
+  }
+
+  .focus-grid__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  .focus-grid__desc {
+    font-size: 14.5px;
+    line-height: 1.65;
     color: var(--text-muted);
-    min-height: 40vh;
+  }
+
+  .focus-grid__tagline {
+    margin-top: 32px;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--accent-deep);
+  }
+
+  /* ---- Consulting options ---- */
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .options__card {
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 38px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .options__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-height: 24px;
+  }
+
+  .options__term {
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  .options__badge {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    border: 1px solid rgba(182, 130, 53, 0.6);
+    border-radius: var(--radius-chip);
+    padding: 4px 9px;
+  }
+
+  .options__name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .options__price {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 42px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .options__desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .options__features {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    margin-top: 6px;
+  }
+
+  .options__feature {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text-body);
+    padding-left: 15px;
+    border-left: 1px solid rgba(182, 130, 53, 0.5);
+  }
+
+  .options__cta {
+    align-self: flex-start;
+    margin-top: 10px;
+  }
+
+  /* ---- Testimonials ---- */
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: clamp(32px, 5vw, 64px);
+  }
+
+  /* ---- Who it's for ---- */
+  .fit {
+    background: var(--bg-alt);
+  }
+
+  .fit__inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .fit__lede {
+    max-width: 600px;
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin-bottom: 36px;
+  }
+
+  .fit__list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(43, 31, 22, 0.2);
+    margin-bottom: 36px;
+  }
+
+  .fit__list-item {
+    font-family: var(--font-heading);
+    font-size: clamp(19px, 2.2vw, 25px);
+    font-weight: 500;
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(43, 31, 22, 0.2);
+  }
+
+  .fit__callout {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 20px;
+    color: var(--accent-deep);
+    margin-bottom: 30px;
+  }
+
+  /* ---- Final CTA ---- */
+  .final-cta {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: clamp(72px, 9vw, 120px) var(--section-pad-x);
+    text-align: center;
+  }
+
+  .final-cta__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+
+  .final-cta__body {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--text-body);
+    margin: 0 auto 36px;
+    max-width: 620px;
+    text-align: justify;
+  }
+
+  .final-cta__note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 18px auto 0;
+    max-width: 520px;
   }
 </style>

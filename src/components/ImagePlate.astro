@@ -1,0 +1,80 @@
+---
+// Photo "plate": padding:6px; background:var(--bg-alt); outline:1px solid var(--rule)
+// (README § Spacing & Shape). Renders a real photo when one exists in the design source
+// (a few homepage image-slots already have a real Wix-hosted src); otherwise a labeled
+// placeholder box marking what real photography goes there later (README § Notes:
+// "Images marked image-slot are placeholders").
+
+export interface Props {
+  src?: string;
+  alt?: string;
+  label?: string;
+  aspectRatio: string;
+  /** Design applies a warm sepia/desaturate filter to real photos, not placeholder boxes. */
+  filtered?: boolean;
+  eager?: boolean;
+}
+
+const { src, alt = "", label, aspectRatio, filtered = true, eager = false } = Astro.props;
+---
+
+<figure class="plate" style={`aspect-ratio:${aspectRatio}`}>
+  {
+    src ? (
+      <img
+        src={src}
+        alt={alt}
+        class:list={["plate__img", { "plate__img--filtered": filtered }]}
+        loading={eager ? "eager" : "lazy"}
+      />
+    ) : (
+      <div class="plate__placeholder" role="img" aria-label={label}>
+        <span>{label}</span>
+      </div>
+    )
+  }
+</figure>
+
+<style>
+  .plate {
+    margin: 0;
+    padding: 6px;
+    background: var(--bg-alt);
+    outline: 1px solid var(--rule);
+    width: 100%;
+  }
+
+  .plate__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .plate__img--filtered {
+    filter: sepia(0.22) saturate(0.82) contrast(1.05);
+  }
+
+  .plate__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: repeating-linear-gradient(
+      135deg,
+      rgba(43, 31, 22, 0.05),
+      rgba(43, 31, 22, 0.05) 10px,
+      transparent 10px,
+      transparent 20px
+    );
+  }
+
+  .plate__placeholder span {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    padding: 16px;
+    max-width: 220px;
+  }
+</style>

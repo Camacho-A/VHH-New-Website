@@ -1,0 +1,74 @@
+---
+export interface Props {
+  quote: string;
+  name: string;
+  role: string;
+  size?: "md" | "lg";
+}
+
+const { quote, name, role, size = "md" } = Astro.props;
+---
+
+<figure class="quote" class:list={[`quote--${size}`]}>
+  <span class="quote__mark" aria-hidden="true">&ldquo;</span>
+  <blockquote class="quote__text">{quote}</blockquote>
+  <figcaption>
+    <p class="quote__name">{name}</p>
+    <p class="quote__role">{role}</p>
+  </figcaption>
+</figure>
+
+<style>
+  .quote {
+    margin: 0;
+  }
+
+  .quote__mark {
+    display: block;
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--accent-deep);
+    line-height: 0.6;
+    margin-bottom: 10px;
+  }
+
+  .quote--md .quote__mark {
+    font-size: 70px;
+  }
+
+  .quote--lg .quote__mark {
+    font-size: 80px;
+    margin-bottom: 8px;
+  }
+
+  .quote__text {
+    margin: 0 0 20px;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .quote--md .quote__text {
+    font-size: clamp(19px, 2.1vw, 24px);
+    line-height: 1.5;
+  }
+
+  .quote--lg .quote__text {
+    font-size: clamp(21px, 2.4vw, 28px);
+    line-height: 1.45;
+    margin-bottom: 22px;
+  }
+
+  .quote__name {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .quote__role {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+</style>

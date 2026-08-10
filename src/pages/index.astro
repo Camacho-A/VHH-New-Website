@@ -1,5 +1,77 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ImagePlate from "../components/ImagePlate.astro";
+import Quote from "../components/Quote.astro";
+
+const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+
+const PILLARS = [
+  {
+    numeral: "I",
+    title: "Business Consulting & Strategy",
+    desc: "We help you figure out what comes next: audits, growth planning, offer and pricing strategy, and the roadmap to scale with intention.",
+    href: "/services#pillar-consulting",
+  },
+  {
+    numeral: "II",
+    title: "Brand & Digital Presence",
+    desc: "A brand and website that reflect where your business is headed, with strategy-led design, copy, and SEO built to attract the right clients.",
+    href: "/services#pillar-brand",
+    concierge: true,
+  },
+  {
+    numeral: "III",
+    title: "Operations & Business Systems",
+    desc: "We don't just manage tasks. We build systems that help your business run with efficiency and confidence.",
+    href: "/services#pillar-operations",
+  },
+  {
+    numeral: "IV",
+    title: "Ongoing Business Support",
+    desc: "Dedicated Virtual Operations Specialists who go beyond administrative support. We become an extension of your business.",
+    href: "/services#pillar-support",
+  },
+];
+
+const PROCESS_STEPS = [
+  {
+    num: "01",
+    title: "Discover",
+    desc: "We learn your business, challenges, and goals.",
+    icon: '<circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>',
+  },
+  {
+    num: "02",
+    title: "Strategize",
+    desc: "We identify opportunities and create the roadmap.",
+    icon: '<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle>',
+  },
+  {
+    num: "03",
+    title: "Build",
+    desc: "We implement the websites, systems, branding, or processes needed.",
+    icon: '<path d="M20 7h-9"></path><path d="M14 17H5"></path><circle cx="17" cy="17" r="3"></circle><circle cx="7" cy="7" r="3"></circle>',
+  },
+  {
+    num: "04",
+    title: "Support",
+    desc: "We stay involved through ongoing operations, optimization, and growth.",
+    icon: '<circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="4"></circle><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"></line><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"></line><line x1="14.83" y1="9.17" x2="18.36" y2="5.64"></line><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"></line>',
+  },
+];
+
+const CLIENT_LOGOS = [
+  { src: "/images/client-nonprofit.png", alt: "Non-Profit Organization" },
+  { src: "/images/client-bbb.png", alt: "BBB Accredited Business" },
+  { src: "/images/client-pcc.png", alt: "ICF PCC Professional Certified Coach" },
+  { src: "/images/client-author.png", alt: "Bestselling Author" },
+];
+
+const CREDENTIAL_BADGES = [
+  { src: "/images/badge-wix-partner.png", alt: "Wix Partner, Icon level" },
+  { src: "/images/badge-influential-women.png", alt: "Influential Women Verified" },
+  { src: "/images/badge-alignable.png", alt: "Highly Recommended by Locals on Alignable" },
+];
 ---
 
 <BaseLayout
@@ -7,22 +79,754 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   title="The Virtual Helping Hand | Business Growth Partner"
   description="Strategy, digital presence, systems, and ongoing support for entrepreneurs building stronger businesses."
 >
-  <section id="top" class="placeholder">
-    <p>Homepage content — build order step 4.</p>
-    <p>Shared shell (nav, footer, design tokens) is wired up; this page's real sections come next.</p>
+  <!-- ============ HERO ============ -->
+  <section id="top" class="hero">
+    <div class="hero__grid">
+      <div class="hero__copy">
+        <p class="kicker kicker--rule">Strategy · Systems · Growth</p>
+        <h1 class="hero__title">Build a Business That Works as Hard as You Do.</h1>
+        <p class="hero__lede">
+          From strategy and systems to websites, branding, and ongoing operational support, we help
+          entrepreneurs simplify the moving parts and grow with confidence and ease.
+        </p>
+        <div class="hero__ctas">
+          <a href={CTA_HREF} class="btn">Schedule a Consultation</a>
+          <a href="#pillars" class="btn btn--secondary">Explore How We Help</a>
+        </div>
+      </div>
+      <div class="hero__photo">
+        <ImagePlate
+          src="https://static.wixstatic.com/media/11062b_8350791e22e746f088fba7e630d167ce~mv2.jpeg"
+          alt="Entrepreneur at work"
+          aspectRatio="3/4"
+          eager
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRUST / POSITIONING STRIP ============ -->
+  <section class="band trust">
+    <div class="trust__inner">
+      <p class="trust__statement">
+        Let us handle the moving parts so you can focus on what matters most, growing your business.
+      </p>
+      <div class="trust__badges">
+        <span class="trust__badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          Military Spouse &amp; Mom Owned
+        </span>
+        <span class="trust__badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          Wix Partner &middot; Icon Level
+        </span>
+        <span class="trust__badge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          Free 30-Minute Consultation
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOUR PILLARS ============ -->
+  <section id="pillars" class="section">
+    <h2 class="section-title">how we can assist you, today</h2>
+    <p class="section-lede" style="margin-top:8px;">
+      Four ways we support your business. Read straight through, or jump to what you need most.
+    </p>
+    <div class="pillars">
+      {
+        PILLARS.map((p) => (
+          <div class="pillar-row">
+            <span class="pillar-row__numeral">{p.numeral}</span>
+            <h3 class="pillar-row__title">{p.title}</h3>
+            <div class="pillar-row__body">
+              <p class="pillar-row__desc">{p.desc}</p>
+              {p.concierge && (
+                <a href="#concierge" class="pillar-row__concierge">
+                  <span>Subscription</span>Content Concierge
+                </a>
+              )}
+            </div>
+            <a href={p.href} class="pillar-row__link">
+              Learn More
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ============ EDITORIAL: NOT ANOTHER TO-DO LIST ============ -->
+  <section class="band editorial">
+    <div class="editorial__inner">
+      <h2 class="editorial__title">
+        you don't need more on your plate.<br />you need the right strategy and support.
+      </h2>
+      <p class="editorial__body">
+        Most business owners know something isn't working. They just aren't sure if the fix is better
+        systems, stronger messaging, a new website, better delegation, or a clearer growth strategy. We
+        help you turn that chaos into clarity first, then we help you build it.
+      </p>
+      <a href={CTA_HREF} class="btn">Let's Figure Out What's Next</a>
+    </div>
+  </section>
+
+  <!-- ============ HOW WE WORK ============ -->
+  <section class="section">
+    <h2 class="section-title" style="margin-bottom:44px;">how we work</h2>
+    <div class="process">
+      {
+        PROCESS_STEPS.map((s) => (
+          <div class="process__step">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#b68235"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="process__icon"
+              set:html={s.icon}
+            />
+            <p class="process__num">{s.num}</p>
+            <h3 class="process__title">{s.title}</h3>
+            <p class="process__desc">{s.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ============ CONSULTING FEATURE ============ -->
+  <section id="consulting" class="feature">
+    <div class="feature__photo feature__photo--first">
+      <ImagePlate
+        src="https://static.wixstatic.com/media/11062b_8660787ae9634b12a7d8841ea99d7561~mv2.jpg"
+        alt="Strategy session"
+        aspectRatio="4/5"
+      />
+    </div>
+    <div class="feature__copy">
+      <p class="kicker">Business Consulting &amp; Strategy</p>
+      <h2 class="feature__title">not sure what your business needs next?</h2>
+      <p class="feature__desc">
+        Let's figure out what's actually holding you back. Strategy calls, business audits, and growth
+        planning to bring structure, clarity, and balance to where your business is headed next.
+      </p>
+      <a href="/business-consulting" class="btn btn--sm">Explore Business Consulting</a>
+      <p class="feature__note">Book the <strong>BEE Consultation</strong> for business coaching.</p>
+    </div>
+  </section>
+
+  <!-- ============ DIGITAL / WEBSITE FEATURE ============ -->
+  <section class="feature">
+    <div class="feature__copy">
+      <p class="kicker">Brand &amp; Digital Presence</p>
+      <h2 class="feature__title">websites built around business goals.</h2>
+      <p class="feature__desc">
+        As a Wix Partner at the Icon level, we build modern, responsive websites including Wix Studio and
+        headless Wix development, led by strategy first and design second. Not just pretty. Built to
+        convert.
+      </p>
+      <div class="feature__chips">
+        <span class="chip">Wix Studio</span>
+        <span class="chip">Wix Headless</span>
+        <span class="chip">Branding &amp; SEO</span>
+        <span class="chip">Copywriting</span>
+      </div>
+      <a href="/services#pillar-brand" class="btn btn--sm">Explore Website &amp; Digital Services</a>
+      <p class="feature__note">
+        Book the <strong>Logo and Web Design</strong> or <strong>Branding &amp; Rebranding</strong> consultation.
+      </p>
+    </div>
+    <div class="feature__photo">
+      <ImagePlate label="Website mockup on laptop, editorial styling" aspectRatio="4/5" filtered={false} />
+    </div>
+  </section>
+
+  <!-- ============ CONTENT CONCIERGE ============ -->
+  <section id="concierge" class="section section--tight">
+    <div class="concierge">
+      <div>
+        <div class="concierge__badges">
+          <span class="concierge__sub">Subscription</span>
+          <p class="kicker" style="margin:0;">Within Brand &amp; Digital Presence</p>
+        </div>
+        <h2 class="feature__title" style="margin-bottom:20px;">Content Concierge</h2>
+        <p class="concierge__desc">
+          Receive 20 social media posts, captions, and hashtags designed for your business each month. We
+          create, and you post! A steady presence without the monthly scramble, and without hiring a full
+          social team.
+        </p>
+        <div class="feature__chips" style="margin-bottom:30px;">
+          <span class="chip">20 posts monthly</span>
+          <span class="chip">Captions written for you</span>
+          <span class="chip">Researched hashtags</span>
+          <span class="chip">Cancel anytime</span>
+        </div>
+        <a href={CTA_HREF} class="btn btn--sm">
+          Subscribe to Content Concierge
+        </a>
+        <p class="feature__note">
+          Want it managed for you instead? <a href="/services#social">See social media management packages</a>.
+        </p>
+      </div>
+      <ImagePlate label="Social content grid / phone mockup" aspectRatio="1/1" filtered={false} />
+    </div>
+  </section>
+
+  <!-- ============ OPERATIONS FEATURE ============ -->
+  <section class="feature">
+    <div class="feature__photo feature__photo--first">
+      <ImagePlate
+        src="https://static.wixstatic.com/media/11062b_06acfdf9a26e4d37b95b86a0337f27fb~mv2.jpeg"
+        alt="Workflow and systems"
+        aspectRatio="4/5"
+      />
+    </div>
+    <div class="feature__copy">
+      <p class="kicker">Operations &amp; Business Systems</p>
+      <h2 class="feature__title">your business shouldn't depend on you remembering everything.</h2>
+      <p class="feature__desc">
+        Workflow optimization, SOPs, CRM setup, and automation that simplify the moving parts, so your
+        business runs smoothly with or without you in the room.
+      </p>
+      <a href="/services" class="btn btn--sm">Explore Operations &amp; Systems</a>
+      <p class="feature__note">Book the <strong>Virtual Operations Specialist</strong> consultation.</p>
+    </div>
+  </section>
+
+  <!-- ============ TESTIMONIALS ============ -->
+  <section class="band testimonial">
+    <h2 class="section-title" style="max-width:1360px; margin:0 auto 52px;">kind words from our clients</h2>
+    <div class="testimonial__inner">
+      <Quote
+        size="lg"
+        quote="The women of The Virtual Helping Hand are not just assistants. They're the heartbeat of my business. My productivity has skyrocketed in ways I never imagined possible."
+        name="Miraque H."
+        role="Miracle Recruiting, Fractional HR"
+      />
+    </div>
+  </section>
+
+  <!-- ============ CLIENT / INDUSTRY EXPERIENCE ============ -->
+  <section id="portfolio" class="section">
+    <h2 class="section-title" style="margin-bottom:44px;">had the honor of working with</h2>
+    <div class="logo-row">
+      {CLIENT_LOGOS.map((l) => <img src={l.src} alt={l.alt} class="logo-row__img" />)}
+    </div>
+  </section>
+
+  <!-- ============ TRUSTED & RECOGNIZED BY ============ -->
+  <section class="band credentials">
+    <h2 class="section-title" style="margin-bottom:12px;">trusted &amp; recognized by</h2>
+    <p class="section-lede" style="max-width:760px; margin-bottom:44px;">
+      The certifications, partnerships, and communities that stand behind our work. Every badge here
+      represents a standard we chose to be measured against, and a network of business owners who know how
+      we operate.
+    </p>
+    <div class="logo-row">
+      {CREDENTIAL_BADGES.map((b) => <img src={b.src} alt={b.alt} class="logo-row__img logo-row__img--badge" />)}
+    </div>
+  </section>
+
+  <!-- ============ FREE RESOURCE ============ -->
+  <section id="resources" class="band resource">
+    <div class="resource__card">
+      <ImagePlate label="Guide cover mockup" aspectRatio="4/3" filtered={false} />
+      <div>
+        <p class="kicker" style="margin-bottom:14px;">Free Resource</p>
+        <h2 class="resource__title">The Ultimate Hiring Bundle</h2>
+        <p class="resource__desc">
+          Find the right support for your business, for free. Templates and guidance for hiring your
+          first, or next, virtual team member.
+        </p>
+        <a href="https://www.thevirtualhelpinghand.com/ultimatehiringbundle" class="btn btn--sm">
+          Get Your Guide
+        </a>
+        <p class="feature__note" style="margin-top:18px;">
+          Looking for templates you can use today? <a href="/shop">Browse the shop</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="contact" class="final-cta">
+    <h2 class="final-cta__title">ready to build a stronger business?</h2>
+    <p class="final-cta__body">
+      Are you ready to hit the ground running? Whether you need strategy, systems, a stronger digital
+      presence, or someone to help implement it all, let's discuss how we can assist you and your
+      business.
+    </p>
+    <a href={CTA_HREF} class="btn btn--lg">Schedule Your FREE Consultation</a>
+    <p class="final-cta__note">
+      Four consultations to choose from: business coaching, virtual operations, branding &amp; rebranding,
+      or logo &amp; web design.
+    </p>
   </section>
 </BaseLayout>
 
 <style>
-  .placeholder {
+  .section {
     max-width: var(--content-max);
     margin: 0 auto;
     padding: var(--section-pad-y) var(--section-pad-x);
-    font-size: 15px;
-    color: var(--text-muted);
+  }
+
+  .section--tight {
+    padding-top: clamp(24px, 3vw, 40px);
+    padding-bottom: clamp(48px, 6vw, 80px);
+  }
+
+  .band {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: var(--section-pad-y) var(--section-pad-x);
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(48px, 7vw, 90px) 32px 0;
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: clamp(24px, 4vw, 56px);
+  }
+
+  .hero__copy {
+    padding-top: 8px;
+  }
+
+  .hero__copy .kicker--rule {
+    margin-bottom: 28px;
+  }
+
+  .hero__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(3rem, 5.6vw, 5rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    max-width: 17ch;
+    margin-bottom: 30px;
+  }
+
+  .hero__lede {
+    font-size: clamp(17px, 1.6vw, 19px);
+    line-height: 1.7;
+    color: rgba(43, 31, 22, 0.72);
+    max-width: 500px;
+    margin-bottom: 36px;
+    text-wrap: pretty;
+  }
+
+  .hero__ctas {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-height: 40vh;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .hero__photo {
+    margin: 56px 0 -30px;
+    align-self: start;
+  }
+
+  /* ---- Trust strip ---- */
+  .trust {
+    background: var(--bg-alt);
+  }
+
+  .trust__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  .trust__statement {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 500;
+    font-size: clamp(19px, 2.2vw, 26px);
+    line-height: 1.4;
+    max-width: 640px;
+  }
+
+  .trust__badges {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .trust__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--accent);
+    color: var(--accent-deep);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: var(--radius-chip);
+  }
+
+  /* ---- Pillars ---- */
+  .pillars {
+    border-top: 1px solid var(--rule);
+  }
+
+  .pillar-row {
+    display: grid;
+    grid-template-columns: 88px 1.1fr 1.6fr auto;
+    align-items: start;
+    gap: 28px;
+    padding: 34px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .pillar-row__numeral {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 52px;
+    color: var(--accent-deep);
+    line-height: 0.9;
+  }
+
+  .pillar-row__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 23px;
+    line-height: 1.3;
+    align-self: center;
+  }
+
+  .pillar-row__body {
+    align-self: center;
+  }
+
+  .pillar-row__desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: rgba(43, 31, 22, 0.72);
+    text-align: justify;
+  }
+
+  .pillar-row__concierge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 9px;
+    border: 1px solid rgba(182, 130, 53, 0.5);
+    border-radius: var(--radius-chip);
+    padding: 7px 12px;
+    color: var(--accent-deep);
+    margin-top: 14px;
+  }
+
+  .pillar-row__concierge:hover {
+    background: var(--accent-tint);
+  }
+
+  .pillar-row__concierge span {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  .pillar-row__link {
+    font-size: 13px;
+    color: var(--accent-deep);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  @media (max-width: 780px) {
+    .pillar-row {
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 26px 0;
+    }
+    .pillar-row__numeral {
+      font-size: 34px;
+    }
+  }
+
+  /* ---- Editorial band ---- */
+  .editorial {
+    background: var(--bg-alt);
+  }
+
+  .editorial__inner {
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .editorial__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4.2vw, 3.4rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 28px;
+  }
+
+  .editorial__body {
+    font-size: 17px;
+    line-height: 1.75;
+    color: rgba(43, 31, 22, 0.72);
+    max-width: 640px;
+    margin: 0 auto 36px;
+    text-align: justify;
+  }
+
+  /* ---- How we work ---- */
+  .process {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 28px;
+  }
+
+  .process__step {
+    padding-left: 24px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .process__icon {
+    margin-bottom: 14px;
+  }
+
+  .process__num {
+    font-family: var(--font-body);
+    font-variant-numeric: tabular-nums;
+    font-size: 14px;
+    color: var(--accent-deep);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+
+  .process__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 21px;
+    margin-bottom: 10px;
+  }
+
+  .process__desc {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: rgba(43, 31, 22, 0.72);
+  }
+
+  /* ---- Feature (image + copy) blocks ---- */
+  .feature {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(48px, 6vw, 80px) var(--section-pad-x);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+  }
+
+  .feature__photo--first {
+    order: 1;
+  }
+
+  .feature__copy {
+    order: 2;
+  }
+
+  .feature .kicker {
+    margin-bottom: 16px;
+  }
+
+  .feature__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+  }
+
+  .feature__desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(43, 31, 22, 0.72);
+    margin-bottom: 22px;
+  }
+
+  .feature__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+
+  .feature__note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-top: 14px;
+  }
+
+  /* ---- Content Concierge ---- */
+  .concierge {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: clamp(28px, 4vw, 52px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+
+  .concierge__badges {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .concierge__sub {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    border: 1px solid rgba(182, 130, 53, 0.5);
+    border-radius: var(--radius-chip);
+    padding: 5px 10px;
+  }
+
+  .concierge__desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: rgba(43, 31, 22, 0.72);
+    text-align: justify;
+    max-width: 520px;
+    margin-bottom: 26px;
+  }
+
+  /* ---- Testimonial band ---- */
+  .testimonial {
+    background: var(--bg-alt);
+  }
+
+  .testimonial__inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ---- Logo rows ---- */
+  .logo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(20px, 3vw, 40px);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-row__img {
+    width: 150px;
+    height: 130px;
+    object-fit: contain;
+  }
+
+  .logo-row__img--badge {
+    width: 130px;
+  }
+
+  .credentials {
+    background: var(--bg);
+  }
+
+  /* ---- Free resource ---- */
+  .resource__card {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    padding: clamp(28px, 4vw, 48px);
+    border-radius: var(--radius-card);
+  }
+
+  .resource__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.7rem, 2.8vw, 2.2rem);
+    line-height: 1.25;
+    margin-bottom: 16px;
+  }
+
+  .resource__desc {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+    text-wrap: pretty;
+  }
+
+  /* ---- Final CTA ---- */
+  .final-cta {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: clamp(72px, 10vw, 130px) var(--section-pad-x);
+    text-align: center;
+  }
+
+  .final-cta__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 4.4vw, 3.6rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+  }
+
+  .final-cta__body {
+    font-size: 17px;
+    line-height: 1.75;
+    color: rgba(43, 31, 22, 0.72);
+    max-width: 600px;
+    margin: 0 auto 36px;
+    text-align: justify;
+  }
+
+  .final-cta__note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 18px auto 0;
+    max-width: 560px;
   }
 </style>
