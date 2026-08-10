@@ -64,13 +64,16 @@ const SOCIAL_LINKS = [
           structure, adaptability, and trust to every project.
         </p>
       </div>
-      <ImagePlate
-        src="/images/about-logo.png"
-        alt="The Virtual Helping Hand logo"
-        aspectRatio="1/1"
-        filtered={false}
-        imgBorder="10px solid #fff"
-      />
+      <div class="origin__photo">
+        <ImagePlate
+          src="/images/about-logo.png"
+          alt="The Virtual Helping Hand logo"
+          aspectRatio="1/1"
+          filtered={false}
+          imgBorder="4px solid #F9F4EA"
+          bare
+        />
+      </div>
     </div>
   </section>
 
@@ -102,12 +105,14 @@ const SOCIAL_LINKS = [
         The founder behind the team that becomes an extension of your business.
       </p>
       <div class="team__grid">
-        <ImagePlate
-          src="/images/danielle-headshot.png"
-          alt="Danielle McDougald, CEO & Founder"
-          aspectRatio="784/1050"
-          bare
-        />
+        <div class="team__photo">
+          <ImagePlate
+            src="/images/danielle-headshot.png"
+            alt="Danielle McDougald, CEO & Founder"
+            aspectRatio="784/1050"
+            bare
+          />
+        </div>
         <div>
           <p class="kicker" style="margin-bottom:10px;">CEO &amp; Founder</p>
           <h3 class="team__name">Danielle McDougald</h3>
@@ -325,6 +330,11 @@ const SOCIAL_LINKS = [
     align-items: center;
   }
 
+  .origin__photo {
+    max-width: 520px;
+    width: 100%;
+  }
+
   .origin__body {
     font-size: 16.5px;
     line-height: 1.8;
@@ -406,13 +416,21 @@ const SOCIAL_LINKS = [
 
   .team__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: 1fr; /* mobile: stacked, photo full width above text */
     gap: clamp(28px, 4vw, 48px);
     align-items: start;
   }
 
-  .team__grid > :first-child {
-    max-width: 360px;
+  @media (min-width: 700px) {
+    .team__grid {
+      /* Photo column sized to its own content (capped at 360px) instead of an equal 1fr
+         share — an equal-share column left extra empty space to the photo's right
+         before the grid gap even started, reading as an oversized gap to the text. */
+      grid-template-columns: minmax(240px, 360px) 1fr;
+    }
+  }
+
+  .team__photo {
     width: 100%;
   }
 
