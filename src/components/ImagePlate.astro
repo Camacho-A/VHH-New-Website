@@ -13,9 +13,14 @@ export interface Props {
   /** Design applies a warm sepia/desaturate filter to real photos, not placeholder boxes. */
   filtered?: boolean;
   eager?: boolean;
+  /** "cover" fills the plate (crops to the aspect ratio); "contain" shows the whole photo,
+   * scaled to fit, letterboxed with the plate's own background. Default "cover" matches
+   * the design's fixed aspect-ratio plates; use "contain" when a source photo's native
+   * aspect ratio doesn't match the slot and cropping cuts off part of the subject. */
+  fit?: "cover" | "contain";
 }
 
-const { src, alt = "", label, aspectRatio, filtered = true, eager = false } = Astro.props;
+const { src, alt = "", label, aspectRatio, filtered = true, eager = false, fit = "cover" } = Astro.props;
 ---
 
 <figure class="plate" style={`aspect-ratio:${aspectRatio}`}>
@@ -24,7 +29,7 @@ const { src, alt = "", label, aspectRatio, filtered = true, eager = false } = As
       <img
         src={src}
         alt={alt}
-        class:list={["plate__img", { "plate__img--filtered": filtered }]}
+        class:list={["plate__img", { "plate__img--filtered": filtered, "plate__img--contain": fit === "contain" }]}
         loading={eager ? "eager" : "lazy"}
       />
     ) : (
@@ -48,6 +53,11 @@ const { src, alt = "", label, aspectRatio, filtered = true, eager = false } = As
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .plate__img--contain {
+    object-fit: contain;
+    background: var(--bg-alt);
   }
 
   .plate__img--filtered {
