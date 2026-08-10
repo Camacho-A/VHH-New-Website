@@ -65,7 +65,7 @@ Current status:
 - [x] 3. Build the shared shell — nav, footer, design tokens as CSS custom properties
 - [x] 4. Static pages first: Homepage, About, Business Consulting
 - [~] 5. Wire the contact form (`@wix/forms`) — code done, **blocked on a missing Wix form**, see below
-- [ ] 6. Wire Blog (`@wix/blog`) and Shop (`@wix/stores`)
+- [x] 6. Wire Blog (`@wix/blog`) and Shop (`@wix/stores`)
 - [ ] 7. Create CMS collections; wire Services, testimonials, logos, credentials
 - [ ] 8. Deploy to Wix hosting with the Wix CLI
 - [ ] 9. Add production URLs to Wix redirect settings, then repoint the domain last
