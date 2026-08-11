@@ -14,11 +14,16 @@
     "wix:forms": "node --env-file=.env scripts/list-wix-forms.mjs"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
     "@wix/blog": "^1.0.630",
     "@wix/data": "^1.0.504",
     "@wix/forms": "^1.0.486",
     "@wix/sdk": "^1.21.14",
     "@wix/stores": "^1.0.856",
-    "astro": "^7.2.0"
+    "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "@wix/astro": "^2.67.0",
+    "@wix/cli": "^1.1.235"
   }
 }

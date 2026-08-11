@@ -7,11 +7,34 @@ export interface Props {
   title: string;
   description: string;
   currentPage?: "home" | "about" | "services" | "business-consulting" | "shop" | "blog";
+  /** Defaults to the VHH logo mark. Pass a page-specific 1200x630 image once one exists —
+   * no such asset exists yet, so every page currently shares this square logo as a
+   * social-preview fallback rather than shipping with no og:image at all. */
+  ogImage?: string;
 }
 
-const { title, description, currentPage = "home" } = Astro.props;
+const { title, description, currentPage = "home", ogImage = "/images/about-logo.png" } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(ogImage, Astro.site);
+
+// Organization schema uses only real, verifiable data (name, url, logo, social profiles).
+// README also asks for LocalBusiness schema, which needs a real address/phone — neither
+// exists anywhere in the design source or handoff README, and fabricating one would be
+// actively harmful (misleading structured data). Add it once Danielle provides that.
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "The Virtual Helping Hand",
+  url: "https://www.thevirtualhelpinghand.com",
+  logo: new URL("/images/about-logo.png", Astro.site).toString(),
+  description: "Strategy, systems, and support for entrepreneurs building stronger businesses.",
+  sameAs: [
+    "https://www.instagram.com/virtualhelpingh",
+    "https://www.linkedin.com/company/the-virtual-helping-hand/",
+    "https://www.facebook.com/profile.php?id=100091746784096",
+  ],
+};
 ---
 
 <!doctype html>
@@ -31,6 +54,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
