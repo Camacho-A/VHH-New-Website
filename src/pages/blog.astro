@@ -1,7 +1,12 @@
 ---
-// Wired to @wix/blog (build order step 6) — fetched at build time (top-level await runs
-// during `astro build` for this static site), not client-fetched, so crawlers see full
-// HTML per README § SEO ("Blog posts must be statically generated, not client-fetched").
+// Wired to @wix/blog (build order step 6) — fetched via top-level await, which under this
+// site's `output: 'server'` runs server-side on each request (not client-fetched), so
+// crawlers still see full HTML per README § SEO ("Blog posts must be statically generated,
+// not client-fetched"). No `prerender` override here — see astro.config.mjs / README §
+// "Deployment routing": prerendered pages upload as static index.html and only match Wix's
+// static-asset layer by exact literal path, breaking clean URLs like /blog. SSR fixes
+// routing while still returning full real HTML, just generated per-request instead of at
+// build time.
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ImagePlate from "../components/ImagePlate.astro";

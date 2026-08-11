@@ -5,7 +5,10 @@
 //    marks active, even on the homepage itself.
 //  - "Services" is further special: a hover dropdown (pillars + Content Concierge + All
 //    Services) only on the homepage; a plain active "#top" link on the Services page
-//    itself; a plain link to "/#pillars" everywhere else.
+//    itself; a plain link to "/services" everywhere else. (The design source used
+//    "/#pillars" — a link to the homepage's own pillars teaser section — for "everywhere
+//    else," but that stranded visitors on the homepage instead of the actual Services page
+//    when navigating from About/Business Consulting/Shop/Blog. Deliberately deviated here.)
 //  - Nav item list follows the README's "Global Components > Navigation" spec, which
 //    (unlike the design source) doesn't include "Contact" — kept the nav uniform across
 //    pages rather than carrying over the source's inconsistent per-page inclusion of it.
@@ -27,7 +30,7 @@ const shopHref = linkTo("shop", "/shop");
 const blogHref = linkTo("blog", "/blog");
 
 const servicesHref =
-  currentPage === "home" ? "/services" : currentPage === "services" ? "#top" : "/#pillars";
+  currentPage === "home" ? "/services" : currentPage === "services" ? "#top" : "/services";
 const servicesActive = currentPage === "services";
 
 const PILLARS = [

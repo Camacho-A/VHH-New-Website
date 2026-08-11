@@ -1,4 +1,10 @@
 ---
+// Server-rendered per request (site-wide `output: 'server'`, no `prerender` override) —
+// see astro.config.mjs / README § "Deployment routing": prerendered pages upload as static
+// index.html and only match Wix's static-asset layer by exact literal path, so clean URLs
+// like /business-consulting 404. SSR still returns full real HTML in the initial response,
+// just generated at request time instead of pre-built at deploy time.
+
 // Note: the README's page-by-page summary describes three consulting offers
 // (Strategy Session / Business Growth Intensive / Ongoing Consulting) plus separate
 // "process" and "FAQ" sections. The design source (Business Consulting.dc.html) — the

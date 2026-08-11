@@ -26,9 +26,12 @@ type FieldTargets = { name?: string; email?: string; message?: string };
 let client: ReturnType<typeof createClient> | null = null;
 
 function getClient() {
-  const clientId = import.meta.env.PUBLIC_WIX_CLIENT_ID;
+  // PUBLIC_WIX_DATA_CLIENT_ID, not PUBLIC_WIX_CLIENT_ID — see src/lib/wixClient.ts for
+  // why: avoids colliding with the Wix-managed hosting adapter's own reserved
+  // WIX_CLIENT_ID (a different site's client, auto-generated in .env.local).
+  const clientId = import.meta.env.PUBLIC_WIX_DATA_CLIENT_ID;
   if (!clientId) {
-    throw new WixFormConfigError("PUBLIC_WIX_CLIENT_ID is not set (see .env.example)");
+    throw new WixFormConfigError("PUBLIC_WIX_DATA_CLIENT_ID is not set (see .env.example)");
   }
   if (!client) {
     client = createClient({

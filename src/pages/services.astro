@@ -1,4 +1,10 @@
 ---
+// Server-rendered per request (site-wide `output: 'server'`, no `prerender` override) —
+// see astro.config.mjs / README § "Deployment routing": prerendered pages upload as static
+// index.html and only match Wix's static-asset layer by exact literal path, so clean URLs
+// like /services 404. SSR still returns full real HTML in the initial response, just
+// generated at request time instead of pre-built at deploy time.
+
 // Real content per README § Content Status ("Real: all service names and prices, VOS
 // package tiers") — hardcoded here from design-source/Services.dc.html's data, same
 // treatment as Business Consulting's pricing. CMS wiring (so Danielle can edit these

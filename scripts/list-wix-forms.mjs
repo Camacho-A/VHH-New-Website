@@ -7,9 +7,11 @@
 import { createClient, OAuthStrategy } from "@wix/sdk";
 import { forms } from "@wix/forms";
 
-const clientId = process.env.WIX_CLIENT_ID;
+// WIX_DATA_CLIENT_ID, not WIX_CLIENT_ID — the Wix-managed hosting adapter (build order
+// step 8) reserves that name for the new hosting project's own client in .env.local.
+const clientId = process.env.WIX_DATA_CLIENT_ID;
 if (!clientId) {
-  console.error("✗ WIX_CLIENT_ID is not set. Run with: node --env-file=.env scripts/list-wix-forms.mjs");
+  console.error("✗ WIX_DATA_CLIENT_ID is not set. Run with: node --env-file=.env scripts/list-wix-forms.mjs");
   process.exit(1);
 }
 

@@ -1,6 +1,12 @@
 ---
-// Statically generated at build time (getStaticPaths), one page per real Wix Blog post —
-// per README § SEO: "Blog posts must be statically generated, not client-fetched."
+// Server-rendered per request (site-wide `output: 'server'`, no `prerender` override) —
+// see astro.config.mjs / README § "Deployment routing" for why: Wix hosting only resolves
+// clean URLs (no trailing slash, no .html) for routes the Cloudflare Worker actually
+// handles per-request. Prerendered pages get uploaded as static index.html files and only
+// match Wix's static-asset layer via the exact literal path, so /blog/some-slug 404s.
+// SSR still returns full real HTML in the initial response (nothing client-fetched) — it's
+// generated at request time instead of pre-built at deploy time, which satisfies the same
+// README § SEO crawlability concern this page originally used getStaticPaths for.
 //
 // No design mockup exists for a post detail page (design-source only specs the Blog
 // listing). Built plainly with the site's established tokens/typography rather than
@@ -12,21 +18,21 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import ImagePlate from "../../components/ImagePlate.astro";
 import { getWixClient, wixImageUrl, formatPostDate } from "../../lib/wixClient";
 
-export async function getStaticPaths() {
-  const wixClient = getWixClient();
-  const { items: allPosts } = await wixClient.posts.queryPosts().find();
+const { slug } = Astro.params;
+const wixClient = getWixClient();
 
-  return Promise.all(
-    allPosts.map(async (summary) => {
-      const { post } = await wixClient.posts.getPostBySlug(summary.slug!, {
-        fieldsets: ["CONTENT_TEXT"],
-      });
-      return { params: { slug: summary.slug }, props: { post } };
-    })
-  );
+let post;
+try {
+  ({ post } = await wixClient.posts.getPostBySlug(slug!, {
+    fieldsets: ["CONTENT_TEXT"],
+  }));
+} catch {
+  post = null;
 }
 
-const { post } = Astro.props;
+if (!post) {
+  return Astro.redirect("/blog", 302);
+}
 const paragraphs = (post.contentText ?? "").split(/\n{2,}/).filter(Boolean);
 const coverUrl = wixImageUrl(post.media?.wixMedia?.image);
 const meta = [formatPostDate(post.firstPublishedDate), post.minutesToRead ? `${post.minutesToRead} min read` : null]

@@ -16,7 +16,9 @@ const { currentPage = "home" } = Astro.props;
 const linkTo = (key: Props["currentPage"], path: string) => (currentPage === key ? "#top" : path);
 
 const aboutHref = linkTo("about", "/about");
-const servicesHref = currentPage === "home" ? "#pillars" : linkTo("services", "/#pillars");
+// Same fix as Header.astro's servicesHref: on any page other than Home/Services, this must
+// go to the actual /services page, not the homepage's #pillars teaser section.
+const servicesHref = currentPage === "home" ? "#pillars" : linkTo("services", "/services");
 const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
 const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
 const shopHref = linkTo("shop", "/shop");

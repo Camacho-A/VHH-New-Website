@@ -2,6 +2,10 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+import react from '@astrojs/react';
+import wix from '@wix/astro';
+import wixHostingAdapter from '@wix/astro-wix-hosting-adapter';
+
 // https://astro.build/config
 export default defineConfig({
   // Used to build canonical/OG URLs and sitemap.xml. This is the eventual production
@@ -9,7 +13,7 @@ export default defineConfig({
   // this setting doesn't affect where the site is hosted during development.
   site: 'https://www.thevirtualhelpinghand.com',
 
-  integrations: [sitemap()],
+  integrations: [sitemap(), react(), wix()],
 
   // README § SEO: "301 redirect every URL that changes." Mapped the two explicitly
   // named legacy URLs to their closest equivalent on the new site. Astro emits these as
@@ -27,4 +31,12 @@ export default defineConfig({
     // Was its own page (client logos etc.); folded into a homepage section in the redesign.
     '/portfolio': '/#portfolio',
   },
+
+  adapter: wixHostingAdapter(),
+
+  image: {
+    domains: ['static.wixstatic.com'],
+  },
+
+  output: 'server',
 });

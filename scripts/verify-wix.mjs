@@ -10,11 +10,13 @@ import { createClient, OAuthStrategy } from "@wix/sdk";
 import { posts } from "@wix/blog";
 import { products } from "@wix/stores";
 
-const clientId = process.env.WIX_CLIENT_ID;
+// WIX_DATA_CLIENT_ID, not WIX_CLIENT_ID — the Wix-managed hosting adapter (build order
+// step 8) reserves that name for the new hosting project's own client in .env.local.
+const clientId = process.env.WIX_DATA_CLIENT_ID;
 
 if (!clientId) {
   console.error(
-    "✗ WIX_CLIENT_ID is not set. Add it to .env (see .env.example) and re-run with:\n" +
+    "✗ WIX_DATA_CLIENT_ID is not set. Add it to .env (see .env.example) and re-run with:\n" +
       "  node --env-file=.env scripts/verify-wix.mjs"
   );
   process.exit(1);
@@ -27,7 +29,7 @@ const wixClient = createClient({
 
 let failed = false;
 
-console.log(`Using WIX_CLIENT_ID: ${clientId.slice(0, 8)}…`);
+console.log(`Using WIX_DATA_CLIENT_ID: ${clientId.slice(0, 8)}…`);
 
 console.log("\n— Fetching a blog post (@wix/blog) —");
 try {

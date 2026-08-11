@@ -1,4 +1,10 @@
 ---
+// Server-rendered per request (site-wide `output: 'server'`, no `prerender` override) —
+// see astro.config.mjs / README § "Deployment routing": prerendered pages upload as static
+// index.html and only match Wix's static-asset layer by exact literal path, so clean URLs
+// like /about 404. SSR still returns full real HTML in the initial response, just
+// generated at request time instead of pre-built at deploy time.
+
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ImagePlate from "../components/ImagePlate.astro";
 import Quote from "../components/Quote.astro";

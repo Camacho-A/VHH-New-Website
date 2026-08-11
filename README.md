@@ -18,7 +18,7 @@ build order this project follows.
 
 ```sh
 npm install
-cp .env.example .env   # then fill in WIX_CLIENT_ID (see below)
+cp .env.example .env   # then fill in WIX_DATA_CLIENT_ID (see below)
 npm run dev             # http://localhost:4321
 ```
 
@@ -26,7 +26,7 @@ npm run dev             # http://localhost:4321
 
 | Var | Value |
 |---|---|
-| `WIX_CLIENT_ID` | The headless client ID issued on the client's existing Wix site. Never hardcode or commit it — it lives only in `.env` (git-ignored). |
+| `WIX_DATA_CLIENT_ID` / `PUBLIC_WIX_DATA_CLIENT_ID` | The headless client ID issued on the client's **existing** Wix site (real blog/products/forms) — used by `src/lib/wixClient.ts` and `src/lib/wixForms.ts` to fetch/submit against that site. Never hardcode or commit it — it lives only in `.env` (git-ignored). **Deliberately not named `WIX_CLIENT_ID`**: the Wix-managed hosting adapter (build order step 8) generates its own reserved `WIX_CLIENT_ID` in `.env.local` for the *new* hosting project it provisions, and Vite loads `.env.local` with higher precedence than `.env` — a shared name silently points all our data-fetching code at the wrong (new, empty) site instead of the real one. Keep these distinct. |
 
 Wix OAuth redirect settings already configured for local dev:
 - Allowed redirect domain: `http://localhost:3000`

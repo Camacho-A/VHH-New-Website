@@ -6,12 +6,17 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
+    "dev": "wix dev",
+    "build": "wix build",
+    "preview": "wix preview",
     "astro": "astro",
     "verify:wix": "node --env-file=.env scripts/verify-wix.mjs",
-    "wix:forms": "node --env-file=.env scripts/list-wix-forms.mjs"
+    "wix:forms": "node --env-file=.env scripts/list-wix-forms.mjs",
+    "wix": "wix",
+    "release": "wix release",
+    "generate": "wix generate",
+    "env": "wix env",
+    "skills": "wix skills"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
@@ -20,10 +25,18 @@
     "@wix/forms": "^1.0.486",
     "@wix/sdk": "^1.21.14",
     "@wix/stores": "^1.0.856",
-    "astro": "^5.18.2"
+    "astro": "^5.18.2",
+    "@wix/essentials": "^0.1.23",
+    "@wix/dashboard": "^1.3.43"
   },
   "devDependencies": {
     "@wix/astro": "^2.67.0",
-    "@wix/cli": "^1.1.235"
+    "@wix/cli": "^1.1.235",
+    "@astrojs/react": "^4.3.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@wix/astro-wix-hosting-adapter": "^2.0.0"
   }
 }
