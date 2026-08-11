@@ -76,7 +76,17 @@ const CLIENT_LOGOS = [
 const CREDENTIAL_BADGES = [
   { src: "/images/badge-wix-partner.png", alt: "Wix Partner, Icon level" },
   { src: "/images/badge-influential-women.png", alt: "Influential Women Verified" },
-  { src: "/images/badge-alignable.png", alt: "Highly Recommended by Locals on Alignable" },
+  {
+    src: "/images/badge-alignable.png",
+    alt: "Highly Recommended by Locals on Alignable",
+    // This badge's source PNG is a wide 1309x992 canvas (the ribbon flares out past the
+    // circle on both sides) vs. the other two badges' tight squares — at the shared
+    // 130x130 box, object-fit:contain letterboxes it down to ~99px tall to preserve its
+    // aspect ratio, making the circle look noticeably smaller. Widening its box to match
+    // its own aspect ratio (130 * 1309/992) instead renders the circle at the full 130px
+    // height, same as the others, without stretching the image.
+    wide: true,
+  },
 ];
 ---
 
@@ -344,7 +354,16 @@ const CREDENTIAL_BADGES = [
       we operate.
     </p>
     <div class="logo-row">
-      {CREDENTIAL_BADGES.map((b) => <img src={b.src} alt={b.alt} class="logo-row__img logo-row__img--badge" />)}
+      {
+        CREDENTIAL_BADGES.map((b) => (
+          <img
+            src={b.src}
+            alt={b.alt}
+            class="logo-row__img logo-row__img--badge"
+            class:list={{ "logo-row__img--badge-wide": b.wide }}
+          />
+        ))
+      }
     </div>
   </section>
 
@@ -766,6 +785,14 @@ const CREDENTIAL_BADGES = [
 
   .logo-row__img--badge {
     width: 130px;
+  }
+
+  /* badge-alignable.png's source is a wide 1309x992 canvas (ribbon flares past the
+     circle) vs. the other badges' tight squares — widen its box to match its own aspect
+     ratio (130 * 1309/992) so the circle renders at the same 130px height as the others,
+     instead of being letterboxed down. See CREDENTIAL_BADGES' `wide` comment above. */
+  .logo-row__img--badge-wide {
+    width: 172px;
   }
 
   .credentials {
