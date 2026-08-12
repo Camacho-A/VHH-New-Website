@@ -393,7 +393,7 @@ const FILTER_CHIPS = [
   </section>
 
   <!-- ============ SOCIAL MEDIA PACKAGES ============ -->
-  <section id="social" class="section">
+  <section id="social" class="section section--pad-top">
     <h2 class="section-title2" style="margin-bottom:10px;">social media management packages</h2>
     <p class="section-lede2" style="max-width:580px;">
       For businesses that want the posting handled, not just planned. We create, and you approve!
@@ -628,6 +628,15 @@ const FILTER_CHIPS = [
 
   .section--tight {
     padding-bottom: clamp(32px, 4vw, 48px);
+  }
+
+  /* .section normally has no top padding — it relies on whatever precedes it (usually
+     another .section's own bottom padding) for spacing. That breaks right after a .band
+     (border-bottom + bg-alt fill right up to the edge): the following section's heading
+     sits flush against that border with no breathing room. Used where a .section follows
+     a .band. */
+  .section--pad-top {
+    padding-top: clamp(56px, 7vw, 96px);
   }
 
   .section-title2 {

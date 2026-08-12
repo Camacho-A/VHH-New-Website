@@ -188,7 +188,7 @@ const productSchema = {
         PRODUCTS.map((p) => (
           <article id={p.anchor} class="product-card" data-product-category={p.category}>
             <div class="product-card__photo-wrap">
-              <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} />
+              <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} fit="contain" />
               {p.ribbon && <span class="product-card__ribbon">{p.ribbon}</span>}
             </div>
             <div class="product-card__body">
