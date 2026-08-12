@@ -5,10 +5,18 @@
 // like /shop 404. SSR still returns full real HTML in the initial response, just generated
 // at request time instead of pre-built at deploy time.
 
-// Wired to @wix/stores (build order step 6) — fetched at build time, same static-first
-// approach as blog.astro. JSON-LD Product schema (README: "Keep the JSON-LD product
-// schema on Shop — it's there so products can rank individually") is now built
-// server-side from real data instead of injected by client JS.
+// Rebuilt against the updated design_handoff_vhh_website/design-source/Shop.dc.html: a real
+// storefront (category filter chips, cart drawer, Wix eCommerce checkout) instead of product
+// rows linking out to the existing site's own product pages. Wired to @wix/stores (product
+// data, unchanged from before) + @wix/ecom (cart/checkout, new — src/lib/wixCart.ts). The
+// product JSON-LD schema and per-product slug anchors from the previous build are preserved.
+//
+// Category chips and Add-to-Cart/qty/checkout are client-side (src/lib/wixCart.ts uses the
+// browser-safe PUBLIC_WIX_DATA_CLIENT_ID, same as src/lib/wixForms.ts) — the cart is
+// per-visitor and lives server-side on Wix, so it can't be read at request-render time the
+// way products can. All products render server-side regardless of category so filtering is
+// just a client-side show/hide, not a refetch: full product content stays in the page's
+// initial HTML for crawlers even when a filter chip is later clicked.
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ImagePlate from "../components/ImagePlate.astro";
@@ -17,32 +25,30 @@ import { getWixClient } from "../lib/wixClient";
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 
 // Not a Wix Stores product — a free lead magnet that links out to its own opt-in page,
-// same as the design source and README § Shop treat it.
+// same as the design source and README § Shop treat it. Excluded from cart/checkout
+// entirely (design: free item = external link button, not "Add to Cart").
 const ULTIMATE_HIRING_BUNDLE = {
+  id: "ultimate-hiring-bundle-lead-magnet", // not a real Stores product id — never sent to the cart
   anchor: "ultimate-hiring-bundle",
-  kicker: "Free Resource",
+  category: "Free Resources",
+  ribbon: "Free",
   name: "The Ultimate Hiring Bundle",
   price: "Free",
   amount: null as number | null,
-  cta: "Get Your Guide",
+  compareAtPrice: null as string | null,
+  isFree: true,
+  cta: "Get Your Free Copy",
   desc: "Find the right support for your business. Templates and guidance for hiring your first, or next, virtual team member.",
-  includes: ["Role and task templates", "Guidance on what to delegate first", "No cost"],
   href: "https://www.thevirtualhelpinghand.com/ultimatehiringbundle",
   image: undefined as string | undefined,
   imageLabel: "Guide cover mockup",
 };
 
-// "Includes" bullets and CTA copy are editorial, not exposed by the Stores API — kept as
-// written for the redesign, keyed by the real product slug.
-const PRODUCT_COPY: Record<string, { includes: string[]; cta: string }> = {
-  "vhh-email-template-vault": {
-    includes: ["Editable templates you can reuse", "Written in a warm, professional voice", "Instant download"],
-    cta: "Buy the Email Template Vault",
-  },
-  "vhh-content-vault": {
-    includes: ["Prompts you can post as written", "Built for service-based businesses", "Instant download"],
-    cta: "Buy the Content Vault",
-  },
+// Category + "includes"-style editorial copy isn't exposed by the Stores API — kept as
+// written for the redesign, keyed by the real product slug, same treatment as before.
+const PRODUCT_COPY: Record<string, { category: string }> = {
+  "vhh-email-template-vault": { category: "Templates" },
+  "vhh-content-vault": { category: "Templates" },
 };
 
 const wixClient = getWixClient();
@@ -51,17 +57,23 @@ const { items } = await wixClient.products.queryProducts().find();
 const stripHtml = (html: string | null | undefined) => (html ?? "").replace(/<[^>]+>/g, "").trim();
 
 const realProducts = items
-  .map((p) => {
+  .map((p: (typeof items)[number]) => {
     const copy = PRODUCT_COPY[p.slug ?? ""];
+    const price = p.priceData?.price ?? null;
+    const discounted = p.priceData?.discountedPrice ?? null;
+    const hasCompare = discounted != null && price != null && discounted < price;
     return {
+      id: p._id!,
       anchor: p.slug ?? p._id!,
-      kicker: "Digital Product",
+      category: copy?.category ?? "Templates",
+      ribbon: null as string | null,
       name: p.name ?? "",
-      price: p.priceData?.formatted?.price ?? "",
-      amount: p.priceData?.price ?? null,
-      cta: copy?.cta ?? `Buy ${p.name}`,
+      price: hasCompare ? p.priceData?.formatted?.discountedPrice ?? "" : p.priceData?.formatted?.price ?? "",
+      amount: hasCompare ? discounted : price,
+      compareAtPrice: hasCompare ? p.priceData?.formatted?.price ?? null : null,
+      isFree: false,
+      cta: "Add to Cart",
       desc: stripHtml(p.description),
-      includes: copy?.includes ?? [],
       href: p.productPageUrl ? `${p.productPageUrl.base}${p.productPageUrl.path}` : "#",
       image: p.media?.mainMedia?.image?.url,
       imageLabel: `${p.name} cover`,
@@ -69,9 +81,16 @@ const realProducts = items
   })
   // Match the design's intended order (email vault, then content vault) regardless of
   // whatever order the API happens to return.
-  .sort((a, b) => Object.keys(PRODUCT_COPY).indexOf(a.anchor) - Object.keys(PRODUCT_COPY).indexOf(b.anchor));
+  .sort(
+    (a: { anchor: string }, b: { anchor: string }) =>
+      Object.keys(PRODUCT_COPY).indexOf(a.anchor) - Object.keys(PRODUCT_COPY).indexOf(b.anchor)
+  );
 
 const PRODUCTS = [ULTIMATE_HIRING_BUNDLE, ...realProducts];
+
+// Chips built from the products actually on the page ("All" + every distinct category
+// present) rather than a hardcoded list — self-updating if a product's category changes.
+const CATEGORIES = ["All", ...Array.from(new Set(PRODUCTS.map((p) => p.category)))];
 
 const productSchema = {
   "@context": "https://schema.org",
@@ -105,6 +124,30 @@ const productSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 
+  <!-- ============ CART DRAWER ============ -->
+  <div class="cart-drawer" data-cart-drawer hidden>
+    <div class="cart-drawer__backdrop" data-cart-close></div>
+    <aside class="cart-drawer__panel" role="dialog" aria-label="Your cart">
+      <div class="cart-drawer__head">
+        <h2 class="cart-drawer__title">Your Cart</h2>
+        <button type="button" class="cart-drawer__close" data-cart-close aria-label="Close cart">✕</button>
+      </div>
+
+      <p class="cart-drawer__empty" data-cart-empty>Your cart is empty. Browse the templates and tools below.</p>
+
+      <div class="cart-drawer__body" data-cart-body hidden>
+        <div class="cart-lines" data-cart-lines></div>
+        <div class="cart-drawer__subtotal">
+          <p class="cart-drawer__subtotal-label">Subtotal</p>
+          <p class="cart-drawer__subtotal-amount" data-cart-subtotal>$0.00</p>
+        </div>
+        <button type="button" class="btn cart-drawer__checkout" data-cart-checkout>Checkout</button>
+        <p class="cart-drawer__error" data-cart-error hidden></p>
+        <p class="cart-drawer__note">Secure checkout handled by Wix. Digital files download immediately after purchase.</p>
+      </div>
+    </aside>
+  </div>
+
   <!-- ============ HERO ============ -->
   <section id="top" class="hero">
     <p class="kicker kicker--rule" style="margin-bottom:26px;">Shop</p>
@@ -115,33 +158,69 @@ const productSchema = {
     </p>
   </section>
 
-  <!-- ============ PRODUCTS ============ -->
+  <!-- ============ FILTER BAR ============ -->
+  <section class="filter-section">
+    <div class="filter-bar">
+      <div class="filter-bar__chips" data-category-chips>
+        {
+          CATEGORIES.map((c, i) => (
+            <button
+              type="button"
+              class="chip filter-chip"
+              class:list={{ "filter-chip--active": i === 0 }}
+              data-category-chip={c}
+            >
+              {c}
+            </button>
+          ))
+        }
+      </div>
+      <p class="filter-bar__count" data-result-label>
+        {PRODUCTS.length} {PRODUCTS.length === 1 ? "product" : "products"}
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCT GRID ============ -->
   <section class="section">
-    {
-      PRODUCTS.map((p) => (
-        <article id={p.anchor} class="product">
-          <div class="product__photo">
-            <ImagePlate src={p.image} alt={p.name} aspectRatio="4/5" label={p.imageLabel} />
-          </div>
-          <div>
-            <p class="kicker" style="margin-bottom:12px;">
-              {p.kicker}
-            </p>
-            <h2 class="product__name">{p.name}</h2>
-            <p class="product__price">{p.price}</p>
-            <p class="product__desc">{p.desc}</p>
-            <div class="product__includes">
-              {p.includes.map((f) => (
-                <p class="product__include">{f}</p>
-              ))}
+    <div class="product-grid">
+      {
+        PRODUCTS.map((p) => (
+          <article id={p.anchor} class="product-card" data-product-category={p.category}>
+            <div class="product-card__photo-wrap">
+              <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} />
+              {p.ribbon && <span class="product-card__ribbon">{p.ribbon}</span>}
             </div>
-            <a href={p.href} class="btn btn--sm">
-              {p.cta}
-            </a>
-          </div>
-        </article>
-      ))
-    }
+            <div class="product-card__body">
+              <p class="kicker" style="margin-bottom:10px;">
+                {p.category}
+              </p>
+              <h2 class="product-card__name">{p.name}</h2>
+              <p class="product-card__desc">{p.desc}</p>
+              <div class="product-card__price-row">
+                <p class="product-card__price">{p.price}</p>
+                {p.compareAtPrice && <p class="product-card__compare">{p.compareAtPrice}</p>}
+              </div>
+              {p.isFree ? (
+                <a href={p.href} target="_blank" rel="noopener" class="btn btn--sm product-card__cta">
+                  {p.cta}
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  class="btn btn--sm product-card__cta"
+                  data-add-to-cart
+                  data-product-id={p.id}
+                  data-product-name={p.name}
+                >
+                  {p.cta}
+                </button>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
   </section>
 
   <!-- ============ CTA ============ -->
@@ -155,11 +234,142 @@ const productSchema = {
   </section>
 </BaseLayout>
 
+<script>
+  import { getCart, addToCart, setLineQuantity, getCheckoutUrl, type CartSummary } from "../lib/wixCart";
+
+  const drawer = document.querySelector<HTMLElement>("[data-cart-drawer]");
+  const emptyMsg = document.querySelector<HTMLElement>("[data-cart-empty]");
+  const body = document.querySelector<HTMLElement>("[data-cart-body]");
+  const linesEl = document.querySelector<HTMLElement>("[data-cart-lines]");
+  const subtotalEl = document.querySelector<HTMLElement>("[data-cart-subtotal]");
+  const checkoutBtn = document.querySelector<HTMLButtonElement>("[data-cart-checkout]");
+  const errorEl = document.querySelector<HTMLElement>("[data-cart-error]");
+  const countEls = document.querySelectorAll<HTMLElement>("[data-cart-count]");
+  const cartToggles = document.querySelectorAll<HTMLElement>("[data-cart-toggle]");
+  const cartCloses = document.querySelectorAll<HTMLElement>("[data-cart-close]");
+
+  function setDrawerOpen(open: boolean) {
+    if (drawer) drawer.hidden = !open;
+  }
+
+  function renderCart(cart: CartSummary) {
+    countEls.forEach((el) => (el.textContent = String(cart.count)));
+
+    if (!emptyMsg || !body || !linesEl || !subtotalEl) return;
+
+    if (cart.lines.length === 0) {
+      emptyMsg.hidden = false;
+      body.hidden = true;
+      return;
+    }
+    emptyMsg.hidden = true;
+    body.hidden = false;
+    subtotalEl.textContent = cart.subtotal;
+
+    linesEl.innerHTML = "";
+    for (const line of cart.lines) {
+      const row = document.createElement("div");
+      row.className = "cart-line";
+      row.innerHTML = `
+        <div class="cart-line__info">
+          <p class="cart-line__name"></p>
+          <p class="cart-line__total"></p>
+        </div>
+        <div class="cart-line__qty">
+          <button type="button" class="cart-line__step" data-dec aria-label="Decrease quantity">−</button>
+          <span class="cart-line__qty-value"></span>
+          <button type="button" class="cart-line__step" data-inc aria-label="Increase quantity">+</button>
+        </div>
+      `;
+      row.querySelector(".cart-line__name")!.textContent = line.name;
+      row.querySelector(".cart-line__total")!.textContent = line.lineTotal;
+      row.querySelector(".cart-line__qty-value")!.textContent = String(line.quantity);
+      row.querySelector<HTMLButtonElement>("[data-dec]")!.addEventListener("click", async () => {
+        renderCart(await setLineQuantity(line.lineItemId, line.quantity - 1));
+      });
+      row.querySelector<HTMLButtonElement>("[data-inc]")!.addEventListener("click", async () => {
+        renderCart(await setLineQuantity(line.lineItemId, line.quantity + 1));
+      });
+      linesEl.appendChild(row);
+    }
+  }
+
+  cartToggles.forEach((btn) =>
+    btn.addEventListener("click", () => setDrawerOpen(drawer?.hidden !== false))
+  );
+  cartCloses.forEach((btn) => btn.addEventListener("click", () => setDrawerOpen(false)));
+
+  document.querySelectorAll<HTMLButtonElement>("[data-add-to-cart]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const productId = btn.dataset.productId;
+      if (!productId) return;
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      try {
+        const cart = await addToCart(productId, 1);
+        renderCart(cart);
+        setDrawerOpen(true);
+        btn.textContent = "Added ✓";
+      } catch (err) {
+        console.error("Add to cart failed:", err);
+        btn.textContent = originalLabel;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", async () => {
+      if (errorEl) errorEl.hidden = true;
+      checkoutBtn.disabled = true;
+      const originalLabel = checkoutBtn.textContent;
+      checkoutBtn.textContent = "Redirecting…";
+      try {
+        window.location.href = await getCheckoutUrl();
+      } catch (err) {
+        console.error("Checkout failed:", err);
+        if (errorEl) {
+          errorEl.textContent = "Something went wrong starting checkout. Please try again.";
+          errorEl.hidden = false;
+        }
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = originalLabel;
+      }
+    });
+  }
+
+  // Category filter chips — pure client-side show/hide of the already-rendered grid
+  // (see the frontmatter comment: every product's full content is in the initial HTML
+  // regardless of category, so this never needs to refetch).
+  const chips = document.querySelectorAll<HTMLButtonElement>("[data-category-chip]");
+  const cards = document.querySelectorAll<HTMLElement>("[data-product-category]");
+  const resultLabel = document.querySelector<HTMLElement>("[data-result-label]");
+
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const category = chip.dataset.categoryChip!;
+      chips.forEach((c) => c.classList.toggle("filter-chip--active", c === chip));
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const visible = category === "All" || card.dataset.productCategory === category;
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+      if (resultLabel) resultLabel.textContent = `${visibleCount} ${visibleCount === 1 ? "product" : "products"}`;
+    });
+  });
+
+  // Initial cart state on page load (a returning visitor may already have items in it).
+  getCart().then(renderCart);
+</script>
+
 <style>
   .hero {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: clamp(48px, 7vw, 90px) var(--section-pad-x) clamp(32px, 4vw, 48px);
+    padding: clamp(48px, 7vw, 90px) var(--section-pad-x) clamp(28px, 3vw, 40px);
   }
 
   .hero__title {
@@ -169,6 +379,7 @@ const productSchema = {
     line-height: 1.08;
     letter-spacing: -0.01em;
     margin-bottom: 28px;
+    max-width: 820px;
   }
 
   .hero__lede {
@@ -179,63 +390,138 @@ const productSchema = {
     text-wrap: pretty;
   }
 
+  /* ---- Filter bar ---- */
+  .filter-section {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: 0 var(--section-pad-x);
+  }
+
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 16px 0;
+  }
+
+  .filter-bar__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .filter-chip {
+    cursor: pointer;
+    background: transparent;
+    font-family: var(--font-body);
+  }
+
+  .filter-chip--active {
+    border-color: var(--accent);
+    background: var(--accent-tint-strong);
+    color: var(--accent-deep);
+  }
+
+  .filter-bar__count {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---- Product grid ---- */
   .section {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: 0 var(--section-pad-x) clamp(48px, 6vw, 80px);
+    padding: clamp(32px, 4vw, 48px) var(--section-pad-x) clamp(56px, 7vw, 90px);
   }
 
-  .product {
+  .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: clamp(28px, 4vw, 56px);
-    align-items: center;
-    padding: clamp(36px, 5vw, 56px) 0;
-    border-bottom: 1px solid var(--rule);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: clamp(24px, 3vw, 36px);
   }
 
-  .product__photo {
-    max-width: 420px;
-    width: 100%;
-  }
-
-  .product__name {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: clamp(1.7rem, 3vw, 2.3rem);
-    line-height: 1.2;
-    margin-bottom: 14px;
-  }
-
-  .product__price {
-    font-family: var(--font-body);
-    font-variant-numeric: tabular-nums;
-    font-size: 26px;
-    margin-bottom: 20px;
-  }
-
-  .product__desc {
-    font-size: 16px;
-    line-height: 1.75;
-    color: var(--text-body);
-    max-width: 520px;
-    margin-bottom: 22px;
-    text-wrap: pretty;
-  }
-
-  .product__includes {
+  .product-card {
     display: flex;
     flex-direction: column;
-    gap: 9px;
-    margin-bottom: 28px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    overflow: hidden;
   }
 
-  .product__include {
+  .product-card[hidden] {
+    display: none;
+  }
+
+  .product-card__photo-wrap {
+    position: relative;
+  }
+
+  .product-card__ribbon {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--bg);
+    border: 1px solid var(--accent);
+    color: var(--accent-deep);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: var(--radius-chip);
+  }
+
+  .product-card__body {
+    padding: 22px 22px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .product-card__name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .product-card__desc {
     font-size: 14.5px;
-    line-height: 1.55;
+    line-height: 1.7;
     color: var(--text-body);
-    padding-left: 15px;
-    border-left: 1px solid rgba(182, 130, 53, 0.5);
+    margin-bottom: 18px;
+    flex: 1;
+  }
+
+  .product-card__price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .product-card__price {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .product-card__compare {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-decoration: line-through;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .product-card__cta {
+    width: 100%;
+    text-align: center;
   }
 
   /* ---- CTA ---- */
@@ -267,5 +553,165 @@ const productSchema = {
     max-width: 600px;
     margin: 0 auto 36px;
     text-wrap: pretty;
+  }
+
+  /* ---- Cart drawer ---- */
+  .cart-drawer[hidden] {
+    display: none;
+  }
+
+  .cart-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .cart-drawer__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(43, 31, 22, 0.4);
+  }
+
+  .cart-drawer__panel {
+    position: relative;
+    width: min(100%, 420px);
+    background: var(--bg);
+    border-left: 1px solid var(--rule);
+    padding: 28px var(--section-pad-x);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .cart-drawer__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .cart-drawer__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+  }
+
+  .cart-drawer__close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: var(--text);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .cart-drawer__empty {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .cart-lines {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--rule);
+  }
+
+  .cart-line {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cart-line__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cart-line__name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .cart-line__total {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cart-line__qty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cart-line__step {
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(43, 31, 22, 0.3);
+    background: transparent;
+    color: var(--accent-deep);
+    border-radius: var(--radius-chip);
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .cart-line__step:hover {
+    background: var(--accent-tint-strong);
+  }
+
+  .cart-line__qty-value {
+    font-size: 14.5px;
+    min-width: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cart-drawer__subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0 24px;
+  }
+
+  .cart-drawer__subtotal-label {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  .cart-drawer__subtotal-amount {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cart-drawer__checkout {
+    width: 100%;
+  }
+
+  .cart-drawer__error {
+    font-size: 13px;
+    color: var(--accent-deep);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  .cart-drawer__note {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-top: 14px;
+    text-align: center;
   }
 </style>

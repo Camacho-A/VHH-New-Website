@@ -10,15 +10,27 @@
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ImagePlate from "../components/ImagePlate.astro";
-import { getWixClient, wixImageUrl, formatPostDate } from "../lib/wixClient";
+import { getWixClient, getCategoryLabels, wixImageUrl, formatPostDate } from "../lib/wixClient";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 
 const wixClient = getWixClient();
-const { items: allPosts } = await wixClient.posts.queryPosts().descending("firstPublishedDate").find();
+const [{ items: allPosts }, categoryLabels] = await Promise.all([
+  wixClient.posts.queryPosts().descending("firstPublishedDate").find(),
+  getCategoryLabels(),
+]);
+
+const categoryOf = (post: (typeof allPosts)[number]) =>
+  categoryLabels.get(post.categoryIds?.[0] ?? "") ?? "";
 
 const [featured, ...rest] = allPosts;
-const gridPosts = rest.slice(0, 6);
+// The updated design-source/Blog.dc.html caps this at a 6-card grid with a "See all
+// posts" link out to an archive/pagination view — but the live site currently has only a
+// handful of real posts, so a 6-cap would either show fewer posts than exist (with a "see
+// all" link that has nowhere real to go, since no archive/pagination route exists yet) or
+// exactly hide nothing while still showing a pointless link. Showing every remaining post
+// is more useful today; revisit with real pagination once post count grows past a page.
+const gridPosts = rest;
 ---
 
 <BaseLayout
@@ -75,7 +87,7 @@ const gridPosts = rest.slice(0, 6);
     {
       gridPosts.length > 0 ? (
         <div class="post-grid">
-          {gridPosts.map((post) => (
+          {gridPosts.map((post: (typeof gridPosts)[number]) => (
             <a href={`/blog/${post.slug}`} class="post-card">
               <ImagePlate
                 src={wixImageUrl(post.media?.wixMedia?.image)}
@@ -83,6 +95,7 @@ const gridPosts = rest.slice(0, 6);
                 aspectRatio="3/2"
                 label="Post image"
               />
+              {categoryOf(post) && <p class="post-card__category">{categoryOf(post)}</p>}
               <h3 class="post-card__title">{post.title}</h3>
               <p class="post-card__excerpt">{post.excerpt}</p>
               <p class="post-card__meta">
@@ -219,6 +232,13 @@ const gridPosts = rest.slice(0, 6);
   .post-card:hover {
     background: rgba(182, 130, 53, 0.07);
     color: var(--text);
+  }
+
+  .post-card__category {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
   }
 
   .post-card__title {

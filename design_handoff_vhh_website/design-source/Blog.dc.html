@@ -79,7 +79,7 @@
         <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.7rem,3vw,2.3rem); margin:0 0 16px; line-height:1.2;">{{ featured.title }}</h2>
         <p style="font-size:16px; line-height:1.75; color:rgba(43,31,22,0.78); margin:0 0 22px; max-width:520px; text-wrap:pretty;">{{ featured.excerpt }}</p>
         <p style="font-size:13px; color:rgba(43,31,22,0.75); margin:0 0 24px;">{{ featured.meta }}</p>
-        <a href="{{ blogUrl }}" style="border:1px solid #b68235; color:#6b4423; padding:14px 28px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15.5px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Read the Post</a>
+        <a href="{{ postHref }}" style="border:1px solid #b68235; color:#6b4423; padding:14px 28px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:15.5px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Read the Post</a>
       </div>
     </article>
   </section>
@@ -88,11 +88,11 @@
   <section style="max-width:1360px; margin:0 auto; padding:0 clamp(20px,4vw,32px) clamp(56px,7vw,90px);">
     <div style="display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:32px;">
       <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.7rem,3vw,2.2rem); margin:0; letter-spacing:-0.01em;">latest posts</h2>
-      <a href="{{ blogUrl }}" style="font-size:14px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px;" style-focus="outline:2px solid #b68235; outline-offset:2px;">See all posts</a>
+      <a href="{{ postHref }}" style="font-size:14px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px;" style-focus="outline:2px solid #b68235; outline-offset:2px;">See all posts</a>
     </div>
     <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr)); gap:0; border-top:1px solid rgba(43,31,22,0.16); border-left:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16);">
       <sc-for list="{{ posts }}" as="p" hint-placeholder-count="6">
-        <a href="{{ blogUrl }}" style="border-right:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); padding:26px 24px; display:flex; flex-direction:column; gap:14px; color:#2b1f16;" style-hover="background:rgba(182,130,53,0.07);" style-focus="outline:2px solid #b68235; outline-offset:-2px;">
+        <a href="{{ postHref }}" style="border-right:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); padding:26px 24px; display:flex; flex-direction:column; gap:14px; color:#2b1f16;" style-hover="background:rgba(182,130,53,0.07);" style-focus="outline:2px solid #b68235; outline-offset:-2px;">
           <figure style="margin:0; padding:5px; background:#efe6d3; outline:1px solid rgba(43,31,22,0.16);">
             <image-slot id="{{ p.slotId }}" shape="rect" style="width:100%;height:100%;aspect-ratio:3/2;" placeholder="{{ p.placeholder }}"></image-slot>
           </figure>
@@ -103,7 +103,6 @@
         </a>
       </sc-for>
     </div>
-    <p style="margin:26px 0 0; font-size:13.5px; color:rgba(43,31,22,0.75); font-style:italic;">Posts are managed in Wix Blog. Replace these placeholders with the Wix Blog feed when this page is built.</p>
   </section>
 
   <!-- ============ CTA ============ -->
@@ -179,23 +178,21 @@ class Component extends DCLogic {
   renderVals() {
     // Placeholder cards — the live page pulls these from Wix Blog.
     const posts = [
-      { slotId: 'blog-1', category: 'Operations', title: 'Post title goes here', excerpt: 'A short excerpt from the post, pulled automatically from Wix Blog.', meta: 'Date · Read time', placeholder: 'Post image' },
-      { slotId: 'blog-2', category: 'Delegation', title: 'Post title goes here', excerpt: 'A short excerpt from the post, pulled automatically from Wix Blog.', meta: 'Date · Read time', placeholder: 'Post image' },
-      { slotId: 'blog-3', category: 'Systems', title: 'Post title goes here', excerpt: 'A short excerpt from the post, pulled automatically from Wix Blog.', meta: 'Date · Read time', placeholder: 'Post image' },
-      { slotId: 'blog-4', category: 'Branding', title: 'Post title goes here', excerpt: 'A short excerpt from the post, pulled automatically from Wix Blog.', meta: 'Date · Read time', placeholder: 'Post image' },
-      { slotId: 'blog-5', category: 'Growth', title: 'Post title goes here', excerpt: 'A short excerpt from the post, pulled automatically from Wix Blog.', meta: 'Date · Read time', placeholder: 'Post image' },
-      { slotId: 'blog-6', category: 'Behind the Scenes', title: 'Post title goes here', excerpt: 'A short excerpt from the post, pulled automatically from Wix Blog.', meta: 'Date · Read time', placeholder: 'Post image' },
+      { slotId: 'blog-1', category: 'Virtual Assistant Insights', title: "From Virtual Assistant to Virtual Operations Specialist", excerpt: 'Why we’re rebranding, and what the distinction between a VA and a VOS actually means for your business.', meta: 'Nov 12, 2025 · 2 min read', placeholder: 'Post image' },
+      { slotId: 'blog-2', category: 'Marketing Strategies', title: "Marketing Tips for Stay-at-Home Moms Running Their Own Business", excerpt: '', meta: 'Read on the blog', placeholder: 'Post image' },
+      { slotId: 'blog-3', category: 'Virtual Assistant Services', title: "What Administrative Tasks Can a Virtual Assistant Handle?", excerpt: '', meta: 'Read on the blog', placeholder: 'Post image' },
+      { slotId: 'blog-4', category: 'Small Business Tips', title: "3 Tips for Small Businesses to Effectively Market Themselves", excerpt: '', meta: 'Read on the blog', placeholder: 'Post image' },
     ];
     return {
       isMobile: this.state.isMobile,
       menuOpen: this.state.menuOpen,
       menuIcon: this.state.menuOpen ? '✕' : '☰',
       toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
-      blogUrl: 'https://www.thevirtualhelpinghand.com/blog',
+      postHref: 'Blog Post.dc.html',
       featured: {
-        title: 'Featured post title from Wix Blog',
-        excerpt: 'The most recent or pinned post appears here, with its excerpt pulled from Wix Blog.',
-        meta: 'Date · Read time',
+        title: "From Virtual Assistant to Virtual Operations Specialist: What’s the Difference?",
+        excerpt: 'As the world of online business continues to evolve, so do the roles that keep it running smoothly. As our clients have grown and our services expanded, we realized something important: we’re not just Virtual Assistants anymore.',
+        meta: 'Nov 12, 2025 · 2 min read',
       },
       posts,
     };

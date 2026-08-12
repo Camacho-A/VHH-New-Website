@@ -10,7 +10,7 @@
 // client at the wrong (empty) site instead of the real one.
 
 import { createClient, OAuthStrategy } from "@wix/sdk";
-import { posts } from "@wix/blog";
+import { posts, categories, tags } from "@wix/blog";
 import { products } from "@wix/stores";
 
 let client: ReturnType<typeof createClient> | null = null;
@@ -24,11 +24,34 @@ export function getWixClient() {
   }
   if (!client) {
     client = createClient({
-      modules: { posts, products },
+      modules: { posts, products, categories, tags },
       auth: OAuthStrategy({ clientId }),
     });
   }
   return client;
+}
+
+// Category/tag label lookups — Wix posts carry categoryIds/tagIds, not names, so the
+// listing and post-detail pages need these to render "Marketing Strategies" instead of an
+// opaque id. Memoized per server process (same lifetime as `client` above): both lists are
+// small and shared across every page in a single build/request, no need to refetch per page.
+let categoryMap: Map<string, string> | null = null;
+let tagMap: Map<string, string> | null = null;
+
+export async function getCategoryLabels(): Promise<Map<string, string>> {
+  if (!categoryMap) {
+    const { categories: items } = await getWixClient().categories.listCategories({ paging: { limit: 100 } });
+    categoryMap = new Map((items ?? []).map((c: (typeof items)[number]) => [c._id!, c.label ?? ""]));
+  }
+  return categoryMap;
+}
+
+export async function getTagLabels(): Promise<Map<string, string>> {
+  if (!tagMap) {
+    const { items } = await getWixClient().tags.queryTags().find();
+    tagMap = new Map((items ?? []).map((t: (typeof items)[number]) => [t._id!, t.label ?? ""]));
+  }
+  return tagMap;
 }
 
 /** Converts a Wix media ref to a real, directly loadable static.wixstatic.com URL.

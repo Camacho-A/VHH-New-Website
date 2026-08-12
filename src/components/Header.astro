@@ -33,6 +33,14 @@ const servicesHref =
   currentPage === "home" ? "/services" : currentPage === "services" ? "#top" : "/services";
 const servicesActive = currentPage === "services";
 
+// Shop.dc.html's nav replaces "Schedule a Consultation" with a Cart trigger (desktop) and
+// adds a cart icon+count next to the hamburger (mobile) — every other page's nav is
+// unchanged. The drawer itself and its open/close/qty/checkout logic live in shop.astro
+// (src/lib/wixCart.ts) since only that page needs them; this button is just a DOM hook
+// (`data-cart-toggle` / `data-cart-count`) that script queries for, same wiring pattern as
+// the mobile nav toggle below.
+const showCart = currentPage === "shop";
+
 const PILLARS = [
   { href: "/services#pillar-consulting", title: "Business Consulting & Strategy" },
   { href: "/services#pillar-brand", title: "Brand & Digital Presence" },
@@ -99,18 +107,47 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
       </a>
     </nav>
 
-    <a href={CTA_HREF} class="nav-cta desktop-only">Schedule a Consultation</a>
+    {
+      showCart ? (
+        <button type="button" class="nav-cart-btn desktop-only" data-cart-toggle aria-label="Open cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="8" cy="21" r="1" />
+            <circle cx="19" cy="21" r="1" />
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+          </svg>
+          Cart (<span data-cart-count>0</span>)
+        </button>
+      ) : (
+        <a href={CTA_HREF} class="nav-cta desktop-only">
+          Schedule a Consultation
+        </a>
+      )
+    }
 
-    <button
-      type="button"
-      class="nav-toggle mobile-only"
-      aria-expanded="false"
-      aria-controls="mobile-panel"
-      aria-label="Toggle menu"
-      data-nav-toggle
-    >
-      <span data-nav-toggle-icon aria-hidden="true">☰</span>
-    </button>
+    <div class="mobile-bar mobile-only">
+      {
+        showCart && (
+          <button type="button" class="nav-cart-icon" data-cart-toggle aria-label="Open cart">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="21" r="1" />
+              <circle cx="19" cy="21" r="1" />
+              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+            </svg>
+            <span data-cart-count>0</span>
+          </button>
+        )
+      }
+      <button
+        type="button"
+        class="nav-toggle"
+        aria-expanded="false"
+        aria-controls="mobile-panel"
+        aria-label="Toggle menu"
+        data-nav-toggle
+      >
+        <span data-nav-toggle-icon aria-hidden="true">☰</span>
+      </button>
+    </div>
   </div>
 
   <div class="mobile-panel" id="mobile-panel" data-mobile-panel hidden>
@@ -135,7 +172,11 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
     <a href={blogHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "blog" }}>
       Blog
     </a>
-    <a href={CTA_HREF} class="mobile-panel__cta">Schedule a Consultation</a>
+    {!showCart && (
+      <a href={CTA_HREF} class="mobile-panel__cta">
+        Schedule a Consultation
+      </a>
+    )}
   </div>
 </header>
 
@@ -314,6 +355,46 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
     height: 1px;
     background: var(--rule);
     margin: 6px 14px;
+  }
+
+  /* ---- Cart trigger (Shop page only) ---- */
+  .nav-cart-btn {
+    align-items: center;
+    gap: 9px;
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent-deep);
+    padding: 11px 20px;
+    border-radius: var(--radius-control);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 14.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .nav-cart-btn:hover {
+    background: var(--accent-tint-strong);
+  }
+
+  .mobile-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .nav-cart-icon {
+    background: none;
+    border: none;
+    color: var(--accent-deep);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
   }
 
   /* ---- Mobile toggle + panel ---- */

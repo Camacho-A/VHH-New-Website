@@ -12,6 +12,7 @@ build order this project follows.
 
 - **Astro** — static-first frontend, deployed to Wix hosting via the Wix CLI
 - **`@wix/sdk`** + `@wix/blog`, `@wix/stores`, `@wix/forms` — talk to the existing Wix site's content
+- **`@wix/ecom`** + `@wix/redirects` — Shop cart and checkout (`src/lib/wixCart.ts`), redirecting to the existing site's own hosted Wix checkout
 - Node **v22.12+** required (see `engines` in `package.json`)
 
 ## Setup
@@ -114,3 +115,14 @@ form. Creating/managing Wix CMS collections requires Danielle's dashboard access
 (`Testimonials`, `CaseStudies`, `Services`, `FAQs`, `ClientLogos`, `Credentials`). Once
 they exist, the pages can be switched from hardcoded arrays to `@wix/data` queries —
 straightforward once the collections and their permissions (public read access) are set.
+
+### ℹ️ Content note: blog posts don't have a category or tags assigned yet
+
+The Blog listing and post pages show a category kicker (e.g. "Marketing Strategies") and,
+on the post page, a "Filed under" tag list — both pulled live from `@wix/blog`'s
+`categories`/`tags` modules, matching real category/tag names already set up in the
+dashboard (all six categories from the design exist there). But none of the site's current
+posts have a category or any tags actually assigned to them yet, so both elements are
+correctly hidden rather than showing something blank. Once Danielle assigns a category
+(and optionally tags) to a post in the Wix Blog editor, it shows up automatically — no
+code change needed.
