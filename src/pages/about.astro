@@ -211,10 +211,12 @@ const SOCIAL_LINKS = [
 </BaseLayout>
 
 <script>
-  // Validate-on-blur + submit states per README § Contact form. Submission itself goes
-  // through src/lib/wixForms.ts (@wix/forms) once PUBLIC_WIX_CONTACT_FORM_ID is set —
-  // until then it falls back to a simulated delay so the visual states stay testable.
-  import { submitContactForm, isContactFormConfigured } from "../lib/wixForms";
+  // Validate-on-blur + submit states per README § Contact form. Submission goes through
+  // src/lib/wixCrm.ts (@wix/crm's submittedContact.appendOrCreateContact) — not
+  // src/lib/wixForms.ts (@wix/forms), which needed a Wix Forms app instance Danielle never
+  // created. The @wix/crm path needs no such app instance, so this form has somewhere real
+  // to submit unconditionally now (no more "PUBLIC_WIX_CONTACT_FORM_ID not set" simulation).
+  import { submitContactFormMessage } from "../lib/wixCrm";
 
   const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
   if (form) {
@@ -256,19 +258,8 @@ const SOCIAL_LINKS = [
       fields.forEach((f) => (f.disabled = true));
 
       try {
-        if (isContactFormConfigured()) {
-          const values = Object.fromEntries(fields.map((f) => [f.dataset.field, f.value]));
-          await submitContactForm({
-            name: values.name ?? "",
-            email: values.email ?? "",
-            message: values.message ?? "",
-          });
-        } else {
-          // No live Wix form wired yet (PUBLIC_WIX_CONTACT_FORM_ID unset) — simulate so
-          // the visual states stay testable in dev.
-          console.warn("[contact form] PUBLIC_WIX_CONTACT_FORM_ID not set — simulating submit.");
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
+        const values = Object.fromEntries(fields.map((f) => [f.dataset.field, f.value]));
+        await submitContactFormMessage(values.name ?? "", values.email ?? "", values.message ?? "");
 
         if (submitBtn) submitBtn.textContent = "Thank You, We'll Be in Touch";
         if (successMsg) successMsg.hidden = false;

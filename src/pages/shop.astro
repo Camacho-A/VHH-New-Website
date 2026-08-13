@@ -15,7 +15,7 @@
 //
 // Per README § "Lead magnet": the Ultimate Hiring Bundle is NOT a product — it's no longer
 // in the grid or cart at all, replaced by an email opt-in section (#hiring-bundle) that
-// creates/updates a Wix contact via @wix/crm (src/lib/wixLead.ts). Sending a free item
+// creates/updates a Wix contact via @wix/crm (src/lib/wixCrm.ts). Sending a free item
 // through checkout was a $0 order that defeated the point (capturing the contact).
 //
 // Category chips and Add-to-Cart/qty/checkout are client-side (src/lib/wixCart.ts uses the
@@ -203,7 +203,7 @@ const productSchema = {
 </BaseLayout>
 
 <script>
-  import { submitHiringBundleLead } from "../lib/wixLead";
+  import { submitHiringBundleLead } from "../lib/wixCrm";
 
   // Category filter chips — pure client-side show/hide of the already-rendered grid
   // (see the frontmatter comment: every product's full content is in the initial HTML
