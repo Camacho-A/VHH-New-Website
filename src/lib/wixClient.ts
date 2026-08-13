@@ -11,7 +11,7 @@
 
 import { createClient, OAuthStrategy } from "@wix/sdk";
 import { posts, categories, tags } from "@wix/blog";
-import { products } from "@wix/stores";
+import { productsV3 } from "@wix/stores";
 
 let client: ReturnType<typeof createClient> | null = null;
 
@@ -24,7 +24,13 @@ export function getWixClient() {
   }
   if (!client) {
     client = createClient({
-      modules: { posts, products, categories, tags },
+      // productsV3, not the legacy V1 `products` module previously here — confirmed this
+      // site's Wix Stores catalog is Catalog V3 (a V1 collections read throws "Endpoint
+      // belongs to CATALOG_V1, but your site is using CATALOG_V3"). V1 product reads
+      // happened to still return basic data, but silently omit plainDescription,
+      // formatted prices, and category assignments on this catalog — V3 is the real,
+      // correct source. See src/lib/wixProducts.ts.
+      modules: { posts, productsV3, categories, tags },
       auth: OAuthStrategy({ clientId }),
     });
   }

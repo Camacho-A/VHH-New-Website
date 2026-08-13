@@ -1,0 +1,305 @@
+---
+// Shared @wix/ecom cart drawer — used by the Shop listing (src/pages/shop.astro) and
+// product detail (src/pages/shop/[slug].astro) pages, so "Add to Cart" behaves identically
+// wherever it appears and there's one place to get the cart UI right.
+//
+// The Add to Cart buttons that trigger this live in each *page's* own markup (product grid
+// cards on the listing, the single product on a detail page), not here — but this
+// component's script wires them up anyway via a plain `document.querySelectorAll`, which
+// doesn't care which component rendered the matching elements. Same reasoning as
+// Header.astro's Cart trigger button: DOM attribute hooks (`data-add-to-cart`,
+// `data-cart-toggle`, `data-cart-count`) cross component boundaries freely on the same page.
+---
+
+<div class="cart-drawer" data-cart-drawer hidden>
+  <div class="cart-drawer__backdrop" data-cart-close></div>
+  <aside class="cart-drawer__panel" role="dialog" aria-label="Your cart">
+    <div class="cart-drawer__head">
+      <h2 class="cart-drawer__title">Your Cart</h2>
+      <button type="button" class="cart-drawer__close" data-cart-close aria-label="Close cart">✕</button>
+    </div>
+
+    <p class="cart-drawer__empty" data-cart-empty>Your cart is empty. Browse the templates and tools below.</p>
+
+    <div class="cart-drawer__body" data-cart-body hidden>
+      <div class="cart-lines" data-cart-lines></div>
+      <div class="cart-drawer__subtotal">
+        <p class="cart-drawer__subtotal-label">Subtotal</p>
+        <p class="cart-drawer__subtotal-amount" data-cart-subtotal>$0.00</p>
+      </div>
+      <button type="button" class="btn cart-drawer__checkout" data-cart-checkout>Checkout</button>
+      <p class="cart-drawer__error" data-cart-error hidden></p>
+      <p class="cart-drawer__note">Secure checkout handled by Wix. Digital files download immediately after purchase.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+  import { getCart, addToCart, setLineQuantity, getCheckoutUrl, type CartSummary } from "../lib/wixCart";
+
+  const drawer = document.querySelector<HTMLElement>("[data-cart-drawer]");
+  const emptyMsg = document.querySelector<HTMLElement>("[data-cart-empty]");
+  const body = document.querySelector<HTMLElement>("[data-cart-body]");
+  const linesEl = document.querySelector<HTMLElement>("[data-cart-lines]");
+  const subtotalEl = document.querySelector<HTMLElement>("[data-cart-subtotal]");
+  const checkoutBtn = document.querySelector<HTMLButtonElement>("[data-cart-checkout]");
+  const errorEl = document.querySelector<HTMLElement>("[data-cart-error]");
+  const countEls = document.querySelectorAll<HTMLElement>("[data-cart-count]");
+  const cartToggles = document.querySelectorAll<HTMLElement>("[data-cart-toggle]");
+  const cartCloses = document.querySelectorAll<HTMLElement>("[data-cart-close]");
+
+  function setDrawerOpen(open: boolean) {
+    if (drawer) drawer.hidden = !open;
+  }
+
+  function renderCart(cart: CartSummary) {
+    countEls.forEach((el) => (el.textContent = String(cart.count)));
+
+    if (!emptyMsg || !body || !linesEl || !subtotalEl) return;
+
+    if (cart.lines.length === 0) {
+      emptyMsg.hidden = false;
+      body.hidden = true;
+      return;
+    }
+    emptyMsg.hidden = true;
+    body.hidden = false;
+    subtotalEl.textContent = cart.subtotal;
+
+    linesEl.innerHTML = "";
+    for (const line of cart.lines) {
+      const row = document.createElement("div");
+      row.className = "cart-line";
+      row.innerHTML = `
+        <div class="cart-line__info">
+          <p class="cart-line__name"></p>
+          <p class="cart-line__total"></p>
+        </div>
+        <div class="cart-line__qty">
+          <button type="button" class="cart-line__step" data-dec aria-label="Decrease quantity">−</button>
+          <span class="cart-line__qty-value"></span>
+          <button type="button" class="cart-line__step" data-inc aria-label="Increase quantity">+</button>
+        </div>
+      `;
+      row.querySelector(".cart-line__name")!.textContent = line.name;
+      row.querySelector(".cart-line__total")!.textContent = line.lineTotal;
+      row.querySelector(".cart-line__qty-value")!.textContent = String(line.quantity);
+      row.querySelector<HTMLButtonElement>("[data-dec]")!.addEventListener("click", async () => {
+        renderCart(await setLineQuantity(line.lineItemId, line.quantity - 1));
+      });
+      row.querySelector<HTMLButtonElement>("[data-inc]")!.addEventListener("click", async () => {
+        renderCart(await setLineQuantity(line.lineItemId, line.quantity + 1));
+      });
+      linesEl.appendChild(row);
+    }
+  }
+
+  cartToggles.forEach((btn) =>
+    btn.addEventListener("click", () => setDrawerOpen(drawer?.hidden !== false))
+  );
+  cartCloses.forEach((btn) => btn.addEventListener("click", () => setDrawerOpen(false)));
+
+  document.querySelectorAll<HTMLButtonElement>("[data-add-to-cart]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const productId = btn.dataset.productId;
+      if (!productId) return;
+      const originalLabel = btn.textContent;
+      btn.disabled = true;
+      try {
+        const cart = await addToCart(productId, 1);
+        renderCart(cart);
+        setDrawerOpen(true);
+        btn.textContent = "Added ✓";
+      } catch (err) {
+        console.error("Add to cart failed:", err);
+        btn.textContent = originalLabel;
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", async () => {
+      if (errorEl) errorEl.hidden = true;
+      checkoutBtn.disabled = true;
+      const originalLabel = checkoutBtn.textContent;
+      checkoutBtn.textContent = "Redirecting…";
+      try {
+        window.location.href = await getCheckoutUrl();
+      } catch (err) {
+        console.error("Checkout failed:", err);
+        if (errorEl) {
+          errorEl.textContent = "Something went wrong starting checkout. Please try again.";
+          errorEl.hidden = false;
+        }
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = originalLabel;
+      }
+    });
+  }
+
+  // Initial cart state on page load (a returning visitor may already have items in it).
+  getCart().then(renderCart);
+</script>
+
+<style>
+  .cart-drawer[hidden] {
+    display: none;
+  }
+
+  .cart-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .cart-drawer__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(43, 31, 22, 0.4);
+  }
+
+  .cart-drawer__panel {
+    position: relative;
+    width: min(100%, 420px);
+    background: var(--bg);
+    border-left: 1px solid var(--rule);
+    padding: 28px var(--section-pad-x);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .cart-drawer__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .cart-drawer__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+  }
+
+  .cart-drawer__close {
+    background: none;
+    border: none;
+    font-size: 22px;
+    color: var(--text);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .cart-drawer__empty {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .cart-lines {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--rule);
+  }
+
+  .cart-line {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cart-line__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cart-line__name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .cart-line__total {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cart-line__qty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cart-line__step {
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(43, 31, 22, 0.3);
+    background: transparent;
+    color: var(--accent-deep);
+    border-radius: var(--radius-chip);
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .cart-line__step:hover {
+    background: var(--accent-tint-strong);
+  }
+
+  .cart-line__qty-value {
+    font-size: 14.5px;
+    min-width: 18px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cart-drawer__subtotal {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0 24px;
+  }
+
+  .cart-drawer__subtotal-label {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+  }
+
+  .cart-drawer__subtotal-amount {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cart-drawer__checkout {
+    width: 100%;
+  }
+
+  .cart-drawer__error {
+    font-size: 13px;
+    color: var(--accent-deep);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  .cart-drawer__note {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-top: 14px;
+    text-align: center;
+  }
+</style>

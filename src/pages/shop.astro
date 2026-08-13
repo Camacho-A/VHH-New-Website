@@ -7,9 +7,11 @@
 
 // Rebuilt against the updated design_handoff_vhh_website/design-source/Shop.dc.html: a real
 // storefront (category filter chips, cart drawer, Wix eCommerce checkout) instead of product
-// rows linking out to the existing site's own product pages. Wired to @wix/stores (product
-// data, unchanged from before) + @wix/ecom (cart/checkout — src/lib/wixCart.ts). The
-// product JSON-LD schema and per-product slug anchors from the previous build are preserved.
+// rows linking out to the existing site's own product pages. Product data now comes from
+// src/lib/wixProducts.ts (Catalog V3 — see that file for why, and why not the legacy V1
+// `products` module previously used here). Cart/checkout is src/lib/wixCart.ts, rendered by
+// the shared <CartDrawer /> component (also used by src/pages/shop/[slug].astro so both
+// pages behave identically).
 //
 // Per README § "Lead magnet": the Ultimate Hiring Bundle is NOT a product — it's no longer
 // in the grid or cart at all, replaced by an email opt-in section (#hiring-bundle) that
@@ -22,78 +24,42 @@
 // way products can. All products render server-side regardless of category so filtering is
 // just a client-side show/hide, not a refetch: full product content stays in the page's
 // initial HTML for crawlers even when a filter chip is later clicked.
+//
+// "Details" links to /shop/[slug] (this site's own product page) — never the old wix.com
+// storefront.
 
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ImagePlate from "../components/ImagePlate.astro";
-import { getWixClient } from "../lib/wixClient";
+import CartDrawer from "../components/CartDrawer.astro";
+import { getStoreProducts } from "../lib/wixProducts";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 
-// Category + "includes"-style editorial copy isn't exposed by the Stores API — kept as
-// written for the redesign, keyed by the real product slug, same treatment as before.
-const PRODUCT_COPY: Record<string, { category: string }> = {
-  "vhh-email-template-vault": { category: "Templates" },
-  "vhh-content-vault": { category: "Templates" },
-};
-
-const wixClient = getWixClient();
-const { items } = await wixClient.products.queryProducts().find();
-
-const stripHtml = (html: string | null | undefined) => (html ?? "").replace(/<[^>]+>/g, "").trim();
-
-const PRODUCTS = items
-  .map((p: (typeof items)[number]) => {
-    const copy = PRODUCT_COPY[p.slug ?? ""];
-    const price = p.priceData?.price ?? null;
-    const discounted = p.priceData?.discountedPrice ?? null;
-    const hasCompare = discounted != null && price != null && discounted < price;
-    return {
-      id: p._id!,
-      anchor: p.slug ?? p._id!,
-      category: copy?.category ?? "Templates",
-      ribbon: null as string | null,
-      name: p.name ?? "",
-      price: hasCompare ? p.priceData?.formatted?.discountedPrice ?? "" : p.priceData?.formatted?.price ?? "",
-      amount: hasCompare ? discounted : price,
-      compareAtPrice: hasCompare ? p.priceData?.formatted?.price ?? null : null,
-      cta: "Add to Cart",
-      desc: stripHtml(p.description),
-      href: p.productPageUrl ? `${p.productPageUrl.base}${p.productPageUrl.path}` : "#",
-      image: p.media?.mainMedia?.image?.url,
-      imageLabel: `${p.name} cover`,
-    };
-  })
-  // Match the design's intended order (email vault, then content vault) regardless of
-  // whatever order the API happens to return.
-  .sort(
-    (a: { anchor: string }, b: { anchor: string }) =>
-      Object.keys(PRODUCT_COPY).indexOf(a.anchor) - Object.keys(PRODUCT_COPY).indexOf(b.anchor)
-  );
+const PRODUCTS = await getStoreProducts();
 
 // Chips built from the products actually on the page ("All" + every distinct category
 // present) rather than a hardcoded list — self-updating if a product's category changes.
-const CATEGORIES = ["All", ...Array.from(new Set(PRODUCTS.map((p: (typeof PRODUCTS)[number]) => p.category)))];
+const CATEGORIES = ["All", ...Array.from(new Set(PRODUCTS.map((p) => p.category)))];
 
 const productSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "The Virtual Helping Hand Shop",
-  itemListElement: PRODUCTS.filter((p: (typeof PRODUCTS)[number]) => p.amount != null).map(
-    (p: (typeof PRODUCTS)[number], i: number) => ({
+  itemListElement: PRODUCTS.filter((p) => p.amount != null).map((p, i) => ({
     "@type": "ListItem",
     position: i + 1,
     item: {
       "@type": "Product",
       name: p.name,
       description: p.desc,
-      url: p.href,
+      url: `/shop/${p.slug}`,
       brand: { "@type": "Brand", name: "The Virtual Helping Hand" },
       offers: {
         "@type": "Offer",
         price: p.amount,
         priceCurrency: "USD",
         availability: "https://schema.org/InStock",
-        url: p.href,
+        url: `/shop/${p.slug}`,
       },
     },
   })),
@@ -107,29 +73,7 @@ const productSchema = {
 >
   <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
 
-  <!-- ============ CART DRAWER ============ -->
-  <div class="cart-drawer" data-cart-drawer hidden>
-    <div class="cart-drawer__backdrop" data-cart-close></div>
-    <aside class="cart-drawer__panel" role="dialog" aria-label="Your cart">
-      <div class="cart-drawer__head">
-        <h2 class="cart-drawer__title">Your Cart</h2>
-        <button type="button" class="cart-drawer__close" data-cart-close aria-label="Close cart">✕</button>
-      </div>
-
-      <p class="cart-drawer__empty" data-cart-empty>Your cart is empty. Browse the templates and tools below.</p>
-
-      <div class="cart-drawer__body" data-cart-body hidden>
-        <div class="cart-lines" data-cart-lines></div>
-        <div class="cart-drawer__subtotal">
-          <p class="cart-drawer__subtotal-label">Subtotal</p>
-          <p class="cart-drawer__subtotal-amount" data-cart-subtotal>$0.00</p>
-        </div>
-        <button type="button" class="btn cart-drawer__checkout" data-cart-checkout>Checkout</button>
-        <p class="cart-drawer__error" data-cart-error hidden></p>
-        <p class="cart-drawer__note">Secure checkout handled by Wix. Digital files download immediately after purchase.</p>
-      </div>
-    </aside>
-  </div>
+  <CartDrawer />
 
   <!-- ============ HERO ============ -->
   <section id="top" class="hero">
@@ -168,8 +112,8 @@ const productSchema = {
   <section class="section">
     <div class="product-grid">
       {
-        PRODUCTS.map((p: (typeof PRODUCTS)[number]) => (
-          <article id={p.anchor} class="product-card" data-product-category={p.category}>
+        PRODUCTS.map((p) => (
+          <article id={p.slug} class="product-card" data-product-category={p.category}>
             <div class="product-card__photo-wrap">
               <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} fit="contain" />
               {p.ribbon && <span class="product-card__ribbon">{p.ribbon}</span>}
@@ -192,9 +136,9 @@ const productSchema = {
                   data-product-id={p.id}
                   data-product-name={p.name}
                 >
-                  {p.cta}
+                  Add to Cart
                 </button>
-                <a href={p.href} class="product-card__details">
+                <a href={`/shop/${p.slug}`} class="product-card__details">
                   Details
                 </a>
               </div>
@@ -259,110 +203,7 @@ const productSchema = {
 </BaseLayout>
 
 <script>
-  import { getCart, addToCart, setLineQuantity, getCheckoutUrl, type CartSummary } from "../lib/wixCart";
   import { submitHiringBundleLead } from "../lib/wixLead";
-
-  const drawer = document.querySelector<HTMLElement>("[data-cart-drawer]");
-  const emptyMsg = document.querySelector<HTMLElement>("[data-cart-empty]");
-  const body = document.querySelector<HTMLElement>("[data-cart-body]");
-  const linesEl = document.querySelector<HTMLElement>("[data-cart-lines]");
-  const subtotalEl = document.querySelector<HTMLElement>("[data-cart-subtotal]");
-  const checkoutBtn = document.querySelector<HTMLButtonElement>("[data-cart-checkout]");
-  const errorEl = document.querySelector<HTMLElement>("[data-cart-error]");
-  const countEls = document.querySelectorAll<HTMLElement>("[data-cart-count]");
-  const cartToggles = document.querySelectorAll<HTMLElement>("[data-cart-toggle]");
-  const cartCloses = document.querySelectorAll<HTMLElement>("[data-cart-close]");
-
-  function setDrawerOpen(open: boolean) {
-    if (drawer) drawer.hidden = !open;
-  }
-
-  function renderCart(cart: CartSummary) {
-    countEls.forEach((el) => (el.textContent = String(cart.count)));
-
-    if (!emptyMsg || !body || !linesEl || !subtotalEl) return;
-
-    if (cart.lines.length === 0) {
-      emptyMsg.hidden = false;
-      body.hidden = true;
-      return;
-    }
-    emptyMsg.hidden = true;
-    body.hidden = false;
-    subtotalEl.textContent = cart.subtotal;
-
-    linesEl.innerHTML = "";
-    for (const line of cart.lines) {
-      const row = document.createElement("div");
-      row.className = "cart-line";
-      row.innerHTML = `
-        <div class="cart-line__info">
-          <p class="cart-line__name"></p>
-          <p class="cart-line__total"></p>
-        </div>
-        <div class="cart-line__qty">
-          <button type="button" class="cart-line__step" data-dec aria-label="Decrease quantity">−</button>
-          <span class="cart-line__qty-value"></span>
-          <button type="button" class="cart-line__step" data-inc aria-label="Increase quantity">+</button>
-        </div>
-      `;
-      row.querySelector(".cart-line__name")!.textContent = line.name;
-      row.querySelector(".cart-line__total")!.textContent = line.lineTotal;
-      row.querySelector(".cart-line__qty-value")!.textContent = String(line.quantity);
-      row.querySelector<HTMLButtonElement>("[data-dec]")!.addEventListener("click", async () => {
-        renderCart(await setLineQuantity(line.lineItemId, line.quantity - 1));
-      });
-      row.querySelector<HTMLButtonElement>("[data-inc]")!.addEventListener("click", async () => {
-        renderCart(await setLineQuantity(line.lineItemId, line.quantity + 1));
-      });
-      linesEl.appendChild(row);
-    }
-  }
-
-  cartToggles.forEach((btn) =>
-    btn.addEventListener("click", () => setDrawerOpen(drawer?.hidden !== false))
-  );
-  cartCloses.forEach((btn) => btn.addEventListener("click", () => setDrawerOpen(false)));
-
-  document.querySelectorAll<HTMLButtonElement>("[data-add-to-cart]").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const productId = btn.dataset.productId;
-      if (!productId) return;
-      const originalLabel = btn.textContent;
-      btn.disabled = true;
-      try {
-        const cart = await addToCart(productId, 1);
-        renderCart(cart);
-        setDrawerOpen(true);
-        btn.textContent = "Added ✓";
-      } catch (err) {
-        console.error("Add to cart failed:", err);
-        btn.textContent = originalLabel;
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  });
-
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener("click", async () => {
-      if (errorEl) errorEl.hidden = true;
-      checkoutBtn.disabled = true;
-      const originalLabel = checkoutBtn.textContent;
-      checkoutBtn.textContent = "Redirecting…";
-      try {
-        window.location.href = await getCheckoutUrl();
-      } catch (err) {
-        console.error("Checkout failed:", err);
-        if (errorEl) {
-          errorEl.textContent = "Something went wrong starting checkout. Please try again.";
-          errorEl.hidden = false;
-        }
-        checkoutBtn.disabled = false;
-        checkoutBtn.textContent = originalLabel;
-      }
-    });
-  }
 
   // Category filter chips — pure client-side show/hide of the already-rendered grid
   // (see the frontmatter comment: every product's full content is in the initial HTML
@@ -385,9 +226,6 @@ const productSchema = {
       if (resultLabel) resultLabel.textContent = `${visibleCount} ${visibleCount === 1 ? "product" : "products"}`;
     });
   });
-
-  // Initial cart state on page load (a returning visitor may already have items in it).
-  getCart().then(renderCart);
 
   // Lead magnet opt-in (README § "Lead magnet") — validate on submit (design doesn't spec
   // validate-on-blur here, unlike the About page contact form), then replace the form with
@@ -785,165 +623,5 @@ const productSchema = {
     max-width: 600px;
     margin: 0 auto 36px;
     text-wrap: pretty;
-  }
-
-  /* ---- Cart drawer ---- */
-  .cart-drawer[hidden] {
-    display: none;
-  }
-
-  .cart-drawer {
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .cart-drawer__backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(43, 31, 22, 0.4);
-  }
-
-  .cart-drawer__panel {
-    position: relative;
-    width: min(100%, 420px);
-    background: var(--bg);
-    border-left: 1px solid var(--rule);
-    padding: 28px var(--section-pad-x);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-  }
-
-  .cart-drawer__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
-
-  .cart-drawer__title {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 24px;
-  }
-
-  .cart-drawer__close {
-    background: none;
-    border: none;
-    font-size: 22px;
-    color: var(--text);
-    cursor: pointer;
-    line-height: 1;
-  }
-
-  .cart-drawer__empty {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-muted);
-  }
-
-  .cart-lines {
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid var(--rule);
-  }
-
-  .cart-line {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .cart-line__info {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .cart-line__name {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 17px;
-    line-height: 1.3;
-    margin-bottom: 4px;
-  }
-
-  .cart-line__total {
-    font-size: 13.5px;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .cart-line__qty {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .cart-line__step {
-    width: 30px;
-    height: 30px;
-    border: 1px solid rgba(43, 31, 22, 0.3);
-    background: transparent;
-    color: var(--accent-deep);
-    border-radius: var(--radius-chip);
-    cursor: pointer;
-    font-size: 15px;
-    line-height: 1;
-  }
-
-  .cart-line__step:hover {
-    background: var(--accent-tint-strong);
-  }
-
-  .cart-line__qty-value {
-    font-size: 14.5px;
-    min-width: 18px;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .cart-drawer__subtotal {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: 20px 0 24px;
-  }
-
-  .cart-drawer__subtotal-label {
-    font-size: 13px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-  }
-
-  .cart-drawer__subtotal-amount {
-    font-family: var(--font-heading);
-    font-weight: 600;
-    font-size: 24px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .cart-drawer__checkout {
-    width: 100%;
-  }
-
-  .cart-drawer__error {
-    font-size: 13px;
-    color: var(--accent-deep);
-    margin-top: 12px;
-    text-align: center;
-  }
-
-  .cart-drawer__note {
-    font-size: 12.5px;
-    line-height: 1.6;
-    color: var(--text-muted);
-    margin-top: 14px;
-    text-align: center;
   }
 </style>
