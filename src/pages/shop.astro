@@ -8,8 +8,13 @@
 // Rebuilt against the updated design_handoff_vhh_website/design-source/Shop.dc.html: a real
 // storefront (category filter chips, cart drawer, Wix eCommerce checkout) instead of product
 // rows linking out to the existing site's own product pages. Wired to @wix/stores (product
-// data, unchanged from before) + @wix/ecom (cart/checkout, new — src/lib/wixCart.ts). The
+// data, unchanged from before) + @wix/ecom (cart/checkout — src/lib/wixCart.ts). The
 // product JSON-LD schema and per-product slug anchors from the previous build are preserved.
+//
+// Per README § "Lead magnet": the Ultimate Hiring Bundle is NOT a product — it's no longer
+// in the grid or cart at all, replaced by an email opt-in section (#hiring-bundle) that
+// creates/updates a Wix contact via @wix/crm (src/lib/wixLead.ts). Sending a free item
+// through checkout was a $0 order that defeated the point (capturing the contact).
 //
 // Category chips and Add-to-Cart/qty/checkout are client-side (src/lib/wixCart.ts uses the
 // browser-safe PUBLIC_WIX_DATA_CLIENT_ID, same as src/lib/wixForms.ts) — the cart is
@@ -24,26 +29,6 @@ import { getWixClient } from "../lib/wixClient";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 
-// Not a Wix Stores product — a free lead magnet that links out to its own opt-in page,
-// same as the design source and README § Shop treat it. Excluded from cart/checkout
-// entirely (design: free item = external link button, not "Add to Cart").
-const ULTIMATE_HIRING_BUNDLE = {
-  id: "ultimate-hiring-bundle-lead-magnet", // not a real Stores product id — never sent to the cart
-  anchor: "ultimate-hiring-bundle",
-  category: "Free Resources",
-  ribbon: "Free",
-  name: "The Ultimate Hiring Bundle",
-  price: "Free",
-  amount: null as number | null,
-  compareAtPrice: null as string | null,
-  isFree: true,
-  cta: "Get Your Free Copy",
-  desc: "Find the right support for your business. Templates and guidance for hiring your first, or next, virtual team member.",
-  href: "https://www.thevirtualhelpinghand.com/ultimatehiringbundle",
-  image: undefined as string | undefined,
-  imageLabel: "Guide cover mockup",
-};
-
 // Category + "includes"-style editorial copy isn't exposed by the Stores API — kept as
 // written for the redesign, keyed by the real product slug, same treatment as before.
 const PRODUCT_COPY: Record<string, { category: string }> = {
@@ -56,7 +41,7 @@ const { items } = await wixClient.products.queryProducts().find();
 
 const stripHtml = (html: string | null | undefined) => (html ?? "").replace(/<[^>]+>/g, "").trim();
 
-const realProducts = items
+const PRODUCTS = items
   .map((p: (typeof items)[number]) => {
     const copy = PRODUCT_COPY[p.slug ?? ""];
     const price = p.priceData?.price ?? null;
@@ -71,7 +56,6 @@ const realProducts = items
       price: hasCompare ? p.priceData?.formatted?.discountedPrice ?? "" : p.priceData?.formatted?.price ?? "",
       amount: hasCompare ? discounted : price,
       compareAtPrice: hasCompare ? p.priceData?.formatted?.price ?? null : null,
-      isFree: false,
       cta: "Add to Cart",
       desc: stripHtml(p.description),
       href: p.productPageUrl ? `${p.productPageUrl.base}${p.productPageUrl.path}` : "#",
@@ -86,17 +70,16 @@ const realProducts = items
       Object.keys(PRODUCT_COPY).indexOf(a.anchor) - Object.keys(PRODUCT_COPY).indexOf(b.anchor)
   );
 
-const PRODUCTS = [ULTIMATE_HIRING_BUNDLE, ...realProducts];
-
 // Chips built from the products actually on the page ("All" + every distinct category
 // present) rather than a hardcoded list — self-updating if a product's category changes.
-const CATEGORIES = ["All", ...Array.from(new Set(PRODUCTS.map((p) => p.category)))];
+const CATEGORIES = ["All", ...Array.from(new Set(PRODUCTS.map((p: (typeof PRODUCTS)[number]) => p.category)))];
 
 const productSchema = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "The Virtual Helping Hand Shop",
-  itemListElement: PRODUCTS.filter((p) => p.amount != null).map((p, i) => ({
+  itemListElement: PRODUCTS.filter((p: (typeof PRODUCTS)[number]) => p.amount != null).map(
+    (p: (typeof PRODUCTS)[number], i: number) => ({
     "@type": "ListItem",
     position: i + 1,
     item: {
@@ -185,7 +168,7 @@ const productSchema = {
   <section class="section">
     <div class="product-grid">
       {
-        PRODUCTS.map((p) => (
+        PRODUCTS.map((p: (typeof PRODUCTS)[number]) => (
           <article id={p.anchor} class="product-card" data-product-category={p.category}>
             <div class="product-card__photo-wrap">
               <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} fit="contain" />
@@ -201,11 +184,7 @@ const productSchema = {
                 <p class="product-card__price">{p.price}</p>
                 {p.compareAtPrice && <p class="product-card__compare">{p.compareAtPrice}</p>}
               </div>
-              {p.isFree ? (
-                <a href={p.href} target="_blank" rel="noopener" class="btn btn--sm product-card__cta">
-                  {p.cta}
-                </a>
-              ) : (
+              <div class="product-card__actions">
                 <button
                   type="button"
                   class="btn btn--sm product-card__cta"
@@ -215,11 +194,56 @@ const productSchema = {
                 >
                   {p.cta}
                 </button>
-              )}
+                <a href={p.href} class="product-card__details">
+                  Details
+                </a>
+              </div>
             </div>
           </article>
         ))
       }
+    </div>
+  </section>
+
+  <!-- ============ LEAD MAGNET ============ -->
+  <section id="hiring-bundle" class="band lead-magnet">
+    <div class="lead-magnet__grid">
+      <div>
+        <span class="chip lead-magnet__badge">Free Guide</span>
+        <h2 class="lead-magnet__title">The Ultimate Hiring Bundle</h2>
+        <p class="lead-magnet__desc">
+          Find the right support for your business. Templates and guidance for hiring your first, or next,
+          virtual team member.
+        </p>
+        <div class="lead-magnet__features">
+          <p class="lead-magnet__feature">Role and task templates</p>
+          <p class="lead-magnet__feature">Guidance on what to delegate first</p>
+          <p class="lead-magnet__feature">Sent straight to your inbox</p>
+        </div>
+      </div>
+
+      <form class="lead-form" data-lead-form>
+        <p class="lead-form__title">Get your free copy</p>
+        <label class="lead-form__field">
+          <span class="lead-form__label">First Name</span>
+          <input type="text" name="firstName" data-lead-field="firstName" autocomplete="given-name" />
+        </label>
+        <label class="lead-form__field">
+          <span class="lead-form__label">Email</span>
+          <input type="email" name="email" data-lead-field="email" autocomplete="email" />
+        </label>
+        <p class="lead-form__error" data-lead-error hidden></p>
+        <button type="submit" class="btn lead-form__submit" data-lead-submit>Send Me the Bundle</button>
+        <p class="lead-form__consent">We'll also send occasional tips and updates. Unsubscribe any time.</p>
+      </form>
+
+      <div class="lead-success" data-lead-success hidden>
+        <p class="lead-success__title">Check your inbox</p>
+        <p class="lead-success__body">
+          The Ultimate Hiring Bundle is on its way. If it hasn't arrived in a few minutes, check your
+          promotions folder.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -236,6 +260,7 @@ const productSchema = {
 
 <script>
   import { getCart, addToCart, setLineQuantity, getCheckoutUrl, type CartSummary } from "../lib/wixCart";
+  import { submitHiringBundleLead } from "../lib/wixLead";
 
   const drawer = document.querySelector<HTMLElement>("[data-cart-drawer]");
   const emptyMsg = document.querySelector<HTMLElement>("[data-cart-empty]");
@@ -363,6 +388,54 @@ const productSchema = {
 
   // Initial cart state on page load (a returning visitor may already have items in it).
   getCart().then(renderCart);
+
+  // Lead magnet opt-in (README § "Lead magnet") — validate on submit (design doesn't spec
+  // validate-on-blur here, unlike the About page contact form), then replace the form with
+  // the "Check your inbox" panel on success, matching the design's state model exactly.
+  const leadForm = document.querySelector<HTMLFormElement>("[data-lead-form]");
+  const leadSuccess = document.querySelector<HTMLElement>("[data-lead-success]");
+  const leadError = document.querySelector<HTMLElement>("[data-lead-error]");
+
+  if (leadForm && leadSuccess) {
+    const firstNameField = leadForm.querySelector<HTMLInputElement>('[data-lead-field="firstName"]');
+    const emailField = leadForm.querySelector<HTMLInputElement>('[data-lead-field="email"]');
+    const submitBtn = leadForm.querySelector<HTMLButtonElement>("[data-lead-submit]");
+
+    const showLeadError = (message: string) => {
+      if (!leadError) return;
+      leadError.textContent = message;
+      leadError.hidden = false;
+    };
+
+    leadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (leadError) leadError.hidden = true;
+
+      const firstName = firstNameField?.value.trim() ?? "";
+      const email = emailField?.value.trim() ?? "";
+
+      if (!firstName) return showLeadError("Please add your first name.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showLeadError("Please enter a valid email address.");
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Sending…";
+      }
+
+      try {
+        await submitHiringBundleLead(firstName, email);
+        leadForm.hidden = true;
+        leadSuccess.hidden = false;
+      } catch (err) {
+        console.error("Hiring bundle lead submission failed:", err);
+        showLeadError("Something went wrong. Please email danielle@thevirtualhelpinghand.com and we'll get right back to you.");
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Send Me the Bundle";
+        }
+      }
+    });
+  }
 </script>
 
 <style>
@@ -519,9 +592,168 @@ const productSchema = {
     font-variant-numeric: tabular-nums;
   }
 
+  .product-card__actions {
+    display: flex;
+    gap: 10px;
+  }
+
   .product-card__cta {
+    flex: 1;
+  }
+
+  .product-card__details {
+    border: 1px solid rgba(43, 31, 22, 0.3);
+    color: var(--accent-deep);
+    padding: 12px 18px;
+    border-radius: var(--radius-control);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .product-card__details:hover {
+    background: var(--accent-tint);
+    color: var(--accent-deep);
+  }
+
+  /* ---- Lead magnet ---- */
+  .lead-magnet__grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+
+  .lead-magnet__badge {
+    margin-bottom: 18px;
+  }
+
+  .lead-magnet__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+  }
+
+  .lead-magnet__desc {
+    font-size: 16.5px;
+    line-height: 1.78;
+    color: var(--text-body);
+    max-width: 480px;
+    margin-bottom: 24px;
+    text-wrap: pretty;
+  }
+
+  .lead-magnet__features {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .lead-magnet__feature {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--text-body);
+    padding-left: 15px;
+    border-left: 1px solid rgba(182, 130, 53, 0.5);
+  }
+
+  .lead-form,
+  .lead-success {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    background: var(--bg);
+  }
+
+  .lead-form {
+    padding: clamp(24px, 3vw, 34px);
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  /* Author CSS beats the UA default [hidden]{display:none} at equal specificity, so
+     `.lead-form { display: flex }` would win and show the form even while hidden (same
+     fix as Header.astro's .mobile-panel). Only switch to flex once the submit handler
+     removes the hidden attribute on success. */
+  .lead-form:not([hidden]) {
+    display: flex;
+  }
+
+  .lead-form__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.3;
+  }
+
+  .lead-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .lead-form__label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-body);
+  }
+
+  .lead-form__field input {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid rgba(43, 31, 22, 0.28);
+    border-radius: var(--radius-control);
+    padding: 12px 13px;
+  }
+
+  .lead-form__field input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  .lead-form__error {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--accent-deep);
+  }
+
+  .lead-form__submit {
     width: 100%;
+  }
+
+  .lead-form__consent {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  .lead-success {
+    padding: clamp(28px, 3.5vw, 40px);
     text-align: center;
+    border-color: var(--accent);
+  }
+
+  .lead-success__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.3;
+    margin-bottom: 14px;
+  }
+
+  .lead-success__body {
+    font-size: 15.5px;
+    line-height: 1.75;
+    color: var(--text-body);
   }
 
   /* ---- CTA ---- */

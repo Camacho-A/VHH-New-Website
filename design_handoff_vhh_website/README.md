@@ -2,7 +2,7 @@
 
 ## Overview
 
-A six-page redesign of thevirtualhelpinghand.com, repositioning VHH from a virtual assistant company to a **business growth partner**. The site organizes everything around four service pillars and tells one story: *strategy → digital presence → systems → ongoing support.*
+A **seven-page** redesign of thevirtualhelpinghand.com, repositioning VHH from a virtual assistant company to a **business growth partner**. The site organizes everything around four service pillars and tells one story: *strategy → digital presence → systems → ongoing support.*
 
 **Target implementation: Wix Headless.** Astro frontend deployed to Wix hosting, with the client's **existing** Wix site as the backend for CMS, blog, store, and forms.
 
@@ -12,7 +12,7 @@ The files in `design-source/` are **design references created in HTML** — prot
 
 Your task is to **recreate these designs as Astro components**, using the Wix JavaScript SDK for content. Read the HTML for layout, spacing, color, type, and copy — then rebuild it idiomatically.
 
-`rendered-preview/` holds four self-contained pages you can open in a browser to see the intended result (Shop and Blog aren't in there; read their source directly).
+`rendered-preview/` holds four self-contained pages you can open in a browser to see the intended result (Shop, Blog, and Blog Post aren't in there; read their source directly).
 
 ## Fidelity
 
@@ -86,7 +86,7 @@ Sections in order:
 10. **Testimonials** — one real quote (Miraque Gilbert-Woods)
 11. **Honored to Have Worked With** — 4 client logos, centered flex row
 12. **Trusted & Recognized By** — 3 credential badges
-13. **Free resources** — Ultimate Hiring Bundle
+13. **Free resources** — links to the Hiring Bundle opt-in on the Shop page
 14. **Final CTA**
 
 ### 2. About (`About.dc.html`)
@@ -99,10 +99,37 @@ Four **collapsible pillar accordions**. Each opens to a list of individual servi
 Flagship page. Hero → "you may need consulting if" recognition list → what we work on → three offers (Strategy Session / Business Growth Intensive / Ongoing Consulting) → process → FAQ → CTA.
 
 ### 5. Shop (`Shop.dc.html`)
-Product rows with per-product anchors, images, prices, and includes. **Ships JSON-LD `Product` structured data** for search — preserve this. Products: Ultimate Hiring Bundle (free), VHH Email Template Vault ($27), VHH Content Vault ($14.50).
+A **working storefront**, not a link-out to the Wix shop. Contains:
+
+- Category filter chips (derived from product categories — do not hardcode)
+- Product grid with cover image, ribbon, name, description, price, compare-at price
+- Add to cart, with a slide-out cart drawer: line items, quantity steppers, live subtotal, checkout
+- The free Hiring Bundle is **not** in this grid — it's an email opt-in in its own section (see Lead magnet below)
+
+The product objects are shaped to match Wix Stores (`_id`, `slug`, `name`, `description`, `price`, `compareAtPrice`, `ribbon`, `category`) so the array swaps directly for `products.queryProducts()`. Cart state should move to `@wix/ecom` `currentCart`; checkout creates a Wix checkout session.
+
+Each product `<article>` carries `id="{slug}"` for deep links, and the page ships **JSON-LD `Product` structured data** so products rank individually. Preserve both.
 
 ### 6. Blog (`Blog.dc.html`)
-Hero → featured post → 6-card grid. **All post content is placeholder** — this page exists to be wired to Wix Blog.
+Hero → featured post → post grid. Cards show real post titles and categories pulled from the live blog, but this page must be wired to `@wix/blog` so it stays current. Card fields map to: `title`, `excerpt`, `category`, `firstPublishedDate`, `minutesToRead`, `coverMedia`.
+
+### 7. Blog Post (`Blog Post.dc.html`)
+The single-post template. Contains the real "From Virtual Assistant to Virtual Operations Specialist" post as a worked example — **it is a layout reference, not content to hardcode.** Route as `/post/[slug]`.
+
+Body typography is deliberate and must be preserved: 760px measure, 17px body at 1.85 line-height, 26px between paragraphs, 48px above section headings.
+
+Wix rich-text nodes map onto these block types:
+
+| Wix node | Renders as |
+|---|---|
+| `PARAGRAPH` | body paragraph |
+| `HEADING` (h2/h3) | section heading |
+| `BULLETED_LIST` item | rule-marked line |
+| `BLOCKQUOTE` | centered italic pull quote |
+| `TABLE` | editorial table (see the VA/VOS comparison) |
+| `IMAGE` | `.plate`-style matted figure |
+
+Also includes tag row, author block, and a related-posts grid (`@wix/blog` related query).
 
 ---
 
@@ -184,7 +211,7 @@ Use Git from the first commit. Repo lives in the **client's** GitHub account wit
 | FAQs | Wix CMS collection | Business Consulting |
 | Bookings | Calendly embed *or* `@wix/bookings` | All CTAs |
 
-**Blog and Stores already hold real content on the existing site** — those pages should render live data, not placeholders. The placeholder copy in `Blog.dc.html` exists only to show layout.
+**Blog and Stores already hold real content on the existing site** — those pages must render live data. The post titles and the sample article in the design files are real, lifted from the live blog, but they are there to show layout: route them through `@wix/blog` rather than hardcoding.
 
 ### Make it client-editable
 
@@ -192,19 +219,6 @@ The client is experienced with Wix but not with code. Push as much as possible i
 
 The rule of thumb: **if it's a list of similar things, it belongs in the CMS.** Only page structure and layout should require code changes.
 
-
-### Wix modules to wire
-
-| Content | Wix module | Where it appears |
-|---|---|---|
-| Blog posts | `@wix/blog` | Blog page — featured + grid |
-| Products | `@wix/stores` | Shop page |
-| Contact form | `@wix/forms` | About page |
-| Testimonials | Wix CMS collection | Homepage |
-| Case studies | Wix CMS collection | Portfolio |
-| Services | Wix CMS collection | Services page |
-| FAQs | Wix CMS collection | Business Consulting |
-| Bookings | Calendly embed *or* `@wix/bookings` | All CTAs |
 
 ### Contact form (About page)
 
@@ -230,7 +244,25 @@ Enable **CAPTCHA** on the Wix form. A headless endpoint with no spam protection 
 
 Styling stays as designed: transparent inputs, `1px solid rgba(43,31,22,0.28)` border, `4px` radius, `12px 13px` padding, Lora 15px. Focus state is the standard `2px solid #b68235` outline with the border switching to `#b68235`.
 
+### Lead magnet: The Ultimate Hiring Bundle
 
+**Not a product — an email opt-in.** It lives in its own section on the Shop page (`#hiring-bundle`), deliberately outside the product grid and cart. Do not route it through checkout; a $0 order defeats the purpose, which is capturing the contact.
+
+Form fields: `firstName` (text, required) and `email` (email, required). Button label "Send Me the Bundle".
+
+On submit, do all three:
+
+1. **Create or update the Wix contact** (`@wix/crm`) with first name and email
+2. **Subscribe them to the newsletter list** so they receive future campaigns — this is the actual goal
+3. **Email the download link** — a Wix Automation triggered by the submission is the simplest route
+
+States are built into the design: an inline validation message for a missing name or malformed email, then the form is replaced entirely by a "Check your inbox" confirmation panel. Keep that replacement behavior — it confirms success without a page change.
+
+The consent line under the button ("We'll also send occasional tips and updates. Unsubscribe any time.") must stay for compliance.
+
+Footer links labelled "Free Hiring Bundle" across all pages point at `#hiring-bundle` on the Shop page.
+
+### CMS collections to create
 
 **`Testimonials`** — `quote` (text), `authorName` (text), `authorTitle` (text), `featured` (boolean), `order` (number)
 
@@ -290,24 +322,25 @@ In `assets/` — cropped from the client's existing site, usable but low-resolut
 
 ## Content Status
 
-**Real** (from the live site — do not alter): all service names and prices, VOS package tiers, the Miraque Gilbert-Woods testimonial, Danielle's bio, product names and prices, company description.
+**Real** (from the live site — do not alter): all service names and prices, VOS package tiers, the Miraque Gilbert-Woods testimonial, Danielle's bio, product names and prices, company description, all blog post titles and the full "From Virtual Assistant to Virtual Operations Specialist" article.
 
-**Written for the redesign** (client should review): section headlines, pillar descriptions, process step copy, Business Consulting page copy, Blog page copy.
+**Written for the redesign** (client should review): section headlines, pillar descriptions, process step copy, Business Consulting page copy, Blog page intro copy.
 
-**Placeholder** (must be replaced): all blog post titles/excerpts/dates, all photography.
+**Placeholder** (must be replaced): all photography. Blog listing excerpts for posts other than the featured one are intentionally empty — they come from Wix.
 
 ---
 
 ## Files
 
 ```
-design-source/          The six page designs — read these for layout, color, type, copy
+design-source/          The seven page designs — read these for layout, color, type, copy
   Homepage.dc.html
   About.dc.html
   Services.dc.html
   Business Consulting.dc.html
   Shop.dc.html
   Blog.dc.html
+  Blog Post.dc.html
 
 rendered-preview/       Open in a browser to see the intended result
   index.html            (Homepage)

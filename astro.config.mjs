@@ -23,11 +23,10 @@ export default defineConfig({
   redirects: {
     // Was its own page on the old site (VOS retainer packages); now a section on Services.
     '/virtualoperationsspecialist': '/services#packages',
-    // Was a dedicated lead-magnet opt-in page; closest equivalent is the Shop's product
-    // row for it. Note this loses the old page's actual opt-in/email-capture flow — it's
-    // a safety net against a dead link for old bookmarks/indexed URLs, not a functional
-    // replacement. Flag to Danielle if that opt-in flow needs to be rebuilt.
-    '/ultimatehiringbundle': '/shop#ultimate-hiring-bundle',
+    // Was a dedicated lead-magnet opt-in page; now the Shop's own #hiring-bundle opt-in
+    // section (src/pages/shop.astro), which actually captures the contact via @wix/crm —
+    // a real functional replacement, not just a safety net for old bookmarks/indexed URLs.
+    '/ultimatehiringbundle': '/shop#hiring-bundle',
     // Was its own page (client logos etc.); folded into a homepage section in the redesign.
     '/portfolio': '/#portfolio',
   },

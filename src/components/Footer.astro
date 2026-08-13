@@ -23,7 +23,11 @@ const businessConsultingHref = linkTo("business-consulting", "/business-consulti
 const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
 const shopHref = linkTo("shop", "/shop");
 const blogHref = linkTo("blog", "/blog");
-const resourcesHref = currentPage === "home" ? "#resources" : "/#resources";
+// Per the updated design-source/Shop.dc.html: "Free Hiring Bundle" now points at the
+// Shop page's #hiring-bundle lead-magnet section (README § "Lead magnet"), not the
+// homepage's own #resources teaser — the lead magnet moved off the product grid into its
+// own opt-in section there, so this is the one link that actually captures the contact.
+const resourcesHref = currentPage === "shop" ? "#hiring-bundle" : "/shop#hiring-bundle";
 const conciergeHref = currentPage === "home" ? "#concierge" : "/#concierge";
 
 const year = new Date().getFullYear();
