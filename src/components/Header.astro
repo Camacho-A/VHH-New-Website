@@ -25,7 +25,10 @@ const linkTo = (key: Props["currentPage"], path: string) => (currentPage === key
 const homeHref = currentPage === "home" ? "#top" : "/";
 const aboutHref = linkTo("about", "/about");
 const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
-const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
+// Portfolio nav item now goes straight to the external Canva portfolio, not the homepage's
+// own #portfolio section (that section still exists on the page, just no longer linked
+// from nav).
+const portfolioHref = "https://canva.link/vhhportfolio";
 const blogHref = linkTo("blog", "/blog");
 
 const servicesHref =

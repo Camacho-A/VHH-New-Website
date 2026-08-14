@@ -20,7 +20,10 @@ const aboutHref = linkTo("about", "/about");
 // go to the actual /services page, not the homepage's #pillars teaser section.
 const servicesHref = currentPage === "home" ? "#pillars" : linkTo("services", "/services");
 const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
-const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
+// Portfolio nav item now goes straight to the external Canva portfolio, not the homepage's
+// own #portfolio section (that section still exists on the page, just no longer linked
+// from nav).
+const portfolioHref = "https://canva.link/vhhportfolio";
 const blogHref = linkTo("blog", "/blog");
 // Standalone opt-in page (src/pages/workbook.astro) for "The Business Operations Glow-Up
 // Workbook" — replaced the old Shop page's #hiring-bundle section once the Shop (product
