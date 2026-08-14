@@ -11,6 +11,14 @@
 // as soon as PUBLIC_WIX_CONTACT_FORM_ID is set, without needing a code change to match
 // whatever exact field IDs Wix generated.
 //
+// (The Shop page's Ultimate Hiring Bundle form does NOT use this module — see
+// src/lib/wixHiringBundleForm.ts for why: importing `forms` here to resolve targets pulls
+// in @wix/auto_sdk_forms_forms, whose ESM entry is ~15MB of source, and blew that page's
+// client bundle out to ~12MB. Hardcoding is the sanctioned approach for a form this fixed
+// anyway — this module keeps the schema-driven resolution for the About form specifically
+// because it isn't wired to a real form yet, so there are no real target strings to
+// hardcode until PUBLIC_WIX_CONTACT_FORM_ID is set; revisit then.)
+//
 // NOT YET WIRED: CAPTCHA. README § Contact form says to enable CAPTCHA on the Wix form.
 // CreateSubmissionOptions accepts an optional captchaToken, but wiring a real token
 // requires knowing the form's spam-filter protection level, which we can't test until
