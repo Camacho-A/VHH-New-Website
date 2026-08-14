@@ -1,9 +1,13 @@
-// Browser-side @wix/forms submission for the Shop page's Ultimate Hiring Bundle opt-in —
-// a real Wix Forms app form (id in PUBLIC_WIX_HIRING_BUNDLE_FORM_ID; confirmed via
+// Browser-side @wix/forms submission for the standalone Workbook page's opt-in
+// (src/pages/workbook.astro; previously the Shop page's #hiring-bundle section before the
+// Shop was removed entirely — this lib didn't need to change, only what page renders the
+// form) — a real Wix Forms app form (id in PUBLIC_WIX_HIRING_BUNDLE_FORM_ID; confirmed via
 // scripts/list-wix-forms.mjs: form named "Ultimate Hiring Bundle" in the wix.form_app.form
-// namespace). A Wix dashboard automation on this form handles the PDF delivery and
-// newsletter subscription, triggered by the submission landing — nothing else for this
-// code to do; it deliberately never sends email itself.
+// namespace — that's the Wix dashboard's internal form name, unrelated to this site's
+// current "Business Operations Glow-Up Workbook" display copy). A Wix dashboard automation
+// on this form handles the PDF delivery and newsletter subscription, triggered by the
+// submission landing — nothing else for this code to do; it deliberately never sends email
+// itself.
 //
 // Deliberately a separate file from src/lib/wixForms.ts (the About form), not a shared
 // helper — importing `forms` (used there to resolve field targets from the live schema)

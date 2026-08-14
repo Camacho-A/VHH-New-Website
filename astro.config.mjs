@@ -23,12 +23,17 @@ export default defineConfig({
   redirects: {
     // Was its own page on the old site (VOS retainer packages); now a section on Services.
     '/virtualoperationsspecialist': '/services#packages',
-    // Was a dedicated lead-magnet opt-in page; now the Shop's own #hiring-bundle opt-in
-    // section (src/pages/shop.astro), which actually captures the contact via @wix/crm —
-    // a real functional replacement, not just a safety net for old bookmarks/indexed URLs.
-    '/ultimatehiringbundle': '/shop#hiring-bundle',
+    // Was a dedicated lead-magnet opt-in page; now the standalone Workbook opt-in page
+    // (src/pages/workbook.astro), which actually captures the contact via @wix/forms — a
+    // real functional replacement, not just a safety net for old bookmarks/indexed URLs.
+    '/ultimatehiringbundle': '/workbook',
     // Was its own page (client logos etc.); folded into a homepage section in the redesign.
     '/portfolio': '/#portfolio',
+    // The Shop (product catalog + cart) was removed from the site entirely; its lead-magnet
+    // opt-in is the one piece that survives, now as its own page. No per-product redirects —
+    // the catalog only existed briefly on this new site and was never the SEO-indexed
+    // legacy URL structure the other rules above are preserving.
+    '/shop': '/workbook',
   },
 
   adapter: wixHostingAdapter(),

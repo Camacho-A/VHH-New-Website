@@ -8,7 +8,7 @@
 // on --bg-alt here, matching the Homepage and Services sources.
 
 export interface Props {
-  currentPage?: "home" | "about" | "services" | "business-consulting" | "shop" | "blog";
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "workbook" | "blog";
 }
 
 const { currentPage = "home" } = Astro.props;
@@ -21,13 +21,11 @@ const aboutHref = linkTo("about", "/about");
 const servicesHref = currentPage === "home" ? "#pillars" : linkTo("services", "/services");
 const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
 const portfolioHref = currentPage === "home" ? "#portfolio" : "/#portfolio";
-const shopHref = linkTo("shop", "/shop");
 const blogHref = linkTo("blog", "/blog");
-// Per the updated design-source/Shop.dc.html: "Free Hiring Bundle" now points at the
-// Shop page's #hiring-bundle lead-magnet section (README § "Lead magnet"), not the
-// homepage's own #resources teaser — the lead magnet moved off the product grid into its
-// own opt-in section there, so this is the one link that actually captures the contact.
-const resourcesHref = currentPage === "shop" ? "#hiring-bundle" : "/shop#hiring-bundle";
+// Standalone opt-in page (src/pages/workbook.astro) for "The Business Operations Glow-Up
+// Workbook" — replaced the old Shop page's #hiring-bundle section once the Shop (product
+// catalog + cart) was removed from the site entirely.
+const workbookHref = linkTo("workbook", "/workbook");
 const conciergeHref = currentPage === "home" ? "#concierge" : "/#concierge";
 
 const year = new Date().getFullYear();
@@ -55,8 +53,7 @@ const year = new Date().getFullYear();
     <div>
       <p class="site-footer__heading">Resources</p>
       <div class="site-footer__links">
-        <a href={shopHref}>Shop</a>
-        <a href={resourcesHref}>Free Hiring Bundle</a>
+        <a href={workbookHref}>Free Workbook</a>
         <a href={conciergeHref}>Content Concierge</a>
         <a href={blogHref}>Blog</a>
         <a href="#contact">Contact</a>

@@ -1,9 +1,9 @@
 // Browser-side @wix/crm contact write — the About page contact form (Name/Email/Message).
-// (The Shop page's Ultimate Hiring Bundle opt-in used to go through here too, but now
-// submits to a real Wix Forms app form instead — see src/lib/wixForms.ts's
-// submitHiringBundleForm.) Same pattern as src/lib/wixForms.ts/wixCart.ts: runs
-// client-side with the same anonymous visitor OAuthStrategy already used for
-// blog/store/cart data — the Client ID is public, not a secret.
+// (The Workbook page's opt-in — formerly the Shop page's Ultimate Hiring Bundle section —
+// used to go through here too, but now submits to a real Wix Forms app form instead — see
+// src/lib/wixHiringBundleForm.ts's submitHiringBundleForm.) Same pattern as
+// src/lib/wixForms.ts: runs client-side with the same anonymous visitor OAuthStrategy
+// already used for blog data — the Client ID is public, not a secret.
 //
 // Uses `submittedContact.appendOrCreateContact`, NOT `contacts.createContact` — tried the
 // latter first (it's the more obvious/literal API for "create a contact") and it 403s from

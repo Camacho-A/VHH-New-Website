@@ -11,8 +11,7 @@ build order this project follows.
 ## Stack
 
 - **Astro** — static-first frontend, deployed to Wix hosting via the Wix CLI
-- **`@wix/sdk`** + `@wix/blog`, `@wix/stores`, `@wix/forms` — talk to the existing Wix site's content
-- **`@wix/ecom`** + `@wix/redirects` — Shop cart and checkout (`src/lib/wixCart.ts`), redirecting to the existing site's own hosted Wix checkout
+- **`@wix/sdk`** + `@wix/blog`, `@wix/forms`, `@wix/crm` — talk to the existing Wix site's content
 - Node **v22.12+** required (see `engines` in `package.json`)
 
 ## Setup
