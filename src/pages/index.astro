@@ -10,6 +10,9 @@ import ImagePlate from "../components/ImagePlate.astro";
 import Quote from "../components/Quote.astro";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+// Content Concierge's "Subscribe" CTA goes to its own Dubsado intake form, not the
+// Calendly consultation link every other CTA on this page uses.
+const CONCIERGE_SUBSCRIBE_HREF = "https://portal.dubsado.com/public/form/view/6a6cf645d9d1d65b27fd79dc";
 
 // Titles/order per the client's rename — anchors are unchanged so existing deep links
 // keep working (README § Services); only the display title, numeral, and list order
@@ -295,7 +298,7 @@ const CREDENTIAL_BADGES = [
           <span class="chip">Researched hashtags</span>
           <span class="chip">Cancel anytime</span>
         </div>
-        <a href={CTA_HREF} class="btn btn--sm">
+        <a href={CONCIERGE_SUBSCRIBE_HREF} class="btn btn--sm">
           Subscribe to Content Concierge
         </a>
         <p class="feature__note">

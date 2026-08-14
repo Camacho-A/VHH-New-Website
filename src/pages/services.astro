@@ -16,6 +16,8 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+// Content Concierge's "Subscribe" CTA goes to its own Dubsado intake form.
+const CONCIERGE_SUBSCRIBE_HREF = "https://portal.dubsado.com/public/form/view/6a6cf645d9d1d65b27fd79dc";
 
 // Titles/numerals/order per the client's rename — `key` values (used to build the
 // #pillar-{key} anchors below) are unchanged so existing deep links keep working; only
@@ -436,7 +438,7 @@ const FILTER_CHIPS = [
           Rather we just create and you post? Receive 20 social media posts, captions, and hashtags each month.
         </p>
       </div>
-      <a href="https://www.thevirtualhelpinghand.com/contentconcierge" class="btn btn--sm">Subscribe to Content Concierge</a>
+      <a href={CONCIERGE_SUBSCRIBE_HREF} class="btn btn--sm">Subscribe to Content Concierge</a>
     </div>
   </section>
 
