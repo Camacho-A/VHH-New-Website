@@ -11,31 +11,34 @@ import Quote from "../components/Quote.astro";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 
+// Titles/order per the client's rename — anchors are unchanged so existing deep links
+// keep working (README § Services); only the display title, numeral, and list order
+// moved. Content Concierge stays a sub-offer of Brand & Digital Presence, now IV.
 const PILLARS = [
   {
     numeral: "I",
-    title: "Business Consulting & Strategy",
-    desc: "We help you figure out what comes next: audits, growth planning, offer and pricing strategy, and the roadmap to scale with intention.",
-    href: "/services#pillar-consulting",
-  },
-  {
-    numeral: "II",
-    title: "Brand & Digital Presence",
-    desc: "A brand and website that reflect where your business is headed, with strategy-led design, copy, and SEO built to attract the right clients.",
-    href: "/services#pillar-brand",
-    concierge: true,
-  },
-  {
-    numeral: "III",
-    title: "Operations & Business Systems",
+    title: "Business Operations",
     desc: "We don't just manage tasks. We build systems that help your business run with efficiency and confidence.",
     href: "/services#pillar-operations",
   },
   {
-    numeral: "IV",
+    numeral: "II",
     title: "Ongoing Business Support",
     desc: "Dedicated Virtual Operations Specialists who go beyond administrative support. We become an extension of your business.",
     href: "/services#pillar-support",
+  },
+  {
+    numeral: "III",
+    title: "Business Consulting",
+    desc: "We help you figure out what comes next: audits, growth planning, offer and pricing strategy, and the roadmap to scale with intention.",
+    href: "/services#pillar-consulting",
+  },
+  {
+    numeral: "IV",
+    title: "Brand & Digital Presence",
+    desc: "A brand and website that reflect where your business is headed, with strategy-led design, copy, and SEO built to attract the right clients.",
+    href: "/services#pillar-brand",
+    concierge: true,
   },
 ];
 

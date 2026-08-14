@@ -17,48 +17,14 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 
+// Titles/numerals/order per the client's rename — `key` values (used to build the
+// #pillar-{key} anchors below) are unchanged so existing deep links keep working; only
+// the display title, numeral, and list order moved.
 const PILLARS = [
   {
-    key: "Consulting",
-    numeral: "I.",
-    title: "Business Consulting & Strategy",
-    problem:
-      "You know the business could be doing better, but you're not sure where to push first, or what to stop doing entirely.",
-    promise: "We help you figure out what comes next.",
-    services: [
-      { name: "Strategy Session", desc: "A focused working call on one pressing decision, with written takeaways.", price: "Free consultation" },
-      { name: "Business Audit", desc: "A full review of operations, offers, and systems with written findings and priorities.", price: "From $1,497" },
-      { name: "Growth Planning", desc: "Long-term growth roadmap. Included in the 6-month experience.", price: "From $3,500" },
-      { name: "Startup Guidance", desc: "Clarity and confidence for a business finding its footing.", price: "From $1,497" },
-      { name: "Offer Development", desc: "Define your offers, pricing, messaging, and ideal client.", price: "From $1,497" },
-      { name: "Pricing Strategy", desc: "Structure and price your offers so the value is clear.", price: "From $1,497" },
-      { name: "Scaling Strategy", desc: "Hiring, delegation, and a sustainable plan to scale without burning out.", price: "From $3,500" },
-      { name: "Ongoing Business Consulting", desc: "Strategic operations planning included in the Scale package.", price: "From $1,450/mo" },
-    ],
-  },
-  {
-    key: "Brand",
-    numeral: "II.",
-    title: "Brand & Digital Presence",
-    problem:
-      "Your business has outgrown how it looks and reads. The right clients can't tell what you do, or why you're the one to do it.",
-    promise: "Create a brand and online presence that supports your growth.",
-    services: [
-      { name: "Logo Design", desc: "The right mark for your business, with unlimited edits until it is right.", price: "$297" },
-      { name: "Build a Website", desc: "Built on Wix, Shopify, or Squarespace around how customers actually move through your business.", price: "From $1,150" },
-      { name: "Website Maintenance", desc: "Keeping your site updated, secure, and running smoothly.", price: "$297" },
-      { name: "Email Marketing", desc: "Campaign design and automated sequences set up for you.", price: "$397, or $1,000 for 3 months" },
-      { name: "Graphic Design", desc: "Social posts, announcements, banners, and one-off pieces.", price: "$65 to $75" },
-      { name: "eBook Design", desc: "Workbooks, guides, and journals for coaches and consultants.", price: "From $379" },
-      { name: "PowerPoint Presentation", desc: "A professional deck for your upcoming presentation.", price: "From $197" },
-      { name: "Content Concierge", desc: "20 posts, captions, and hashtags each month. We create, you post.", price: "Subscription" },
-      { name: "SEO & Website Copy", desc: "Words and structure that help the right people find you.", price: "Quoted at consultation" },
-    ],
-  },
-  {
     key: "Operations",
-    numeral: "III.",
-    title: "Operations & Business Systems",
+    numeral: "I.",
+    title: "Business Operations",
     problem: "The work gets done because you remember to do it. Nothing is written down, and nothing runs without you.",
     promise: "Build systems that make your business easier to run.",
     services: [
@@ -75,7 +41,7 @@ const PILLARS = [
   },
   {
     key: "Support",
-    numeral: "IV.",
+    numeral: "II.",
     title: "Ongoing Business Support",
     problem: "The strategy exists and the systems are built. Now someone has to actually run them, week after week.",
     promise: "You don't have to run everything alone.",
@@ -89,6 +55,43 @@ const PILLARS = [
       { name: "Project Coordination", desc: "Task assignment and progress tracking. Included in Optimize.", price: "From $950/mo" },
       { name: "Social Media Management", desc: "Full posting and engagement, by monthly tier.", price: "From $550/mo" },
       { name: "Virtual Operations Specialist", desc: "An ongoing partner embedded in how your business runs.", price: "From $700/mo" },
+    ],
+  },
+  {
+    key: "Consulting",
+    numeral: "III.",
+    title: "Business Consulting",
+    problem:
+      "You know the business could be doing better, but you're not sure where to push first, or what to stop doing entirely.",
+    promise: "We help you figure out what comes next.",
+    services: [
+      { name: "Strategy Session", desc: "A focused working call on one pressing decision, with written takeaways.", price: "Free consultation" },
+      { name: "Business Audit", desc: "A full review of operations, offers, and systems with written findings and priorities.", price: "From $1,497" },
+      { name: "Growth Planning", desc: "Long-term growth roadmap. Included in the 6-month experience.", price: "From $3,500" },
+      { name: "Startup Guidance", desc: "Clarity and confidence for a business finding its footing.", price: "From $1,497" },
+      { name: "Offer Development", desc: "Define your offers, pricing, messaging, and ideal client.", price: "From $1,497" },
+      { name: "Pricing Strategy", desc: "Structure and price your offers so the value is clear.", price: "From $1,497" },
+      { name: "Scaling Strategy", desc: "Hiring, delegation, and a sustainable plan to scale without burning out.", price: "From $3,500" },
+      { name: "Ongoing Business Consulting", desc: "Strategic operations planning included in the Scale package.", price: "From $1,450/mo" },
+    ],
+  },
+  {
+    key: "Brand",
+    numeral: "IV.",
+    title: "Brand & Digital Presence",
+    problem:
+      "Your business has outgrown how it looks and reads. The right clients can't tell what you do, or why you're the one to do it.",
+    promise: "Create a brand and online presence that supports your growth.",
+    services: [
+      { name: "Logo Design", desc: "The right mark for your business, with unlimited edits until it is right.", price: "$297" },
+      { name: "Build a Website", desc: "Built on Wix, Shopify, or Squarespace around how customers actually move through your business.", price: "From $1,150" },
+      { name: "Website Maintenance", desc: "Keeping your site updated, secure, and running smoothly.", price: "$297" },
+      { name: "Email Marketing", desc: "Campaign design and automated sequences set up for you.", price: "$397, or $1,000 for 3 months" },
+      { name: "Graphic Design", desc: "Social posts, announcements, banners, and one-off pieces.", price: "$65 to $75" },
+      { name: "eBook Design", desc: "Workbooks, guides, and journals for coaches and consultants.", price: "From $379" },
+      { name: "PowerPoint Presentation", desc: "A professional deck for your upcoming presentation.", price: "From $197" },
+      { name: "Content Concierge", desc: "20 posts, captions, and hashtags each month. We create, you post.", price: "Subscription" },
+      { name: "SEO & Website Copy", desc: "Words and structure that help the right people find you.", price: "Quoted at consultation" },
     ],
   },
 ];
@@ -225,17 +228,17 @@ const BRANDING_TIERS = [
 
 const FILTER_CHIPS = [
   { label: "All Services", key: "All" },
-  { label: "Consulting & Strategy", key: "Consulting" },
-  { label: "Brand & Digital", key: "Brand" },
-  { label: "Operations & Systems", key: "Operations" },
+  { label: "Business Operations", key: "Operations" },
   { label: "Ongoing Support", key: "Support" },
+  { label: "Business Consulting", key: "Consulting" },
+  { label: "Brand & Digital", key: "Brand" },
 ];
 ---
 
 <BaseLayout
   currentPage="services"
   title="Services | The Virtual Helping Hand"
-  description="Every service we offer sits inside one of four pillars: Consulting, Brand, Operations, and Support."
+  description="Every service we offer sits inside one of four pillars: Operations, Support, Consulting, and Brand."
 >
   <!-- ============ HERO ============ -->
   <section id="top" class="hero">

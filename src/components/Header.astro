@@ -41,11 +41,13 @@ const servicesActive = currentPage === "services";
 // the mobile nav toggle below.
 const showCart = currentPage === "shop";
 
+// Pillar titles/order per the client's rename — anchors are unchanged so existing deep
+// links keep working; only the display title, numeral, and list order moved.
 const PILLARS = [
-  { href: "/services#pillar-consulting", title: "Business Consulting & Strategy" },
-  { href: "/services#pillar-brand", title: "Brand & Digital Presence" },
-  { href: "/services#pillar-operations", title: "Operations & Business Systems" },
+  { href: "/services#pillar-operations", title: "Business Operations" },
   { href: "/services#pillar-support", title: "Ongoing Business Support" },
+  { href: "/services#pillar-consulting", title: "Business Consulting" },
+  { href: "/services#pillar-brand", title: "Brand & Digital Presence" },
 ];
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";

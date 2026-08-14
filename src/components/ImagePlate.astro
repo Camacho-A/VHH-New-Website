@@ -25,6 +25,11 @@ export interface Props {
   /** Raw CSS `border` value applied directly to the image, independent of the plate's
    * own outline — e.g. a white frame around a photo sitting on a busy/dark background. */
   imgBorder?: string;
+  /** Overrides the plate's mat background (default var(--bg-alt)) — e.g. the Shop page's
+   * beige product cards swap the usual cream/mat pairing, so the mat needs to go cream
+   * instead of the page's default beige-alt. Applied as a CSS custom property the plate's
+   * own styles read, so it covers both the padding mat and the "contain" letterbox fill. */
+  matColor?: string;
 }
 
 const {
@@ -37,12 +42,14 @@ const {
   fit = "cover",
   bare = false,
   imgBorder,
+  matColor,
 } = Astro.props;
 
 const imgStyle = imgBorder ? `border:${imgBorder};` : undefined;
+const figureStyle = `aspect-ratio:${aspectRatio};${matColor ? ` --plate-mat-bg:${matColor};` : ""}`;
 ---
 
-<figure class:list={["plate", { "plate--bare": bare }]} style={`aspect-ratio:${aspectRatio}`}>
+<figure class:list={["plate", { "plate--bare": bare }]} style={figureStyle}>
   {
     src ? (
       <img
@@ -64,7 +71,7 @@ const imgStyle = imgBorder ? `border:${imgBorder};` : undefined;
   .plate {
     margin: 0;
     padding: 6px;
-    background: var(--bg-alt);
+    background: var(--plate-mat-bg, var(--bg-alt));
     outline: 1px solid var(--rule);
     width: 100%;
   }
@@ -83,7 +90,7 @@ const imgStyle = imgBorder ? `border:${imgBorder};` : undefined;
 
   .plate__img--contain {
     object-fit: contain;
-    background: var(--bg-alt);
+    background: var(--plate-mat-bg, var(--bg-alt));
   }
 
   .plate__img--filtered {

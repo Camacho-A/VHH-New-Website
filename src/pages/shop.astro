@@ -14,9 +14,11 @@
 // pages behave identically).
 //
 // Per README § "Lead magnet": the Ultimate Hiring Bundle is NOT a product — it's no longer
-// in the grid or cart at all, replaced by an email opt-in section (#hiring-bundle) that
-// creates/updates a Wix contact via @wix/crm (src/lib/wixCrm.ts). Sending a free item
-// through checkout was a $0 order that defeated the point (capturing the contact).
+// in the grid or cart at all, replaced by an email opt-in section (#hiring-bundle). Submits
+// to a real Wix Forms app form (src/lib/wixHiringBundleForm.ts, PUBLIC_WIX_HIRING_BUNDLE_FORM_ID) — a
+// dashboard automation on that form handles the PDF delivery and newsletter subscription,
+// triggered by the submission landing; nothing else for the frontend to do. Sending a free
+// item through checkout was a $0 order that defeated the point (capturing the contact).
 //
 // Category chips and Add-to-Cart/qty/checkout are client-side (src/lib/wixCart.ts uses the
 // browser-safe PUBLIC_WIX_DATA_CLIENT_ID, same as src/lib/wixForms.ts) — the cart is
@@ -115,7 +117,7 @@ const productSchema = {
         PRODUCTS.map((p) => (
           <article id={p.slug} class="product-card" data-product-category={p.category}>
             <div class="product-card__photo-wrap">
-              <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} fit="contain" />
+              <ImagePlate src={p.image} alt={p.name} aspectRatio="4/3" label={p.imageLabel} fit="contain" matColor="var(--bg)" />
               {p.ribbon && <span class="product-card__ribbon">{p.ribbon}</span>}
             </div>
             <div class="product-card__body">
@@ -203,7 +205,7 @@ const productSchema = {
 </BaseLayout>
 
 <script>
-  import { submitHiringBundleLead } from "../lib/wixCrm";
+  import { submitHiringBundleForm } from "../lib/wixHiringBundleForm";
 
   // Category filter chips — pure client-side show/hide of the already-rendered grid
   // (see the frontmatter comment: every product's full content is in the initial HTML
@@ -261,7 +263,7 @@ const productSchema = {
       }
 
       try {
-        await submitHiringBundleLead(firstName, email);
+        await submitHiringBundleForm(firstName, email);
         leadForm.hidden = true;
         leadSuccess.hidden = false;
       } catch (err) {
@@ -359,6 +361,7 @@ const productSchema = {
   .product-card {
     display: flex;
     flex-direction: column;
+    background: var(--bg-alt);
     border: 1px solid var(--rule);
     border-radius: var(--radius-card);
     overflow: hidden;
