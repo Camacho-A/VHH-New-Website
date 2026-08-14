@@ -176,6 +176,7 @@ const CREDENTIAL_BADGES = [
               {p.concierge && (
                 <a href="#concierge" class="pillar-row__concierge">
                   <span>Subscription</span>Content Concierge
+                  <span class="pillar-row__concierge-price">$300/mo</span>
                 </a>
               )}
             </div>
@@ -286,7 +287,8 @@ const CREDENTIAL_BADGES = [
           <span class="concierge__sub">Subscription</span>
           <p class="kicker" style="margin:0;">Within Brand &amp; Digital Presence</p>
         </div>
-        <h2 class="feature__title" style="margin-bottom:20px;">Content Concierge</h2>
+        <h2 class="feature__title" style="margin-bottom:12px;">Content Concierge</h2>
+        <p class="concierge__price">$300/mo</p>
         <p class="concierge__desc">
           Receive 20 social media posts, captions, and hashtags designed for your business each month. We
           create, and you post! A steady presence without the monthly scramble, and without hiring a full
@@ -762,6 +764,16 @@ const CREDENTIAL_BADGES = [
     border: 1px solid rgba(182, 130, 53, 0.5);
     border-radius: var(--radius-chip);
     padding: 5px 10px;
+  }
+
+  .concierge__price {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-deep);
+    margin-bottom: 16px;
   }
 
   .concierge__desc {
