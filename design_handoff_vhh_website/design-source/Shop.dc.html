@@ -34,6 +34,7 @@
           <a href="Business%20Consulting.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Business Consulting</a>
           <a href="Homepage.dc.html#portfolio" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Portfolio</a>
           <a href="#top" style="font-size:14px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px;">Shop</a>
+          <a href="Webinar.dc.html" style="font-size:14px; color:#6b4423;" style-hover="color:#2b1f16;">Webinar</a>
           <a href="Blog.dc.html" style="font-size:14px; color:#2b1f16;" style-hover="color:#6b4423;">Blog</a>
         </nav>
         <button onClick="{{ toggleCart }}" style="border:1px solid #b68235; background:transparent; color:#6b4423; padding:11px 20px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:14.5px; white-space:nowrap; flex-shrink:0; cursor:pointer; display:flex; align-items:center; gap:9px;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">
@@ -59,6 +60,7 @@
         <a href="Business%20Consulting.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Business Consulting</a>
         <a href="Homepage.dc.html#portfolio" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Portfolio</a>
         <a href="#top" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#6b4423; border-bottom:1px solid rgba(43,31,22,0.12);">Shop</a>
+        <a href="Webinar.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#6b4423; border-bottom:1px solid rgba(43,31,22,0.12);">Webinar</a>
         <a href="Blog.dc.html" onClick="{{ toggleMenu }}" style="padding:14px 4px; font-size:17px; color:#2b1f16; border-bottom:1px solid rgba(43,31,22,0.12);">Blog</a>
       </div>
     </sc-if>
@@ -131,9 +133,9 @@
   <section style="max-width:1360px; margin:0 auto; padding:clamp(32px,4vw,48px) clamp(20px,4vw,32px) clamp(56px,7vw,90px);">
     <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr)); gap:clamp(24px,3vw,36px);">
       <sc-for list="{{ visible }}" as="p" hint-placeholder-count="4">
-        <article id="{{ p.slug }}" style="display:flex; flex-direction:column; border:1px solid rgba(43,31,22,0.16); border-radius:6px; overflow:hidden; background:#f9f4ea; scroll-margin-top:96px;">
+        <article id="{{ p.slug }}" style="display:flex; flex-direction:column; border:1px solid rgba(43,31,22,0.16); border-radius:6px; overflow:hidden; background:#efe6d3; scroll-margin-top:96px;">
           <div style="position:relative;">
-            <figure style="margin:0; padding:6px; background:#efe6d3; border-bottom:1px solid rgba(43,31,22,0.16);">
+            <figure style="margin:0; padding:6px; background:#f9f4ea; border-bottom:1px solid rgba(43,31,22,0.16);">
               <image-slot id="{{ p.slotId }}" shape="rect" style="width:100%;height:100%;aspect-ratio:4/3;" placeholder="{{ p.placeholder }}"></image-slot>
             </figure>
             <sc-if value="{{ p.hasRibbon }}" hint-placeholder-val="{{ false }}">
@@ -232,6 +234,7 @@
         <p style="font-size:12px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:#6b4423; margin:0 0 16px;">Resources</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
           <a href="#top" style="font-size:14px; color:#2b1f16;">Shop</a>
+          <a href="Webinar.dc.html" style="font-size:14px; color:#2b1f16;">Email Marketing Webinar</a>
           <a href="#hiring-bundle" style="font-size:14px; color:#2b1f16;">Free Hiring Bundle</a>
           <a href="Homepage.dc.html#concierge" style="font-size:14px; color:#2b1f16;">Content Concierge</a>
           <a href="Blog.dc.html" style="font-size:14px; color:#2b1f16;">Blog</a>
@@ -248,7 +251,7 @@
     </div>
     <div style="max-width:1360px; margin:0 auto; border-top:1px solid rgba(43,31,22,0.16); padding-top:24px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px;">
       <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">© 2026 The Virtual Helping Hand. All rights reserved.</p>
-      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">Proudly powered by dependable and loyal military spouses and stay-at-home moms.</p>
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">Proudly powered by military spouses and stay at home moms.</p>
     </div>
   </footer>
 

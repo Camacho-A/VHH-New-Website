@@ -2,7 +2,7 @@
 
 ## Overview
 
-A **seven-page** redesign of thevirtualhelpinghand.com, repositioning VHH from a virtual assistant company to a **business growth partner**. The site organizes everything around four service pillars and tells one story: *strategy → digital presence → systems → ongoing support.*
+An **eight-page** redesign of thevirtualhelpinghand.com, repositioning VHH from a virtual assistant company to a **business growth partner**. The site organizes everything around four service pillars and tells one story: *strategy → digital presence → systems → ongoing support.*
 
 **Target implementation: Wix Headless.** Astro frontend deployed to Wix hosting, with the client's **existing** Wix site as the backend for CMS, blog, store, and forms.
 
@@ -76,12 +76,12 @@ Never bold. Emphasis comes from size and italics. Prices set `font-variant-numer
 Sections in order:
 1. **Hero** — headline "build a business that works as hard as you do.", subcopy, two CTAs (Schedule a Consultation / Explore How We Help), plate photo
 2. **Trust strip** — "Strategy + Execution + Ongoing Support"
-3. **Four pillars** — numbered editorial rows (I–IV), each with title, description, Learn More deep-linking to `/services#pillar-{key}`
+3. **Four pillars** — numbered editorial rows (I–IV), each with title, description, Learn More deep-linking to `/services#pillar-{key}`. **Order is fixed and client-specified:** I. Business Operations, II. Ongoing Business Support, III. Business Consulting, IV. Brand & Digital Presence. Do not re-sort them.
 4. **"You don't need more on your plate"** — editorial problem/solution block
 5. **How We Work** — 01 Discover / 02 Strategize / 03 Build / 04 Support
 6. **Consulting feature** — CTA to Business Consulting page
 7. **Digital/website feature** — Wix Partner credibility
-8. **Content Concierge** — subscription sub-offer of Pillar II (anchor `#concierge`)
+8. **Content Concierge** — subscription sub-offer of Pillar IV, Brand & Digital Presence (anchor `#concierge`)
 9. **Operations feature**
 10. **Testimonials** — one real quote (Miraque Gilbert-Woods)
 11. **Honored to Have Worked With** — 4 client logos, centered flex row
@@ -93,7 +93,7 @@ Sections in order:
 Hero → How It Started → philosophy ("We Don't Just Complete Tasks") with 5 capability cells → meet Danielle (940px centered block, 360px portrait, no border) → Gandhi quote → contact form + social icons.
 
 ### 3. Services (`Services.dc.html`)
-Four **collapsible pillar accordions**. Each opens to a list of individual services with name, description, and price. Supports deep links: `#pillar-consulting`, `#pillar-brand`, `#pillar-operations`, `#pillar-support` — the hash **opens** that pillar and scrolls it under the sticky header. Also includes VOS retainer packages ($700 / $950 / $1,450) and add-on services.
+Four **collapsible pillar accordions** in the fixed order above. Each opens to a list of individual services with name, description, and price. Supports deep links: `#pillar-operations`, `#pillar-support`, `#pillar-consulting`, `#pillar-brand` `#pillar-support` — the hash **opens** that pillar and scrolls it under the sticky header. Also includes VOS retainer packages ($700 / $950 / $1,450) and add-on services.
 
 ### 4. Business Consulting (`Business Consulting.dc.html`)
 Flagship page. Hero → "you may need consulting if" recognition list → what we work on → three offers (Strategy Session / Business Growth Intensive / Ongoing Consulting) → process → FAQ → CTA.
@@ -105,6 +105,8 @@ A **working storefront**, not a link-out to the Wix shop. Contains:
 - Product grid with cover image, ribbon, name, description, price, compare-at price
 - Add to cart, with a slide-out cart drawer: line items, quantity steppers, live subtotal, checkout
 - The free Hiring Bundle is **not** in this grid — it's an email opt-in in its own section (see Lead magnet below)
+
+**Product detail route.** Each product needs its own page at `/shop/[slug]`, generated from the Wix catalog — never a link back to the old wix.com storefront. "Details" on a card goes there. Build the page on the same editorial layout as the blog post: plate image, name, price, description from the catalog, add-to-cart, and the same cart drawer. Include `Product` JSON-LD on each detail page as well as the listing.
 
 The product objects are shaped to match Wix Stores (`_id`, `slug`, `name`, `description`, `price`, `compareAtPrice`, `ribbon`, `category`) so the array swaps directly for `products.queryProducts()`. Cart state should move to `@wix/ecom` `currentCart`; checkout creates a Wix checkout session.
 
@@ -131,12 +133,67 @@ Wix rich-text nodes map onto these block types:
 
 Also includes tag row, author block, and a related-posts grid (`@wix/blog` related query).
 
+### 8. Webinar (`Webinar.dc.html`) — TEMPORARY PAGE
+
+A standalone paid-webinar landing page. **It comes down after the event** — build it so removal is one deletion plus a redirect, not an unpick.
+
+Route as `/webinar`. It deliberately has no site nav (minimal header, one link back home) because the only job is registration.
+
+**Confirmed event facts — all client-supplied, do not alter:**
+
+| | |
+|---|---|
+| Title | Email Marketing Do's and Don'ts — For Service Based Businesses |
+| Host | Danielle McDougald |
+| Date | Tuesday, September 2, 11:00 AM Eastern |
+| Platform | Live on Zoom |
+| Early bird | $20, through Aug 26 (11:59 PM Eastern) |
+| Regular | $27, Aug 27 onward |
+| Replay | Included for everyone who pays |
+
+Page content (agenda, the three email types, the four Don'ts, Danielle's bio) is lifted from the client's actual webinar deck. Do not rewrite it.
+
+The attendee offer section is **a deliberate teaser** — "everyone who attends leaves with an exclusive offer," revealed live. The client explicitly does not want the specifics on the page. Do not fill in a discount or price.
+
+#### Registration + payment flow
+
+Two steps, in this order:
+
+1. **Form submit** → Wix standalone form (`@wix/forms` `createSubmission`) + create/update the Wix contact. Fields: `firstName` (required), `email` (required), `businessName` (optional), `frequency` (dropdown: Never / Occasionally / Monthly / Weekly — this is audience segmentation the client wants). Confirmation reads "Your spot is held", **not** "You're registered" — the seat is not confirmed until payment.
+2. **Payment** → **Stripe Payment Link** (external, not Wix checkout). Two links exist, one per price tier. The success panel presents the correct one as a button.
+
+Two automations, split on trigger:
+
+- **On form submission:** add the contact, send a "we're holding your spot" email. Must NOT send the Zoom link.
+- **On payment received:** send the Zoom joining link + calendar invite, tag the contact as paid, and send the replay after the session.
+
+The joining link must never go out on form submission alone — the webinar is paid.
+
+#### ⚠️ Price tier must be decided SERVER-SIDE
+
+The design file computes the active tier with `new Date() < cutoff` in the browser. **Do not carry that into production.** It drives which price shows *and which Stripe link the buyer is sent to*, so a visitor with a skewed clock — or simply one whose local date reads Aug 26 while it is already Aug 27 Eastern — gets served the $20 checkout after the cutoff.
+
+Required:
+- Evaluate the cutoff **server-side** in Astro (the page is statically generated; use a scheduled rebuild or an SSR endpoint for the price block).
+- Explicitly compare in **America/New_York**, not the visitor's zone or UTC.
+- Set the $20 Stripe Payment Link to **expire on Aug 27** in the Stripe dashboard as a hard backstop, so a stale link cannot be paid at the old price.
+
+#### Retirement
+
+After September 2:
+1. Send the replay to paying attendees
+2. Delete the homepage announcement bar (`#webinar-announce`), the "Webinar" nav item on all pages, and the footer link
+3. 301 `/webinar` → the Shop page or homepage so shared links don't 404
+4. Deactivate both Stripe Payment Links
+
 ---
 
 ## Global Components
 
 ### Navigation
-Sticky, `rgba(249,244,234,0.96)` with `backdrop-filter: blur(6px)`, bottom hairline. Items: Home, About, Services, Business Consulting, Portfolio, Shop, Blog + "Schedule a Consultation" button.
+Sticky, `rgba(249,244,234,0.96)` with `backdrop-filter: blur(6px)`, bottom hairline. Items: Home, About, Services, Business Consulting, Portfolio, Shop, Blog, Webinar + "Schedule a Consultation" button.
+
+**Above the nav on the homepage:** a dark `#2b1f16` full-width announcement bar (`#webinar-announce`) linking to `/webinar` — "LIVE WEBINAR · Email Marketing Do's and Don'ts · September 2 · 11:00 AM ET · $20 early bird through Aug 26 · Reserve your spot". This is temporary; see the Webinar page's Retirement notes.
 
 **Services dropdown** (desktop): opens on hover, lists the four pillars + Content Concierge + All Services. The menu is positioned at `top:100%` with its own `padding-top:14px` forming an unbroken hover bridge — do not reintroduce a gap between trigger and menu.
 
@@ -220,7 +277,28 @@ The client is experienced with Wix but not with code. Push as much as possible i
 The rule of thumb: **if it's a list of similar things, it belongs in the CMS.** Only page structure and layout should require code changes.
 
 
-### Contact form (About page)
+### ⚠️ Client ID: point at the NEW headless project
+
+The client is migrating everything into a **new headless project** and retiring the old site. All forms, contacts, blog posts, products, and campaigns will live in the new project's dashboard.
+
+**Every form on this site must write to the NEW project**, not the old site. Use the new project's Client ID in `.env`. If you were previously given the old site's Client ID, replace it.
+
+Verify before building anything else: submit a test form and confirm the contact appears in the **new** project's Contacts list. If it lands in the old dashboard, the wrong Client ID is in use.
+
+### Forms — all of them write contacts
+
+Four forms exist across the site. Every one creates or updates a contact in the new project:
+
+| Form | Page | Fields | Also does |
+|---|---|---|---|
+| Contact | About (`#contact`) | `name`, `email`, `message` | Notification to Danielle |
+| Hiring Bundle opt-in | Shop (`#hiring-bundle`) | `firstName`, `email` | Subscribes to newsletter list, emails the download |
+| Webinar registration | Webinar (`#register`) | `firstName`, `email`, `businessName`, `frequency` | Holds the spot, then hands off to Stripe — see the Webinar page section |
+| Consultation enquiries | any CTA | via Calendly or `@wix/bookings` | — |
+
+Use `@wix/crm` `contacts.createContact()` / `queryContacts()` so submissions land in Contacts, and `@wix/forms` for the submission record. Deduplicate on email — an existing contact is updated, not duplicated.
+
+
 
 Use **`@wix/forms`**, not a custom CMS write — submissions must land in the client's existing Wix dashboard so their current notifications, Contacts records, and automations keep working.
 
@@ -268,7 +346,7 @@ Footer links labelled "Free Hiring Bundle" across all pages point at `#hiring-bu
 
 **`CaseStudies`** — `title`, `slug`, `client`, `challenge` (rich text), `whatWeDid` (rich text), `solution` (rich text), `outcome` (rich text), `servicesUsed` (tags), `coverImage` (image), `order`
 
-**`Services`** — `name`, `description`, `price` (text — ranges like "From $1,497"), `pillar` (reference/enum: Consulting | Brand | Operations | Support), `order`
+**`Services`** — `name`, `description`, `price` (text — ranges like "From $1,497"), `pillar` (reference/enum: Operations | Support | Consulting | Brand — enum keys are unchanged from the anchors; display titles are Business Operations, Ongoing Business Support, Business Consulting, Brand & Digital Presence), `order`
 
 **`FAQs`** — `question`, `answer` (rich text), `page` (enum), `order`
 
@@ -284,8 +362,9 @@ Footer links labelled "Free Hiring Bundle" across all pages point at `#hiring-bu
 5. Wire the contact form (`@wix/forms`) and confirm a test submission appears in the client's Wix dashboard
 6. Wire Blog (`@wix/blog`) and Shop (`@wix/stores`) against the real existing content
 7. Create the CMS collections, then wire Services, testimonials, logos, and credentials
-8. Deploy to Wix hosting with the Wix CLI
-9. Add production URLs to Wix redirect settings, then repoint the domain **last**
+8. **Webinar page — time-critical.** The event is September 2, so this may need to ship ahead of the rest. It has no CMS dependencies, so it can be built and deployed early. Server-side price tier, both Stripe links, both automations, and a test purchase end to end before it goes live.
+9. Deploy to Wix hosting with the Wix CLI
+10. Add production URLs to Wix redirect settings, then repoint the domain **last**
 
 ### SEO — do not skip
 
@@ -341,6 +420,7 @@ design-source/          The seven page designs — read these for layout, color,
   Shop.dc.html
   Blog.dc.html
   Blog Post.dc.html
+  Webinar.dc.html       (temporary — comes down after Sept 2)
 
 rendered-preview/       Open in a browser to see the intended result
   index.html            (Homepage)

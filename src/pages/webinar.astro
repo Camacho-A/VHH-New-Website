@@ -1,0 +1,1155 @@
+---
+// TEMPORARY paid-webinar landing page (README § "8. Webinar") — comes down after the
+// Sept 2 event. Built so removal is one deletion plus a redirect: this whole file goes,
+// plus the announcement bar in index.astro, the "Webinar" nav item in Header.astro, and
+// the footer link in Footer.astro (all marked "temporary"), plus a 301 /webinar -> /shop
+// (or home) added to astro.config.mjs. See README § Webinar > Retirement.
+//
+// Server-rendered per request (site-wide `output: 'server'`, no `prerender` override), so
+// the price tier below is evaluated on the server at request time — never in the browser.
+//
+// Renders WITHOUT the shared site nav (BaseLayout `bare`): the only job is registration, so
+// it has its own minimal header (logo + one link) and footer, per the README.
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ImagePlate from "../components/ImagePlate.astro";
+
+// ── Price tier — decided SERVER-SIDE, in America/New_York (README § "Price tier must be
+// decided SERVER-SIDE"). The design file used `new Date()` in the browser as a placeholder;
+// that is deliberately NOT carried over, because it picks which Stripe link the buyer gets
+// and a skewed/behind visitor clock would serve the $20 checkout after the cutoff.
+//
+// Early bird runs through 11:59 PM on Aug 26 in America/New_York. Late August is EDT
+// (UTC-4), so that Eastern wall-clock instant is 2026-08-27T03:59:00Z. Comparing absolute
+// instants (epoch ms) is timezone-safe regardless of the server's own zone — the Eastern
+// framing is baked into the cutoff instant itself, not left to the runtime's local zone.
+// A hard backstop still lives in Stripe: the $20 link is set to expire on Aug 27.
+const EARLY_BIRD_CUTOFF = new Date("2026-08-27T03:59:00Z");
+const isEarly = Date.now() < EARLY_BIRD_CUTOFF.getTime();
+
+const activePrice = isEarly ? "$20" : "$27";
+const badgeLabel = isEarly ? "$20 Early Bird Through Aug 26" : "$27 Regular Price";
+const submitLabel = `Continue to Payment · ${activePrice}`;
+const payLabel = `Pay ${activePrice} with Stripe`;
+
+// Stripe Payment Links (external — NOT Wix checkout), one per tier. Presented server-side so
+// the browser never picks the link. Empty until the client provides them; the success panel
+// keeps a visible "coming soon" note and a disabled button rather than a dead link.
+const stripeEarly = import.meta.env.PUBLIC_WEBINAR_STRIPE_URL_EARLY ?? "";
+const stripeRegular = import.meta.env.PUBLIC_WEBINAR_STRIPE_URL_REGULAR ?? "";
+const activeStripeUrl = isEarly ? stripeEarly : stripeRegular;
+const checkoutReady = activeStripeUrl.length > 0;
+
+// ── Page content — lifted verbatim from the client's webinar deck (README: "Do not
+// rewrite it"). The attendee offer stays a teaser; do not add a discount or price.
+const AGENDA = [
+  { num: "I", text: "Why email marketing still works" },
+  { num: "II", text: "The types of emails service providers should send" },
+  { num: "III", text: "Common mistakes that turn subscribers away" },
+  { num: "IV", text: "What makes emails effective" },
+  { num: "V", text: "Real examples of good and bad emails" },
+];
+
+const EMAIL_TYPES = [
+  {
+    num: "I",
+    title: "Story or personal experience",
+    desc: "A real moment, the lesson in it, and how that ties back to what you offer. Longer and narrative driven.",
+  },
+  {
+    num: "II",
+    title: "Tips or helpful emails",
+    desc: "Short, direct, and practical. Quick wins your reader can put to work the same week.",
+  },
+  {
+    num: "III",
+    title: "Soft connection or support",
+    desc: "Validation and encouragement. These remind your audience you understand them.",
+  },
+];
+
+const DONTS = [
+  {
+    num: "I",
+    title: "Only emailing when you sell",
+    desc: "If the only time someone hears from you is when you want money, your emails feel transactional. Build trust first.",
+  },
+  {
+    num: "II",
+    title: "Writing like a robot",
+    desc: '"Hello valued subscriber" sounds cold and impersonal. Your emails should sound like a real conversation.',
+  },
+  {
+    num: "III",
+    title: "Overcomplicating the email",
+    desc: "Too many topics, too many links, huge blocks of text, no clear direction. One email, one purpose.",
+  },
+  {
+    num: "IV",
+    title: "Oversharing personal struggles",
+    desc: "There is a line between connection and desperation. Your audience wants honesty and confidence in your expertise.",
+  },
+];
+
+const FOR_YOU = [
+  "You run a service based business",
+  "You have a list but rarely email it",
+  "You're not sure what to write about",
+  "Your emails only go out when you have something to sell",
+  "You're starting from zero subscribers",
+];
+
+// The frequency dropdown's option VALUES must match the Wix form's exact option strings
+// (Never / Occasionally / Monthly / Weekly) so the submission lands as clean segmentation.
+const FREQUENCY_OPTIONS = ["Never", "Occasionally", "Monthly", "Weekly"];
+
+const eventDate = "Tuesday, September 2";
+const eventTime = "11:00 AM Eastern";
+const eventPlace = "Live on Zoom";
+---
+
+<BaseLayout
+  bare
+  currentPage="webinar"
+  title="Email Marketing Do's and Don'ts — Live Webinar | The Virtual Helping Hand"
+  description="A live webinar for service based businesses: learn to write emails that build trust and bring in clients. September 2, 11:00 AM Eastern, on Zoom. Replay included."
+>
+  <!-- ============ MINIMAL HEADER (no site nav — registration only) ============ -->
+  <header class="wb-header">
+    <div class="wb-header__bar">
+      <a href="/" class="wb-header__logo">The Virtual Helping Hand</a>
+      <a href="#register" class="wb-header__link">Reserve Your Spot</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="wb-hero">
+    <div class="wb-hero__grid">
+      <div>
+        <div class="wb-hero__tags">
+          <span class="wb-badge">Live Webinar</span>
+          <span class="wb-badge wb-badge--num">{badgeLabel}</span>
+          <p class="wb-hero__kicker">For Service Based Businesses</p>
+        </div>
+        <h1 class="wb-hero__title">Email Marketing Do's and Don'ts</h1>
+        <p class="wb-hero__lede">
+          Learn how to write emails that build relationships, build trust, and bring in clients. By the end
+          you'll have a simple framework you can start using immediately.
+        </p>
+
+        <div class="wb-facts">
+          <div>
+            <p class="wb-facts__label">Date</p>
+            <p class="wb-facts__value">{eventDate}</p>
+          </div>
+          <div>
+            <p class="wb-facts__label">Time</p>
+            <p class="wb-facts__value">{eventTime}</p>
+          </div>
+          <div>
+            <p class="wb-facts__label">Where</p>
+            <p class="wb-facts__value">{eventPlace}</p>
+          </div>
+        </div>
+
+        <a href="#register" class="wb-btn">Reserve Your Spot</a>
+        <p class="wb-hero__note">Can't make it live? Everyone who pays gets the replay.</p>
+      </div>
+
+      <ImagePlate
+        aspectRatio="4/5"
+        label="Photo of Danielle, or a laptop-at-desk shot"
+      />
+    </div>
+  </section>
+
+  <!-- ============ WHAT WE'LL COVER ============ -->
+  <section class="wb-band">
+    <div class="wb-band__inner">
+      <h2 class="wb-h2">What we'll cover</h2>
+      <p class="wb-band__lede">Social media is powerful, but it isn't reliable. Your email list is something you own.</p>
+      <div class="wb-grid-bordered">
+        {
+          AGENDA.map((a) => (
+            <div class="wb-cell">
+              <p class="wb-num">{a.num}</p>
+              <p class="wb-cell__text">{a.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THREE EMAIL TYPES ============ -->
+  <section class="wb-section">
+    <h2 class="wb-h2">The three emails that work for service businesses</h2>
+    <p class="wb-section__lede">
+      Each one does a different job. We'll break down the structure of all three, with real examples.
+    </p>
+    <div class="wb-cards">
+      {
+        EMAIL_TYPES.map((t) => (
+          <div class="wb-card">
+            <p class="wb-num">{t.num}</p>
+            <h3 class="wb-card__title">{t.title}</h3>
+            <p class="wb-card__desc">{t.desc}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ============ THE DON'TS ============ -->
+  <section class="wb-dark">
+    <div class="wb-dark__inner">
+      <p class="wb-dark__kicker">The Don'ts</p>
+      <h2 class="wb-dark__h2">Four mistakes that quietly cost you subscribers</h2>
+      <p class="wb-dark__lede">We'll look at real emails that got these wrong, and what to do instead.</p>
+      <div class="wb-grid-bordered wb-grid-bordered--dark">
+        {
+          DONTS.map((d) => (
+            <div class="wb-cell wb-cell--dark">
+              <p class="wb-num wb-num--dark">{d.num}</p>
+              <h3 class="wb-cell__title wb-cell__title--dark">{d.title}</h3>
+              <p class="wb-cell__desc wb-cell__desc--dark">{d.desc}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHO IT'S FOR + HOST ============ -->
+  <section class="wb-section">
+    <div class="wb-who">
+      <div>
+        <h2 class="wb-h2">This is for you if</h2>
+        <div class="wb-who__list">
+          {FOR_YOU.map((f) => <p class="wb-who__item">{f}</p>)}
+        </div>
+        <p class="wb-who__note">
+          If you're not emailing yet, that's completely okay. This will give you a simple starting point.
+        </p>
+      </div>
+      <div class="wb-host">
+        <p class="wb-host__eyebrow">Your Host</p>
+        <div class="wb-host__photo">
+          <ImagePlate aspectRatio="1/1" label="Photo of Danielle" />
+        </div>
+        <p class="wb-host__name">Danielle McDougald</p>
+        <p class="wb-host__role">Founder, The Virtual Helping Hand</p>
+        <p class="wb-host__bio">
+          Virtual Operations Specialist, website designer, and marketing support specialist, supporting
+          entrepreneurs since 2020. Danielle works with service based businesses every day, helping them
+          streamline their operations and marketing strategies.
+        </p>
+        <div class="wb-host__chips">
+          <span class="wb-chip">Since 2020</span>
+          <span class="wb-chip">Systems &amp; Marketing</span>
+          <span class="wb-chip">Client Communication</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REGISTER ============ -->
+  <section id="register" class="wb-register">
+    <div class="wb-register__inner">
+      <!-- Registration form (hidden once the spot is held) -->
+      <div data-register-form>
+        <h2 class="wb-register__h2">Save your seat</h2>
+        <p class="wb-register__lede">
+          Tuesday, September 2 at 11:00 AM Eastern, live on Zoom. Reserve your spot below, then complete
+          payment to confirm your seat. Replay included.
+        </p>
+
+        <div class="wb-tiers">
+          <div class:list={["wb-tier", { "wb-tier--active": isEarly, "wb-tier--dim": !isEarly }]}>
+            <p class="wb-tier__label">Early Bird</p>
+            <p class="wb-tier__price">$20</p>
+            <p class="wb-tier__note">Through Aug 26</p>
+            {isEarly && <p class="wb-tier__active">Active Now</p>}
+          </div>
+          <div class:list={["wb-tier", "wb-tier--regular", { "wb-tier--active": !isEarly, "wb-tier--dim": isEarly }]}>
+            <p class="wb-tier__label">Regular</p>
+            <p class="wb-tier__price wb-tier__price--muted">$27</p>
+            <p class="wb-tier__note">Aug 27 onward</p>
+            {!isEarly && <p class="wb-tier__active">Active Now</p>}
+          </div>
+        </div>
+
+        <form class="wb-form" data-webinar-form novalidate>
+          <div class="wb-form__row">
+            <label class="wb-field">
+              <span class="wb-field__label">First Name</span>
+              <input type="text" name="firstName" data-field="firstName" autocomplete="given-name" />
+            </label>
+            <label class="wb-field">
+              <span class="wb-field__label">Email</span>
+              <input type="email" inputmode="email" name="email" data-field="email" autocomplete="email" />
+            </label>
+          </div>
+          <label class="wb-field">
+            <span class="wb-field__label">
+              Business Name <span class="wb-field__optional">(optional)</span>
+            </span>
+            <input type="text" name="businessName" data-field="businessName" autocomplete="organization" />
+          </label>
+          <label class="wb-field">
+            <span class="wb-field__label">How often do you email your list right now?</span>
+            <select name="frequency" data-field="frequency">
+              <option value="">Select one</option>
+              {FREQUENCY_OPTIONS.map((o) => <option value={o}>{o}</option>)}
+            </select>
+          </label>
+          <p class="wb-form__error" data-form-error hidden></p>
+          <button type="submit" class="wb-btn wb-btn--full" data-submit>{submitLabel}</button>
+          <p class="wb-form__consent">We'll also send occasional tips and updates. Unsubscribe any time.</p>
+        </form>
+      </div>
+
+      <!-- Success panel — spot held, payment still required. Tier + Stripe link are baked in
+           server-side; the client script only reveals this, it never recomputes the price. -->
+      <div class="wb-held" data-register-success hidden>
+        <p class="wb-held__title">Your spot is held</p>
+        <p class="wb-held__body">
+          One more step. Complete payment to confirm your seat, and we'll email your Zoom link and a
+          calendar invite straight away. The replay follows after the session.
+        </p>
+        {
+          checkoutReady ? (
+            <a href={activeStripeUrl} class="wb-btn wb-held__pay">{payLabel}</a>
+          ) : (
+            <>
+              <span class="wb-btn wb-held__pay wb-held__pay--disabled" aria-disabled="true">{payLabel}</span>
+              <p class="wb-held__pending">
+                Payment link is being finalized — you'll receive it by email shortly, and your spot stays held
+                until then.
+              </p>
+            </>
+          )
+        }
+        <p class="wb-held__secure">Secure checkout through Stripe. Your seat is held until payment is complete.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ATTENDEE OFFER (teaser only — no specifics, per the client) ============ -->
+  <section class="wb-section">
+    <div class="wb-offer">
+      <p class="wb-offer__eyebrow">For Attendees Only</p>
+      <h2 class="wb-offer__h2">Everyone who attends leaves with an exclusive offer</h2>
+      <p class="wb-offer__body">
+        We'll share it live at the end of the session. It's only available to attendees, and only for a
+        limited window afterward.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING CTA ============ -->
+  <section class="wb-band wb-closing">
+    <div class="wb-closing__inner">
+      <p class="wb-closing__line">You don't need to be perfect. You just need to start.</p>
+      <a href="#register" class="wb-btn">Reserve Your Spot</a>
+    </div>
+  </section>
+
+  <!-- ============ MINIMAL FOOTER ============ -->
+  <footer class="wb-footer">
+    <div class="wb-footer__inner">
+      <p class="wb-footer__copy">© 2026 The Virtual Helping Hand</p>
+      <div class="wb-footer__links">
+        <a href="/">Home</a>
+        <a href="/services">Services</a>
+        <a href="/about">About</a>
+      </div>
+      <p class="wb-footer__powered">Proudly powered by military spouses and stay at home moms</p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<script>
+  import { submitWebinarRegistration } from "../lib/wixWebinarForm";
+
+  // Two-step flow (README): this submit HOLDS the spot (createSubmission → contact + "holding
+  // your spot" automation). It must not send the Zoom link — that's a separate Stripe-payment
+  // automation. On success we reveal the pre-rendered "Your spot is held" panel, whose price
+  // tier + Stripe link were already decided server-side (never recomputed here).
+  const form = document.querySelector<HTMLFormElement>("[data-webinar-form]");
+  const formWrap = document.querySelector<HTMLElement>("[data-register-form]");
+  const successPanel = document.querySelector<HTMLElement>("[data-register-success]");
+  const errorEl = document.querySelector<HTMLElement>("[data-form-error]");
+
+  if (form && formWrap && successPanel) {
+    const submitBtn = form.querySelector<HTMLButtonElement>("[data-submit]");
+    const originalLabel = submitBtn?.textContent ?? "Continue to Payment";
+    const get = (name: string) =>
+      form.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-field="${name}"]`)?.value.trim() ?? "";
+
+    const showError = (message: string) => {
+      if (!errorEl) return;
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+    };
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (errorEl) errorEl.hidden = true;
+
+      const firstName = get("firstName");
+      const email = get("email");
+      const businessName = get("businessName");
+      const frequency = get("frequency");
+
+      if (!firstName) return showError("Please add your first name.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError("Please enter a valid email address.");
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Holding your spot…";
+      }
+
+      try {
+        await submitWebinarRegistration(firstName, email, businessName, frequency);
+        formWrap.hidden = true;
+        successPanel.hidden = false;
+        successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
+      } catch (err) {
+        console.error("Webinar registration failed:", err);
+        showError(
+          "Something went wrong. Please email danielle@thevirtualhelpinghand.com and we'll get right back to you."
+        );
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  /* ============================================================================
+     Temporary webinar page. Reuses the global tokens (--bg, --accent, fonts…);
+     the dark section's palette (#2b1f16 / #f9f4ea / #c9975a) is page-specific.
+     ============================================================================ */
+
+  /* ---- Shared button ---- */
+  .wb-btn {
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent-deep);
+    padding: 15px 30px;
+    border-radius: var(--radius-control);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16.5px;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .wb-btn:hover {
+    background: var(--accent-tint-strong);
+    color: var(--accent-deep);
+  }
+
+  .wb-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .wb-btn--full {
+    width: 100%;
+  }
+
+  /* ---- Minimal header ---- */
+  .wb-header {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .wb-header__bar {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 20px var(--section-pad-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .wb-header__logo {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--text);
+  }
+
+  .wb-header__link {
+    font-size: 13.5px;
+    color: var(--accent-deep);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+  }
+
+  /* ---- Hero ---- */
+  .wb-hero {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(44px, 6vw, 80px) var(--section-pad-x) clamp(36px, 5vw, 56px);
+  }
+
+  .wb-hero__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: clamp(32px, 5vw, 64px);
+    align-items: start;
+  }
+
+  .wb-hero__tags {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .wb-badge {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    border: 1px solid rgba(182, 130, 53, 0.5);
+    border-radius: var(--radius-chip);
+    padding: 6px 11px;
+  }
+
+  .wb-badge--num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-hero__kicker {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .wb-hero__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.3rem, 4.6vw, 3.7rem);
+    line-height: 1.1;
+    margin: 0 0 22px;
+    letter-spacing: -0.01em;
+  }
+
+  .wb-hero__lede {
+    font-size: clamp(16.5px, 1.5vw, 18.5px);
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 0 0 30px;
+    max-width: 520px;
+    text-wrap: pretty;
+  }
+
+  .wb-facts {
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 20px 0;
+    margin-bottom: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+  }
+
+  .wb-facts__label {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 7px;
+  }
+
+  .wb-facts__value {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-hero__note {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 16px 0 0;
+  }
+
+  /* ---- Generic section + band ---- */
+  .wb-section {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(52px, 6.5vw, 88px) var(--section-pad-x);
+  }
+
+  .wb-band {
+    border-top: 1px solid var(--rule);
+    background: var(--bg-alt);
+    padding: clamp(52px, 6.5vw, 88px) var(--section-pad-x);
+  }
+
+  .wb-band__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .wb-h2 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .wb-band__lede,
+  .wb-section__lede {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin: 0 0 38px;
+    max-width: 560px;
+  }
+
+  /* ---- Bordered grid (agenda + don'ts) ---- */
+  .wb-grid-bordered {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .wb-cell {
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 28px 22px;
+    background: var(--bg);
+  }
+
+  .wb-num {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--accent-deep);
+    margin: 0 0 12px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-cell__text {
+    font-size: 15.5px;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* ---- Three email-type cards ---- */
+  .wb-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: clamp(20px, 2.5vw, 28px);
+  }
+
+  .wb-card {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: 26px 24px;
+  }
+
+  .wb-card__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 0 0 10px;
+    line-height: 1.3;
+  }
+
+  .wb-card__desc {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text-body);
+    margin: 0;
+  }
+
+  /* ---- The Don'ts (dark) ---- */
+  .wb-dark {
+    border-top: 1px solid var(--rule);
+    background: #2b1f16;
+    color: #f9f4ea;
+    padding: clamp(52px, 6.5vw, 88px) var(--section-pad-x);
+  }
+
+  .wb-dark__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .wb-dark__kicker {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c9975a;
+    margin: 0 0 16px;
+  }
+
+  .wb-dark__h2 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .wb-dark__lede {
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: rgba(249, 244, 234, 0.78);
+    margin: 0 0 38px;
+    max-width: 540px;
+  }
+
+  .wb-grid-bordered--dark {
+    border-top-color: rgba(249, 244, 234, 0.22);
+    border-left-color: rgba(249, 244, 234, 0.22);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  }
+
+  .wb-cell--dark {
+    border-right-color: rgba(249, 244, 234, 0.22);
+    border-bottom-color: rgba(249, 244, 234, 0.22);
+    background: transparent;
+    padding: 28px 24px;
+  }
+
+  .wb-num--dark {
+    color: #c9975a;
+  }
+
+  .wb-cell__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 19px;
+    margin: 0 0 10px;
+    line-height: 1.3;
+  }
+
+  .wb-cell__desc {
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .wb-cell__desc--dark {
+    color: rgba(249, 244, 234, 0.78);
+  }
+
+  /* ---- Who it's for + host ---- */
+  .wb-who {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+  }
+
+  .wb-who__list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .wb-who__item {
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--text-body);
+    margin: 0;
+    padding-left: 16px;
+    border-left: 1px solid rgba(182, 130, 53, 0.5);
+  }
+
+  .wb-who__note {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 26px 0 0;
+    font-style: italic;
+  }
+
+  .wb-host {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: clamp(24px, 3vw, 34px);
+  }
+
+  .wb-host__eyebrow {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 18px;
+  }
+
+  .wb-host__photo {
+    max-width: 200px;
+    margin-bottom: 16px;
+  }
+
+  .wb-host__name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 0 0 4px;
+    line-height: 1.2;
+  }
+
+  .wb-host__role {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 18px;
+  }
+
+  .wb-host__bio {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 0 0 18px;
+  }
+
+  .wb-host__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .wb-chip {
+    border: 1px solid rgba(43, 31, 22, 0.3);
+    color: var(--text-body);
+    font-size: 12px;
+    padding: 6px 11px;
+    border-radius: var(--radius-chip);
+  }
+
+  /* ---- Register ---- */
+  .wb-register {
+    border-top: 1px solid var(--rule);
+    background: var(--bg-alt);
+    padding: clamp(56px, 7vw, 96px) var(--section-pad-x);
+  }
+
+  .wb-register__inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .wb-register__h2 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+    margin: 0 0 16px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-align: center;
+  }
+
+  .wb-register__lede {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 0 auto 26px;
+    max-width: 480px;
+    text-align: center;
+    text-wrap: pretty;
+  }
+
+  /* Price tiers */
+  .wb-tiers {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 30px;
+    max-width: 400px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+  }
+
+  .wb-tier {
+    flex: 1;
+    padding: 16px 18px;
+    text-align: center;
+  }
+
+  .wb-tier--regular {
+    border-left: 1px solid var(--rule);
+  }
+
+  .wb-tier--active {
+    background: var(--accent-tint);
+  }
+
+  .wb-tier--dim {
+    opacity: 0.5;
+  }
+
+  .wb-tier__label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 6px;
+  }
+
+  .wb-tier__price {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 26px;
+    margin: 0 0 8px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wb-tier__price--muted {
+    color: var(--text-body);
+  }
+
+  .wb-tier__note {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--accent-deep);
+    margin: 0;
+  }
+
+  .wb-tier__active {
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 8px 0 0;
+  }
+
+  /* Form. Visibility is toggled on its wrapper ([data-register-form]), not the form itself —
+     when the wrapper gets [hidden] its children stop rendering, so an unconditional
+     display:flex here is safe (no [hidden] specificity trap like the standalone panels). */
+  .wb-form {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: clamp(24px, 3vw, 36px);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .wb-form__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 18px;
+  }
+
+  .wb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .wb-field__label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-body);
+  }
+
+  .wb-field__optional {
+    text-transform: none;
+    letter-spacing: 0;
+    color: rgba(43, 31, 22, 0.6);
+  }
+
+  .wb-field input,
+  .wb-field select {
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid rgba(43, 31, 22, 0.28);
+    border-radius: var(--radius-control);
+    padding: 12px 13px;
+  }
+
+  .wb-field input:focus-visible,
+  .wb-field select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  .wb-form__error {
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--accent-deep);
+    margin: 0;
+  }
+
+  .wb-form__consent {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+    text-align: center;
+  }
+
+  /* Success panel */
+  .wb-held {
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-card);
+    padding: clamp(32px, 4vw, 48px);
+    background: var(--bg);
+    text-align: center;
+  }
+
+  .wb-held__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(24px, 3vw, 30px);
+    margin: 0 0 16px;
+    line-height: 1.25;
+  }
+
+  .wb-held__body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 0 auto 26px;
+    max-width: 440px;
+  }
+
+  .wb-held__pay {
+    margin-bottom: 18px;
+  }
+
+  .wb-held__pay--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .wb-held__pending {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--accent-deep);
+    margin: 0 auto;
+    max-width: 400px;
+    border: 1px dashed rgba(182, 130, 53, 0.85);
+    border-radius: var(--radius-chip);
+    padding: 9px 13px;
+  }
+
+  .wb-held__secure {
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 16px auto 0;
+    max-width: 400px;
+  }
+
+  /* ---- Attendee offer ---- */
+  .wb-offer {
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-card);
+    padding: clamp(28px, 4vw, 44px);
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .wb-offer__eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 18px;
+  }
+
+  .wb-offer__h2 {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    margin: 0 0 18px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .wb-offer__body {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    margin: 0 auto;
+    max-width: 460px;
+    text-wrap: pretty;
+  }
+
+  /* ---- Closing CTA ---- */
+  .wb-closing {
+    padding: clamp(48px, 6vw, 80px) var(--section-pad-x);
+  }
+
+  .wb-closing__inner {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .wb-closing__line {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    margin: 0 0 22px;
+    line-height: 1.3;
+  }
+
+  /* ---- Minimal footer ---- */
+  .wb-footer {
+    border-top: 1px solid var(--rule);
+    padding: 32px var(--section-pad-x);
+  }
+
+  .wb-footer__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .wb-footer__copy,
+  .wb-footer__powered {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .wb-footer__links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .wb-footer__links a {
+    font-size: 13px;
+    color: var(--text);
+  }

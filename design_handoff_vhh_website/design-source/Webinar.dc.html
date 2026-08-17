@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <script src="./image-slot.js"></script>
+  <style>
+    body { margin:0; background:#f9f4ea; }
+    * { box-sizing:border-box; }
+    a { color:#6b4423; text-decoration:none; }
+    a:hover { color:#2b1f16; }
+    ::selection { background:rgba(182,130,53,0.3); }
+  </style>
+</helmet>
+
+<div style="font-family:'Lora',serif; background:#f9f4ea; color:#2b1f16; overflow-x:hidden;">
+
+  <!-- ============ DRAFT NOTICE — remove before publishing ============ -->
+  <div style="background:#2b1f16; color:#f9f4ea; padding:11px clamp(20px,4vw,32px); text-align:center;">
+    <p style="margin:0 auto; max-width:1120px; font-size:12.5px; letter-spacing:0.05em; line-height:1.5;">DRAFT — one item left: paste the Stripe payment link (dotted box)</p>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header style="border-bottom:1px solid rgba(43,31,22,0.16);">
+    <div style="max-width:1120px; margin:0 auto; padding:20px clamp(20px,4vw,32px); display:flex; align-items:center; justify-content:space-between; gap:20px;">
+      <a href="Homepage.dc.html" style="font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; letter-spacing:0.2px; color:#2b1f16;">The Virtual Helping Hand</a>
+      <a href="#register" style="font-size:13.5px; color:#6b4423; border-bottom:1px solid #b68235; padding-bottom:2px;" style-focus="outline:2px solid #b68235; outline-offset:2px;">Reserve Your Spot</a>
+    </div>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section style="max-width:1120px; margin:0 auto; padding:clamp(44px,6vw,80px) clamp(20px,4vw,32px) clamp(36px,5vw,56px);">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr)); gap:clamp(32px,5vw,64px); align-items:start;">
+      <div>
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:22px; flex-wrap:wrap;">
+          <span style="font-size:10.5px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#6b4423; border:1px solid rgba(182,130,53,0.5); border-radius:3px; padding:6px 11px;">Live Webinar</span>
+          <span style="font-size:10.5px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#6b4423; border:1px solid rgba(182,130,53,0.5); border-radius:3px; padding:6px 11px; font-variant-numeric:tabular-nums;">{{ badgeLabel }}</span>
+          <p style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(43,31,22,0.75); margin:0;">For Service Based Businesses</p>
+        </div>
+        <h1 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.3rem,4.6vw,3.7rem); line-height:1.1; margin:0 0 22px; letter-spacing:-0.01em;">Email Marketing Do's and Don'ts</h1>
+        <p style="font-size:clamp(16.5px,1.5vw,18.5px); line-height:1.75; color:rgba(43,31,22,0.78); margin:0 0 30px; max-width:520px; text-wrap:pretty;">Learn how to write emails that build relationships, build trust, and bring in clients. By the end you'll have a simple framework you can start using immediately.</p>
+
+        <div style="border-top:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); padding:20px 0; margin-bottom:30px; display:flex; flex-wrap:wrap; gap:26px;">
+          <div>
+            <p style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 7px;">Date</p>
+            <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:18px; margin:0; font-variant-numeric:tabular-nums;">{{ eventDate }}</p>
+          </div>
+          <div>
+            <p style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 7px;">Time</p>
+            <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:18px; margin:0; font-variant-numeric:tabular-nums;">{{ eventTime }}</p>
+          </div>
+          <div>
+            <p style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 7px;">Where</p>
+            <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:18px; margin:0;">{{ eventPlace }}</p>
+          </div>
+        </div>
+
+        <a href="#register" style="border:1px solid #b68235; color:#6b4423; padding:15px 30px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Reserve Your Spot</a>
+        <p style="font-size:13px; color:rgba(43,31,22,0.75); margin:16px 0 0;">Can't make it live? Everyone who pays gets the replay.</p>
+      </div>
+
+      <figure style="margin:0; padding:6px; background:#efe6d3; outline:1px solid rgba(43,31,22,0.16);">
+        <image-slot id="webinar-hero" shape="rect" style="width:100%;height:100%;aspect-ratio:4/5;filter:sepia(0.2) saturate(0.85) contrast(1.03);" placeholder="Photo of Danielle, or a laptop-at-desk shot"></image-slot>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ WHAT WE'LL COVER ============ -->
+  <section style="border-top:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:clamp(52px,6.5vw,88px) clamp(20px,4vw,32px);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,3.2vw,2.5rem); margin:0 0 12px; letter-spacing:-0.01em;">What we'll cover</h2>
+      <p style="font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.75); margin:0 0 38px; max-width:540px;">Social media is powerful, but it isn't reliable. Your email list is something you own.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:0; border-top:1px solid rgba(43,31,22,0.16); border-left:1px solid rgba(43,31,22,0.16);">
+        <sc-for list="{{ agenda }}" as="a" hint-placeholder-count="5">
+          <div style="border-right:1px solid rgba(43,31,22,0.16); border-bottom:1px solid rgba(43,31,22,0.16); padding:28px 22px; background:#f9f4ea;">
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:15px; color:#6b4423; margin:0 0 12px; font-variant-numeric:tabular-nums;">{{ a.num }}</p>
+            <p style="font-size:15.5px; line-height:1.6; margin:0;">{{ a.text }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ THREE EMAIL TYPES ============ -->
+  <section style="max-width:1120px; margin:0 auto; padding:clamp(52px,6.5vw,88px) clamp(20px,4vw,32px);">
+    <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,3.2vw,2.4rem); margin:0 0 12px; letter-spacing:-0.01em;">The three emails that work for service businesses</h2>
+    <p style="font-size:15.5px; line-height:1.7; color:rgba(43,31,22,0.75); margin:0 0 36px; max-width:560px;">Each one does a different job. We'll break down the structure of all three, with real examples.</p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:clamp(20px,2.5vw,28px);">
+      <sc-for list="{{ emailTypes }}" as="t" hint-placeholder-count="3">
+        <div style="border:1px solid rgba(43,31,22,0.16); border-radius:6px; padding:26px 24px;">
+          <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:15px; color:#6b4423; margin:0 0 12px; font-variant-numeric:tabular-nums;">{{ t.num }}</p>
+          <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:20px; margin:0 0 10px; line-height:1.3;">{{ t.title }}</h3>
+          <p style="font-size:14.5px; line-height:1.7; color:rgba(43,31,22,0.78); margin:0;">{{ t.desc }}</p>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- ============ THE DON'TS ============ -->
+  <section style="border-top:1px solid rgba(43,31,22,0.16); background:#2b1f16; color:#f9f4ea; padding:clamp(52px,6.5vw,88px) clamp(20px,4vw,32px);">
+    <div style="max-width:1120px; margin:0 auto;">
+      <p style="font-size:11px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:#c9975a; margin:0 0 16px;">The Don'ts</p>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.8rem,3.4vw,2.6rem); margin:0 0 12px; letter-spacing:-0.01em; line-height:1.2;">Four mistakes that quietly cost you subscribers</h2>
+      <p style="font-size:15.5px; line-height:1.7; color:rgba(249,244,234,0.78); margin:0 0 38px; max-width:540px;">We'll look at real emails that got these wrong, and what to do instead.</p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr)); gap:0; border-top:1px solid rgba(249,244,234,0.22); border-left:1px solid rgba(249,244,234,0.22);">
+        <sc-for list="{{ donts }}" as="d" hint-placeholder-count="4">
+          <div style="border-right:1px solid rgba(249,244,234,0.22); border-bottom:1px solid rgba(249,244,234,0.22); padding:28px 24px;">
+            <p style="font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:15px; color:#c9975a; margin:0 0 12px; font-variant-numeric:tabular-nums;">{{ d.num }}</p>
+            <h3 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:19px; margin:0 0 10px; line-height:1.3;">{{ d.title }}</h3>
+            <p style="font-size:14.5px; line-height:1.65; color:rgba(249,244,234,0.78); margin:0;">{{ d.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHO IT'S FOR + HOST ============ -->
+  <section style="max-width:1120px; margin:0 auto; padding:clamp(52px,6.5vw,88px) clamp(20px,4vw,32px);">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:clamp(28px,4vw,56px); align-items:start;">
+      <div>
+        <h2 style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(1.8rem,3.2vw,2.4rem); margin:0 0 22px; letter-spacing:-0.01em;">This is for you if</h2>
+        <div style="display:flex; flex-direction:column; gap:11px;">
+          <sc-for list="{{ forYou }}" as="f" hint-placeholder-count="5">
+            <p style="font-size:15.5px; line-height:1.6; color:rgba(43,31,22,0.78); margin:0; padding-left:16px; border-left:1px solid rgba(182,130,53,0.5);">{{ f }}</p>
+          </sc-for>
+        </div>
+        <p style="font-size:15px; line-height:1.75; color:rgba(43,31,22,0.78); margin:26px 0 0; font-style:italic;">If you're not emailing yet, that's completely okay. This will give you a simple starting point.</p>
+      </div>
+      <div style="border:1px solid rgba(43,31,22,0.16); border-radius:6px; padding:clamp(24px,3vw,34px);">
+        <p style="font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 18px;">Your Host</p>
+        <div style="margin-bottom:20px;">
+          <div style="max-width:200px; padding:5px; background:#efe6d3; outline:1px solid rgba(43,31,22,0.16); margin-bottom:16px;">
+            <image-slot id="webinar-host" shape="rect" style="width:100%;height:100%;aspect-ratio:1/1;filter:sepia(0.2) saturate(0.85) contrast(1.03);" placeholder="Photo of Danielle"></image-slot>
+          </div>
+          <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:22px; margin:0 0 4px; line-height:1.2;">Danielle McDougald</p>
+          <p style="font-size:13px; color:rgba(43,31,22,0.75); margin:0;">Founder, The Virtual Helping Hand</p>
+        </div>
+        <p style="font-size:15px; line-height:1.75; color:rgba(43,31,22,0.78); margin:0 0 18px;">Virtual Operations Specialist, website designer, and marketing support specialist, supporting entrepreneurs since 2020. Danielle works with service based businesses every day, helping them streamline their operations and marketing strategies.</p>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          <span style="border:1px solid rgba(43,31,22,0.3); color:rgba(43,31,22,0.78); font-size:12px; padding:6px 11px; border-radius:3px;">Since 2020</span>
+          <span style="border:1px solid rgba(43,31,22,0.3); color:rgba(43,31,22,0.78); font-size:12px; padding:6px 11px; border-radius:3px;">Systems &amp; Marketing</span>
+          <span style="border:1px solid rgba(43,31,22,0.3); color:rgba(43,31,22,0.78); font-size:12px; padding:6px 11px; border-radius:3px;">Client Communication</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REGISTER ============ -->
+  <section id="register" style="border-top:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:clamp(56px,7vw,96px) clamp(20px,4vw,32px);">
+    <div style="max-width:760px; margin:0 auto;">
+      <sc-if value="{{ !sent }}" hint-placeholder-val="{{ true }}">
+        <div>
+          <h2 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.9rem,3.6vw,2.8rem); margin:0 0 16px; line-height:1.15; letter-spacing:-0.01em; text-align:center;">Save your seat</h2>
+          <p style="font-size:16px; line-height:1.75; color:rgba(43,31,22,0.78); margin:0 auto 26px; max-width:480px; text-align:center; text-wrap:pretty;">Tuesday, September 2 at 11:00 AM Eastern, live on Zoom. Reserve your spot below, then complete payment to confirm your seat. Replay included.</p>
+          <div style="display:flex; justify-content:center; gap:0; margin:0 auto 30px; max-width:400px; border:1px solid rgba(43,31,22,0.16); border-radius:6px; overflow:hidden;">
+            <div style="{{ earlyStyle }}">
+              <p style="font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:0 0 6px;">Early Bird</p>
+              <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; margin:0 0 8px; font-variant-numeric:tabular-nums;">$20</p>
+              <p style="font-size:11px; line-height:1.4; color:#6b4423; margin:0;">Through Aug 26</p>
+              <sc-if value="{{ isEarly }}" hint-placeholder-val="{{ true }}">
+                <p style="font-size:9.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:8px 0 0;">Active Now</p>
+              </sc-if>
+            </div>
+            <div style="{{ regularStyle }}">
+              <p style="font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(43,31,22,0.75); margin:0 0 6px;">Regular</p>
+              <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:26px; margin:0 0 8px; color:rgba(43,31,22,0.78); font-variant-numeric:tabular-nums;">$27</p>
+              <p style="font-size:11px; line-height:1.4; color:rgba(43,31,22,0.75); margin:0;">Aug 27 onward</p>
+              <sc-if value="{{ isRegular }}" hint-placeholder-val="{{ false }}">
+                <p style="font-size:9.5px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#6b4423; margin:8px 0 0;">Active Now</p>
+              </sc-if>
+            </div>
+          </div>
+          <form onSubmit="{{ submit }}" noValidate="{{ true }}" style="border:1px solid rgba(43,31,22,0.16); border-radius:6px; padding:clamp(24px,3vw,36px); background:#f9f4ea; display:flex; flex-direction:column; gap:18px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr)); gap:18px;">
+              <label style="display:flex; flex-direction:column; gap:7px;">
+                <span style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(43,31,22,0.78);">First Name</span>
+                <input type="text" name="firstName" value="{{ firstName }}" onChange="{{ setFirstName }}" style="font-family:'Lora',serif; font-size:15px; color:#2b1f16; background:transparent; border:1px solid rgba(43,31,22,0.28); border-radius:4px; padding:12px 13px;" style-focus="outline:2px solid #b68235; outline-offset:1px; border-color:#b68235;"/>
+              </label>
+              <label style="display:flex; flex-direction:column; gap:7px;">
+                <span style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(43,31,22,0.78);">Email</span>
+                <input type="text" inputMode="email" name="email" value="{{ email }}" onChange="{{ setEmail }}" style="font-family:'Lora',serif; font-size:15px; color:#2b1f16; background:transparent; border:1px solid rgba(43,31,22,0.28); border-radius:4px; padding:12px 13px;" style-focus="outline:2px solid #b68235; outline-offset:1px; border-color:#b68235;"/>
+              </label>
+            </div>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(43,31,22,0.78);">Business Name <span style="text-transform:none; letter-spacing:0; color:rgba(43,31,22,0.6);">(optional)</span></span>
+              <input type="text" name="businessName" value="{{ businessName }}" onChange="{{ setBusinessName }}" style="font-family:'Lora',serif; font-size:15px; color:#2b1f16; background:transparent; border:1px solid rgba(43,31,22,0.28); border-radius:4px; padding:12px 13px;" style-focus="outline:2px solid #b68235; outline-offset:1px; border-color:#b68235;"/>
+            </label>
+            <label style="display:flex; flex-direction:column; gap:7px;">
+              <span style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:rgba(43,31,22,0.78);">How often do you email your list right now?</span>
+              <select name="frequency" value="{{ frequency }}" onChange="{{ setFrequency }}" style="font-family:'Lora',serif; font-size:15px; color:#2b1f16; background:transparent; border:1px solid rgba(43,31,22,0.28); border-radius:4px; padding:12px 13px;" style-focus="outline:2px solid #b68235; outline-offset:1px; border-color:#b68235;">
+                <option value="">Select one</option>
+                <option value="never">Never</option>
+                <option value="occasionally">Occasionally</option>
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+              </select>
+            </label>
+            <sc-if value="{{ hasError }}" hint-placeholder-val="{{ false }}">
+              <p style="font-size:13.5px; line-height:1.5; color:#6b4423; margin:0;">{{ error }}</p>
+            </sc-if>
+            <button type="submit" style="border:1px solid #b68235; background:transparent; color:#6b4423; padding:15px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px; cursor:pointer;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">{{ submitLabel }}</button>
+            <p style="font-size:12.5px; line-height:1.6; color:rgba(43,31,22,0.75); margin:0; text-align:center;">We'll also send occasional tips and updates. Unsubscribe any time.</p>
+          </form>
+        </div>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid #b68235; border-radius:6px; padding:clamp(32px,4vw,48px); background:#f9f4ea; text-align:center;">
+          <p style="font-family:'Cormorant Garamond',serif; font-weight:600; font-size:clamp(24px,3vw,30px); margin:0 0 16px; line-height:1.25;">Your spot is held</p>
+          <p style="font-size:16px; line-height:1.75; color:rgba(43,31,22,0.78); margin:0 auto 26px; max-width:440px;">One more step. Complete payment to confirm your seat, and we'll email your Zoom link and a calendar invite straight away. The replay follows after the session.</p>
+          <a href="{{ activeStripeUrl }}" style="border:1px solid #b68235; color:#6b4423; padding:15px 30px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px; display:inline-block; margin-bottom:18px;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">{{ payLabel }}</a>
+          <p style="font-size:13px; line-height:1.6; color:#6b4423; margin:0 auto; max-width:400px; border:1px dashed rgba(182,130,53,0.85); border-radius:3px; padding:9px 13px;">{{ checkoutNote }}</p>
+          <p style="font-size:12.5px; line-height:1.6; color:rgba(43,31,22,0.75); margin:16px auto 0; max-width:400px;">Secure checkout through Stripe. Your seat is held until payment is complete.</p>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <!-- ============ ATTENDEE OFFER (teaser only) ============ -->
+  <section style="max-width:1120px; margin:0 auto; padding:clamp(52px,6.5vw,88px) clamp(20px,4vw,32px);">
+    <div style="border:1px solid #b68235; border-radius:6px; padding:clamp(28px,4vw,44px); max-width:720px; margin:0 auto; text-align:center;">
+      <p style="font-size:10.5px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:#6b4423; margin:0 0 18px;">For Attendees Only</p>
+      <h2 style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.7rem,3vw,2.3rem); margin:0 0 18px; line-height:1.2; letter-spacing:-0.01em;">Everyone who attends leaves with an exclusive offer</h2>
+      <p style="font-size:16px; line-height:1.75; color:rgba(43,31,22,0.78); margin:0 auto; max-width:460px; text-wrap:pretty;">We'll share it live at the end of the session. It's only available to attendees, and only for a limited window afterward.</p>
+    </div>
+  </section>
+
+  <!-- ============ CLOSING CTA ============ -->
+  <section style="border-top:1px solid rgba(43,31,22,0.16); background:#efe6d3; padding:clamp(48px,6vw,80px) clamp(20px,4vw,32px);">
+    <div style="max-width:640px; margin:0 auto; text-align:center;">
+      <p style="font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(1.5rem,2.8vw,2.1rem); margin:0 0 22px; line-height:1.3;">You don't need to be perfect. You just need to start.</p>
+      <a href="#register" style="border:1px solid #b68235; color:#6b4423; padding:15px 30px; border-radius:4px; font-family:'Cormorant Garamond',serif; font-weight:600; font-size:16.5px; display:inline-block;" style-hover="background:rgba(182,130,53,0.12);" style-focus="outline:2px solid #b68235; outline-offset:2px;">Reserve Your Spot</a>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="border-top:1px solid rgba(43,31,22,0.16); padding:32px clamp(20px,4vw,32px);">
+    <div style="max-width:1120px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px;">
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">© 2026 The Virtual Helping Hand</p>
+      <div style="display:flex; gap:20px;">
+        <a href="Homepage.dc.html" style="font-size:13px; color:#2b1f16;">Home</a>
+        <a href="Services.dc.html" style="font-size:13px; color:#2b1f16;">Services</a>
+        <a href="About.dc.html" style="font-size:13px; color:#2b1f16;">About</a>
+      </div>
+      <p style="font-size:12.5px; color:rgba(43,31,22,0.75); margin:0;">Proudly powered by military spouses and stay at home moms</p>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440},&quot;eventDate&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Tuesday, September 2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Event details&quot;},&quot;eventTime&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;11:00 AM Eastern&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Event details&quot;},&quot;eventPlace&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Live on Zoom&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Event details&quot;},&quot;stripeUrlEarly&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;#&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Payment&quot;},&quot;stripeUrlRegular&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;#&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Payment&quot;},&quot;checkoutNote&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;[Paste both Stripe Payment Links in Tweaks: $20 early bird and $27 regular]&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Payment&quot;}}">
+class Component extends DCLogic {
+  state = { firstName: '', email: '', businessName: '', frequency: '', sent: false, error: '' };
+
+  submit = (e) => {
+    e.preventDefault();
+    const first = this.state.firstName.trim();
+    const email = this.state.email.trim();
+    if (!first) return this.setState({ error: 'Please add your first name.' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.setState({ error: 'Please enter a valid email address.' });
+    // Live build: createSubmission to the Wix webinar form, which triggers the
+    // confirmation email + calendar invite automation and adds the contact.
+    this.setState({ sent: true, error: '' });
+  };
+
+  renderVals() {
+    const p = this.props;
+    // Early bird runs through 11:59pm Eastern on Aug 26 (= Aug 27 03:59 UTC, EDT).
+    const cutoff = new Date('2026-08-27T03:59:00Z');
+    const isEarly = new Date() < cutoff;
+    const activePrice = isEarly ? '$20' : '$27';
+    return {
+      isEarly,
+      isRegular: !isEarly,
+      activePrice,
+      activeStripeUrl: isEarly ? (p.stripeUrlEarly ?? '#') : (p.stripeUrlRegular ?? '#'),
+      payLabel: 'Pay ' + activePrice + ' with Stripe',
+      badgeLabel: isEarly ? '$20 Early Bird Through Aug 26' : '$27 Regular Price',
+      earlyStyle: isEarly
+        ? 'flex:1; padding:16px 18px; text-align:center; background:rgba(182,130,53,0.1); border-right:1px solid rgba(43,31,22,0.16);'
+        : 'flex:1; padding:16px 18px; text-align:center; border-right:1px solid rgba(43,31,22,0.16); opacity:0.45;',
+      regularStyle: isEarly
+        ? 'flex:1; padding:16px 18px; text-align:center; opacity:0.55;'
+        : 'flex:1; padding:16px 18px; text-align:center; background:rgba(182,130,53,0.1);',
+      eventDate: p.eventDate ?? 'Tuesday, September 2',
+      eventTime: p.eventTime ?? '11:00 AM Eastern',
+      eventPlace: p.eventPlace ?? 'Live on Zoom',
+      submitLabel: 'Continue to Payment · ' + activePrice,
+      checkoutNote: p.checkoutNote ?? '[Paste both Stripe Payment Links in Tweaks: $20 early bird and $27 regular]',
+
+      registerNote: p.registerNote ?? '[Confirm what registrants receive: link, calendar invite, replay?]',
+      agenda: [
+        { num: 'I', text: 'Why email marketing still works' },
+        { num: 'II', text: 'The types of emails service providers should send' },
+        { num: 'III', text: 'Common mistakes that turn subscribers away' },
+        { num: 'IV', text: 'What makes emails effective' },
+        { num: 'V', text: 'Real examples of good and bad emails' },
+      ],
+      emailTypes: [
+        { num: 'I', title: 'Story or personal experience', desc: 'A real moment, the lesson in it, and how that ties back to what you offer. Longer and narrative driven.' },
+        { num: 'II', title: 'Tips or helpful emails', desc: 'Short, direct, and practical. Quick wins your reader can put to work the same week.' },
+        { num: 'III', title: 'Soft connection or support', desc: 'Validation and encouragement. These remind your audience you understand them.' },
+      ],
+      donts: [
+        { num: 'I', title: 'Only emailing when you sell', desc: 'If the only time someone hears from you is when you want money, your emails feel transactional. Build trust first.' },
+        { num: 'II', title: 'Writing like a robot', desc: '"Hello valued subscriber" sounds cold and impersonal. Your emails should sound like a real conversation.' },
+        { num: 'III', title: 'Overcomplicating the email', desc: 'Too many topics, too many links, huge blocks of text, no clear direction. One email, one purpose.' },
+        { num: 'IV', title: 'Oversharing personal struggles', desc: 'There is a line between connection and desperation. Your audience wants honesty and confidence in your expertise.' },
+      ],
+      forYou: [
+        'You run a service based business',
+        'You have a list but rarely email it',
+        "You're not sure what to write about",
+        'Your emails only go out when you have something to sell',
+        "You're starting from zero subscribers",
+      ],
+
+      firstName: this.state.firstName,
+      email: this.state.email,
+      businessName: this.state.businessName,
+      frequency: this.state.frequency,
+      sent: this.state.sent,
+      error: this.state.error,
+      hasError: !!this.state.error,
+      setFirstName: (e) => this.setState({ firstName: e.target.value, error: '' }),
+      setEmail: (e) => this.setState({ email: e.target.value, error: '' }),
+      setBusinessName: (e) => this.setState({ businessName: e.target.value }),
+      setFrequency: (e) => this.setState({ frequency: e.target.value }),
+      submit: this.submit,
+    };
+  }
+}
+</script>
+</body>
+</html>

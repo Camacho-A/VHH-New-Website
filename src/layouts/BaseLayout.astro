@@ -6,14 +6,19 @@ import "../styles/global.css";
 export interface Props {
   title: string;
   description: string;
-  currentPage?: "home" | "about" | "services" | "business-consulting" | "workbook" | "blog";
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "workbook" | "webinar" | "blog";
   /** Defaults to the VHH logo mark. Pass a page-specific 1200x630 image once one exists —
    * no such asset exists yet, so every page currently shares this square logo as a
    * social-preview fallback rather than shipping with no og:image at all. */
   ogImage?: string;
+  /** Omit the shared site Header/Footer entirely, rendering only <head> + the page's own
+   * slot. Used by the temporary /webinar landing page, which deliberately has no site nav
+   * (minimal header, one link home) so the only job is registration — see README § Webinar.
+   * The page supplies its own header/footer inline. */
+  bare?: boolean;
 }
 
-const { title, description, currentPage = "home", ogImage = "/images/about-logo.png" } = Astro.props;
+const { title, description, currentPage = "home", ogImage = "/images/about-logo.png", bare = false } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(ogImage, Astro.site);
@@ -73,10 +78,23 @@ const organizationSchema = {
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
-    <Header currentPage={currentPage} />
-    <main id="main">
-      <slot />
-    </main>
-    <Footer currentPage={currentPage} />
+    {
+      bare ? (
+        <main id="main">
+          <slot />
+        </main>
+      ) : (
+        <>
+          {/* Temporary webinar announcement bar (homepage only) renders above the nav — see
+              README § Webinar retirement. Empty on every other page. */}
+          <slot name="announcement" />
+          <Header currentPage={currentPage} />
+          <main id="main">
+            <slot />
+          </main>
+          <Footer currentPage={currentPage} />
+        </>
+      )
+    }
   </body>
 </html>
