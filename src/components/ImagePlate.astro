@@ -30,6 +30,10 @@ export interface Props {
    * instead of the page's default beige-alt. Applied as a CSS custom property the plate's
    * own styles read, so it covers both the padding mat and the "contain" letterbox fill. */
   matColor?: string;
+  /** CSS `object-position` for a "cover" crop — which part of the photo stays visible when
+   * the source ratio doesn't match the slot. Default (unset) centers the crop; e.g.
+   * "center 20%" keeps the top of a portrait in frame so a head isn't cut off. */
+  objectPosition?: string;
 }
 
 const {
@@ -43,9 +47,12 @@ const {
   bare = false,
   imgBorder,
   matColor,
+  objectPosition,
 } = Astro.props;
 
-const imgStyle = imgBorder ? `border:${imgBorder};` : undefined;
+const imgStyle =
+  [imgBorder ? `border:${imgBorder};` : "", objectPosition ? `object-position:${objectPosition};` : ""]
+    .join("") || undefined;
 const figureStyle = `aspect-ratio:${aspectRatio};${matColor ? ` --plate-mat-bg:${matColor};` : ""}`;
 ---
 
