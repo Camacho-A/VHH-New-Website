@@ -2,7 +2,7 @@
 
 ## Overview
 
-An **eight-page** redesign of thevirtualhelpinghand.com, repositioning VHH from a virtual assistant company to a **business growth partner**. The site organizes everything around four service pillars and tells one story: *strategy → digital presence → systems → ongoing support.*
+A **nine-page** redesign of thevirtualhelpinghand.com, repositioning VHH from a virtual assistant company to a **business growth partner**. The site organizes everything around four service pillars and tells one story: *strategy → digital presence → systems → ongoing support.*
 
 **Target implementation: Wix Headless.** Astro frontend deployed to Wix hosting, with the client's **existing** Wix site as the backend for CMS, blog, store, and forms.
 
@@ -133,7 +133,36 @@ Wix rich-text nodes map onto these block types:
 
 Also includes tag row, author block, and a related-posts grid (`@wix/blog` related query).
 
-### 8. Webinar (`Webinar.dc.html`) — TEMPORARY PAGE
+### 8. Portfolio (`Portfolio.dc.html`)
+
+Route as `/portfolio`. Replaces the old homepage `#portfolio` anchor — every Portfolio nav and footer link across the site now points at this page.
+
+A **simple project grid**: photo, category, project name, and a link out to the live site. Three columns on desktop, collapsing to one on mobile. Each card is a single link opening in a new tab. Deliberately spare — the client asked for name, photo, and link only, so do not add case-study narrative blocks, hover overlays, or detail pages.
+
+Wire to the **`CaseStudies`** collection (kept as the name; a simple `Projects` collection is equivalent). Fields actually used by this layout:
+
+| Design element | CMS field |
+|---|---|
+| Category kicker | `category` |
+| Project name | `title` |
+| Photo | `coverImage` |
+| Link out | `liveUrl` |
+| Link label | `linkLabel` (e.g. "Visit the site" / "View the project") |
+| Order | `order` |
+
+The richer `challenge` / `whatWeDid` / `solution` / `outcome` fields in the collection spec are unused by this layout. Keep them in the collection if case studies are wanted later; nothing in the current design reads them.
+
+**All project names, photos, and URLs are placeholders.** Real projects must replace them before launch.
+
+#### Canva portfolio hand-off
+
+Before the closing CTA, a section links out to Danielle's **Canva portfolio** as the fuller collection. External link, new tab, not a CMS item — the URL is a single config value (`canvaUrl`), currently `#`. The client owes the real link.
+
+Keep this section even once the grid is populated. The two serve different jobs: the grid shows selected work in the site's own styling, the Canva portfolio shows volume.
+
+---
+
+### 9. Webinar (`Webinar.dc.html`) — TEMPORARY PAGE
 
 A standalone paid-webinar landing page. **It comes down after the event** — build it so removal is one deletion plus a redirect, not an unpick.
 
@@ -143,7 +172,7 @@ Route as `/webinar`. It deliberately has no site nav (minimal header, one link b
 
 | | |
 |---|---|
-| Title | Send With Purpose: An Email Marketing Webinar — For Service Based Businesses |
+| Title | Email Marketing Do's and Don'ts — For Service Based Businesses |
 | Host | Danielle McDougald |
 | Date | Tuesday, September 2, 11:00 AM Eastern |
 | Platform | Live on Zoom |
@@ -193,7 +222,7 @@ After September 2:
 ### Navigation
 Sticky, `rgba(249,244,234,0.96)` with `backdrop-filter: blur(6px)`, bottom hairline. Items: Home, About, Services, Business Consulting, Portfolio, Shop, Blog, Webinar + "Schedule a Consultation" button.
 
-**Above the nav on the homepage:** a dark `#2b1f16` full-width announcement bar (`#webinar-announce`) linking to `/webinar` — "LIVE WEBINAR · Send With Purpose: An Email Marketing Webinar · September 2 · 11:00 AM ET · $20 early bird through Aug 26 · Reserve your spot". This is temporary; see the Webinar page's Retirement notes.
+**Above the nav on the homepage:** a dark `#2b1f16` full-width announcement bar (`#webinar-announce`) linking to `/webinar` — "LIVE WEBINAR · Email Marketing Do's and Don'ts · September 2 · 11:00 AM ET · $20 early bird through Aug 26 · Reserve your spot". This is temporary; see the Webinar page's Retirement notes.
 
 **Services dropdown** (desktop): opens on hover, lists the four pillars + Content Concierge + All Services. The menu is positioned at `top:100%` with its own `padding-top:14px` forming an unbroken hover bridge — do not reintroduce a gap between trigger and menu.
 
@@ -344,7 +373,7 @@ Footer links labelled "Free Hiring Bundle" across all pages point at `#hiring-bu
 
 **`Testimonials`** — `quote` (text), `authorName` (text), `authorTitle` (text), `featured` (boolean), `order` (number)
 
-**`CaseStudies`** — `title`, `slug`, `client`, `challenge` (rich text), `whatWeDid` (rich text), `solution` (rich text), `outcome` (rich text), `servicesUsed` (tags), `coverImage` (image), `order`
+**`CaseStudies`** — `title`, `slug`, `client`, `challenge` (rich text), `whatWeDid` (rich text), `solution` (rich text), `outcome` (rich text), `servicesUsed` (tags), `pillar` (enum: Operations | Support | Consulting | Brand — drives the filter chips), `coverImage` (image), `order`
 
 **`Services`** — `name`, `description`, `price` (text — ranges like "From $1,497"), `pillar` (reference/enum: Operations | Support | Consulting | Brand — enum keys are unchanged from the anchors; display titles are Business Operations, Ongoing Business Support, Business Consulting, Brand & Digital Presence), `order`
 
@@ -420,6 +449,7 @@ design-source/          The seven page designs — read these for layout, color,
   Shop.dc.html
   Blog.dc.html
   Blog Post.dc.html
+  Portfolio.dc.html
   Webinar.dc.html       (temporary — comes down after Sept 2)
 
 rendered-preview/       Open in a browser to see the intended result

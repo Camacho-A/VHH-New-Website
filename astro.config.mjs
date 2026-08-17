@@ -27,8 +27,8 @@ export default defineConfig({
     // (src/pages/workbook.astro), which actually captures the contact via @wix/forms — a
     // real functional replacement, not just a safety net for old bookmarks/indexed URLs.
     '/ultimatehiringbundle': '/workbook',
-    // Was its own page (client logos etc.); folded into a homepage section in the redesign.
-    '/portfolio': '/#portfolio',
+    // (/portfolio was briefly redirected to the homepage #portfolio anchor; it is now a real
+    // page again — src/pages/portfolio.astro — so no redirect.)
     // The Shop (product catalog + cart) was removed from the site entirely; its lead-magnet
     // opt-in is the one piece that survives, now as its own page. No per-product redirects —
     // the catalog only existed briefly on this new site and was never the SEO-indexed

@@ -8,7 +8,7 @@
 // on --bg-alt here, matching the Homepage and Services sources.
 
 export interface Props {
-  currentPage?: "home" | "about" | "services" | "business-consulting" | "workbook" | "webinar" | "blog";
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "portfolio" | "workbook" | "webinar" | "blog";
 }
 
 const { currentPage = "home" } = Astro.props;
@@ -20,10 +20,9 @@ const aboutHref = linkTo("about", "/about");
 // go to the actual /services page, not the homepage's #pillars teaser section.
 const servicesHref = currentPage === "home" ? "#pillars" : linkTo("services", "/services");
 const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
-// Portfolio nav item now goes straight to the external Canva portfolio, not the homepage's
-// own #portfolio section (that section still exists on the page, just no longer linked
-// from nav).
-const portfolioHref = "https://canva.link/vhhportfolio";
+// Portfolio points at the dedicated /portfolio page (README § 8), which replaced the old
+// homepage #portfolio anchor.
+const portfolioHref = linkTo("portfolio", "/portfolio");
 const blogHref = linkTo("blog", "/blog");
 // Standalone opt-in page (src/pages/workbook.astro) for "The Business Operations Glow-Up
 // Workbook" — replaced the old Shop page's #hiring-bundle section once the Shop (product

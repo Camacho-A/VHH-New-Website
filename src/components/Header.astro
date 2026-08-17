@@ -14,7 +14,7 @@
 //    pages rather than carrying over the source's inconsistent per-page inclusion of it.
 
 export interface Props {
-  currentPage?: "home" | "about" | "services" | "business-consulting" | "workbook" | "webinar" | "blog";
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "portfolio" | "workbook" | "webinar" | "blog";
 }
 
 const { currentPage = "home" } = Astro.props;
@@ -25,10 +25,10 @@ const linkTo = (key: Props["currentPage"], path: string) => (currentPage === key
 const homeHref = currentPage === "home" ? "#top" : "/";
 const aboutHref = linkTo("about", "/about");
 const businessConsultingHref = linkTo("business-consulting", "/business-consulting");
-// Portfolio nav item now goes straight to the external Canva portfolio, not the homepage's
-// own #portfolio section (that section still exists on the page, just no longer linked
-// from nav).
-const portfolioHref = "https://canva.link/vhhportfolio";
+// Portfolio nav item points at the dedicated /portfolio page (README § 8), which replaced
+// the old homepage #portfolio anchor. The homepage's "worked with" section still exists,
+// it's just no longer the nav target.
+const portfolioHref = linkTo("portfolio", "/portfolio");
 const blogHref = linkTo("blog", "/blog");
 // Temporary "Webinar" nav item — comes down after the Sept 2 event (README § Webinar
 // retirement). The webinar page itself has no site nav, so this never resolves to "#top".
@@ -97,7 +97,7 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
       >
         Business Consulting
       </a>
-      <a href={portfolioHref} class="site-nav__link">Portfolio</a>
+      <a href={portfolioHref} class="site-nav__link" class:list={{ "is-active": currentPage === "portfolio" }}>Portfolio</a>
       <a href={blogHref} class="site-nav__link" class:list={{ "is-active": currentPage === "blog" }}>
         Blog
       </a>
@@ -139,7 +139,7 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
     >
       Business Consulting
     </a>
-    <a href={portfolioHref} class="mobile-panel__link">Portfolio</a>
+    <a href={portfolioHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "portfolio" }}>Portfolio</a>
     <a href={blogHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "blog" }}>
       Blog
     </a>

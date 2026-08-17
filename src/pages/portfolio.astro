@@ -1,0 +1,320 @@
+---
+// Portfolio page (README § "8. Portfolio"). A deliberately spare project grid — photo,
+// category, name, and a link out to the live site; whole card is one link opening in a new
+// tab. No case-study narrative, hover overlays, or detail pages (the client asked for name,
+// photo, and link only). Below the grid, a Canva "full collection" hand-off section, then
+// the closing CTA.
+//
+// Server-rendered per request (site-wide `output: 'server'`, no `prerender` override) — see
+// astro.config.mjs / README § "Deployment routing".
+//
+// Project data comes from src/lib/wixPortfolio.ts (hardcoded today, structured to swap to a
+// `CaseStudies` @wix/data query once Danielle creates the collection — see that file).
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ImagePlate from "../components/ImagePlate.astro";
+import { getPortfolioProjects } from "../lib/wixPortfolio";
+
+const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+
+// The Canva "full collection" link is a single config value, currently "#" — the client owes
+// the real Canva share link (README § "Canva portfolio hand-off"). When it's still "#", show
+// the dashed placeholder note instead of a live link.
+const CANVA_PORTFOLIO_URL = "#";
+const canvaReady = CANVA_PORTFOLIO_URL !== "#";
+
+const PROJECTS = getPortfolioProjects();
+---
+
+<BaseLayout
+  currentPage="portfolio"
+  title="Portfolio | The Virtual Helping Hand"
+  description="Websites, branding, systems, and operations projects built for service based businesses by The Virtual Helping Hand."
+>
+  <!-- ============ HERO ============ -->
+  <section id="top" class="pf-hero">
+    <div class="pf-hero__inner">
+      <p class="kicker kicker--rule">Portfolio</p>
+      <h1 class="pf-hero__title">the work behind the businesses.</h1>
+      <p class="pf-hero__lede">
+        Websites and brands built for service based businesses. Every project starts with what the business
+        actually needed, not with what looked good.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ PROJECT GRID ============ -->
+  <section class="pf-grid-section">
+    {
+      PROJECTS.length > 0 ? (
+        <div class="pf-grid">
+          {PROJECTS.map((p) => (
+            <a
+              href={p.liveUrl}
+              target="_blank"
+              rel="noopener"
+              class="pf-card"
+              class:list={{ "pf-card--placeholder": p.liveUrl === "#" }}
+            >
+              <ImagePlate src={p.coverImage ?? undefined} alt={p.title} aspectRatio="4/3" label={p.imageLabel} />
+              <div>
+                <p class="pf-card__category">{p.category}</p>
+                <h2 class="pf-card__title">{p.title}</h2>
+                <p class="pf-card__link">{p.linkLabel}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="pf-empty">No projects in this category yet.</p>
+      )
+    }
+  </section>
+
+  <!-- ============ CANVA FULL COLLECTION ============ -->
+  <section class="pf-canva">
+    <div class="pf-canva__grid">
+      <div>
+        <p class="pf-canva__eyebrow">The Full Collection</p>
+        <h2 class="pf-canva__title">See the complete portfolio</h2>
+        <p class="pf-canva__desc">
+          Every website, brand, and design project in one place, including work not featured above. Have a
+          look through and see what fits the direction you have in mind.
+        </p>
+        {
+          canvaReady ? (
+            <a href={CANVA_PORTFOLIO_URL} target="_blank" rel="noopener" class="pf-canva__btn">
+              View the Full Portfolio
+            </a>
+          ) : (
+            <>
+              <span class="pf-canva__btn pf-canva__btn--disabled" aria-disabled="true">View the Full Portfolio</span>
+              <p class="pf-canva__note">The Canva portfolio link is coming soon — check back shortly.</p>
+            </>
+          )
+        }
+      </div>
+      <ImagePlate aspectRatio="4/3" matColor="var(--bg)" label="Portfolio cover or a spread of project thumbnails" />
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="pf-cta">
+    <div class="pf-cta__inner">
+      <h2 class="pf-cta__title">have a project in mind?</h2>
+      <p class="pf-cta__body">
+        Tell us where your business feels stuck and we'll help you determine the next best step. No pressure,
+        no obligation.
+      </p>
+      <a href={CTA_HREF} class="btn">Schedule Your Free Consultation</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ---- Hero ---- */
+  .pf-hero {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(48px, 7vw, 90px) var(--section-pad-x) clamp(32px, 4vw, 48px);
+  }
+
+  .pf-hero__inner {
+    max-width: 820px;
+  }
+
+  .pf-hero__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 4.6vw, 3.9rem);
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin: 20px 0 26px;
+  }
+
+  .pf-hero__lede {
+    font-size: clamp(16.5px, 1.5vw, 18.5px);
+    line-height: 1.75;
+    color: var(--text-body);
+    max-width: 620px;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ---- Project grid ---- */
+  .pf-grid-section {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(28px, 3vw, 40px) var(--section-pad-x) clamp(48px, 6vw, 80px);
+  }
+
+  /* auto-fill minmax(300px) → three columns on desktop, one on mobile. */
+  .pf-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: clamp(24px, 3vw, 36px);
+  }
+
+  /* Whole card is one link; the negative margin lets the accent-tint hover fill extend
+     slightly past the content without shifting layout (matches the design source). */
+  .pf-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    color: var(--text);
+    padding: 10px;
+    margin: -10px;
+    border-radius: var(--radius-control);
+  }
+
+  .pf-card:hover {
+    background: rgba(182, 130, 53, 0.07);
+    color: var(--text);
+  }
+
+  .pf-card:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .pf-card__category {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 8px;
+  }
+
+  .pf-card__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 21px;
+    line-height: 1.25;
+    margin: 0 0 10px;
+  }
+
+  .pf-card__link {
+    font-size: 13.5px;
+    color: var(--accent-deep);
+    margin: 0;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+    display: inline-block;
+  }
+
+  .pf-empty {
+    padding: 48px 0;
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  /* ---- Canva full-collection section ---- */
+  .pf-canva {
+    border-top: 1px solid var(--rule);
+    background: var(--bg-alt);
+    padding: clamp(56px, 7vw, 96px) var(--section-pad-x);
+  }
+
+  .pf-canva__grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(28px, 4vw, 56px);
+    align-items: center;
+  }
+
+  .pf-canva__eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 16px;
+  }
+
+  .pf-canva__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+  }
+
+  .pf-canva__desc {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-body);
+    max-width: 440px;
+    margin: 0 0 28px;
+    text-wrap: pretty;
+  }
+
+  .pf-canva__btn {
+    border: 1px solid var(--accent);
+    color: var(--accent-deep);
+    padding: 15px 30px;
+    border-radius: var(--radius-control);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .pf-canva__btn:hover {
+    background: var(--accent-tint-strong);
+    color: var(--accent-deep);
+  }
+
+  .pf-canva__btn--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .pf-canva__note {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--accent-deep);
+    margin: 0;
+    max-width: 400px;
+    border: 1px dashed rgba(182, 130, 53, 0.85);
+    border-radius: var(--radius-chip);
+    padding: 9px 13px;
+  }
+
+  /* ---- CTA ---- */
+  .pf-cta {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: clamp(56px, 7vw, 96px) var(--section-pad-x);
+  }
+
+  .pf-cta__inner {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pf-cta__title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 3.6vw, 2.8rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+  }
+
+  .pf-cta__body {
+    font-size: 16.5px;
+    line-height: 1.78;
+    color: var(--text-body);
+    max-width: 500px;
+    margin: 0 auto 32px;
+    text-wrap: pretty;
+  }
+</style>
