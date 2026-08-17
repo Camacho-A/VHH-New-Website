@@ -143,7 +143,7 @@ Route as `/webinar`. It deliberately has no site nav (minimal header, one link b
 
 | | |
 |---|---|
-| Title | Email Marketing Do's and Don'ts — For Service Based Businesses |
+| Title | Send With Purpose: An Email Marketing Webinar — For Service Based Businesses |
 | Host | Danielle McDougald |
 | Date | Tuesday, September 2, 11:00 AM Eastern |
 | Platform | Live on Zoom |
@@ -193,7 +193,7 @@ After September 2:
 ### Navigation
 Sticky, `rgba(249,244,234,0.96)` with `backdrop-filter: blur(6px)`, bottom hairline. Items: Home, About, Services, Business Consulting, Portfolio, Shop, Blog, Webinar + "Schedule a Consultation" button.
 
-**Above the nav on the homepage:** a dark `#2b1f16` full-width announcement bar (`#webinar-announce`) linking to `/webinar` — "LIVE WEBINAR · Email Marketing Do's and Don'ts · September 2 · 11:00 AM ET · $20 early bird through Aug 26 · Reserve your spot". This is temporary; see the Webinar page's Retirement notes.
+**Above the nav on the homepage:** a dark `#2b1f16` full-width announcement bar (`#webinar-announce`) linking to `/webinar` — "LIVE WEBINAR · Send With Purpose: An Email Marketing Webinar · September 2 · 11:00 AM ET · $20 early bird through Aug 26 · Reserve your spot". This is temporary; see the Webinar page's Retirement notes.
 
 **Services dropdown** (desktop): opens on hover, lists the four pillars + Content Concierge + All Services. The menu is positioned at `top:100%` with its own `padding-top:14px` forming an unbroken hover bridge — do not reintroduce a gap between trigger and menu.
 
