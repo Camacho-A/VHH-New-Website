@@ -72,33 +72,20 @@ const PROJECTS: Project[] = [
     linkLabel: "Visit daniellesclosetllc.com",
     order: 3,
   },
-  {
-    category: "Website Design",
-    title: "[Project name]",
-    coverImage: null,
-    imageLabel: "Website screenshot",
-    liveUrl: "#",
-    linkLabel: "Visit the site",
-    order: 4,
-  },
-  {
-    category: "Branding",
-    title: "[Project name]",
-    coverImage: null,
-    imageLabel: "Logo or brand board",
-    liveUrl: "#",
-    linkLabel: "View the project",
-    order: 5,
-  },
-  {
-    category: "Website Design",
-    title: "[Project name]",
-    coverImage: null,
-    imageLabel: "Website screenshot",
-    liveUrl: "#",
-    linkLabel: "Visit the site",
-    order: 6,
-  },
+  // To add another project, copy one of the entries above and bump `order`. Drop its cover
+  // in public/images and point `coverImage` at it — use imageFit:"contain" (+ matColor is set
+  // to white automatically) for a logo/brand mark, or omit imageFit for a full-bleed
+  // screenshot. Example:
+  // {
+  //   category: "Website Design · Retail",
+  //   title: "New Project",
+  //   coverImage: "/images/portfolio-new-project.png",
+  //   imageFit: "contain",
+  //   imageLabel: "New Project logo",
+  //   liveUrl: "https://example.com/",
+  //   linkLabel: "Visit example.com",
+  //   order: 4,
+  // },
 ];
 
 export function getPortfolioProjects(): Project[] {
