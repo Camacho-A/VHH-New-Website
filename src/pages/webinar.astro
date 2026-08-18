@@ -343,6 +343,14 @@ const eventPlace = "Live on Zoom";
 
       try {
         await submitWebinarRegistration(firstName, email, businessName, frequency);
+        // Carry the registrant's name/email to the post-payment confirm page (soft-gated),
+        // which fires the Wix "paid confirmation" email after Stripe redirects back — the
+        // confirm page has no other way to know who paid.
+        try {
+          localStorage.setItem("vhh_webinar_reg", JSON.stringify({ firstName, email }));
+        } catch {
+          /* private mode / storage disabled — the confirm page just won't fire the email */
+        }
         if (stripeUrl) {
           // Spot held — send them straight to Stripe to complete payment.
           window.location.href = stripeUrl;
