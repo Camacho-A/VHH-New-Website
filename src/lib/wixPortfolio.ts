@@ -64,9 +64,10 @@ const PROJECTS: Project[] = [
   {
     category: "Website Design · E-Commerce",
     title: "Danielle's Closet",
-    coverImage: "/images/portfolio-danielles-closet.jpg",
-    imageFit: "cover",
-    imageLabel: "Screenshot of daniellesclosetllc.com",
+    coverImage: "/images/portfolio-danielles-closet.avif",
+    imageFit: "contain",
+    imagePadding: "16px 8%",
+    imageLabel: "Danielle's Closet logo",
     liveUrl: "https://www.daniellesclosetllc.com/",
     linkLabel: "Visit daniellesclosetllc.com",
     order: 3,
