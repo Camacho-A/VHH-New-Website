@@ -160,12 +160,22 @@ const gridPosts = rest;
   /* ---- Featured post ---- */
   .featured {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    grid-template-columns: 1fr; /* mobile: stacked */
     gap: clamp(28px, 4vw, 56px);
     align-items: center;
     border: 1px solid var(--rule);
     border-radius: var(--radius-card);
     padding: clamp(24px, 3vw, 40px);
+    /* Keep the featured block from spanning the full width — the photo column is capped so
+       the latest post reads at a comfortable size rather than dominating the page. */
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  @media (min-width: 760px) {
+    .featured {
+      grid-template-columns: minmax(260px, 400px) 1fr;
+    }
   }
 
   .featured__title {
