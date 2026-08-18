@@ -14,9 +14,9 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
 // Calendly consultation link every other CTA on this page uses.
 const CONCIERGE_SUBSCRIBE_HREF = "https://portal.dubsado.com/public/form/view/6a6cf645d9d1d65b27fd79dc";
 
-// Titles/order per the client's rename — anchors are unchanged so existing deep links
-// keep working (README § Services); only the display title, numeral, and list order
-// moved. Content Concierge stays a sub-offer of Brand & Digital Presence, now IV.
+// Order mirrors the Services page (which ends with Business Consulting): Business Operations,
+// Ongoing Business Support, Brand & Digital Presence, Business Consulting. Content Concierge
+// stays a sub-offer of Brand & Digital Presence, now III.
 const PILLARS = [
   {
     numeral: "I",
@@ -32,16 +32,16 @@ const PILLARS = [
   },
   {
     numeral: "III",
-    title: "Business Consulting",
-    desc: "We help you figure out what comes next: audits, growth planning, offer and pricing strategy, and the roadmap to scale with intention.",
-    href: "/services#pillar-consulting",
-  },
-  {
-    numeral: "IV",
     title: "Brand & Digital Presence",
     desc: "A brand and website that reflect where your business is headed, with strategy-led design, copy, and SEO built to attract the right clients.",
     href: "/services#pillar-brand",
     concierge: true,
+  },
+  {
+    numeral: "IV",
+    title: "Business Consulting",
+    desc: "We help you figure out what comes next: audits, growth planning, offer and pricing strategy, and the roadmap to scale with intention.",
+    href: "/services#pillar-consulting",
   },
 ];
 
@@ -283,9 +283,6 @@ const CREDENTIAL_BADGES = [
       <p class="feature__note">
         Book the <strong>Logo and Web Design</strong> or <strong>Branding &amp; Rebranding</strong> consultation.
       </p>
-    </div>
-    <div class="feature__photo">
-      <ImagePlate label="Website mockup on laptop, editorial styling" aspectRatio="4/5" filtered={false} />
     </div>
   </section>
 

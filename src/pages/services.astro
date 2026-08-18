@@ -234,12 +234,13 @@ const BRANDING_TIERS = [
   },
 ];
 
+// Chips filter the package sections below (keys match each section's id / data-package).
 const FILTER_CHIPS = [
   { label: "All Services", key: "All" },
-  { label: "Business Operations", key: "Operations" },
-  { label: "Ongoing Support", key: "Support" },
-  { label: "Business Consulting", key: "Consulting" },
-  { label: "Brand & Digital", key: "Brand" },
+  { label: "Virtual Operations", key: "packages" },
+  { label: "Branding", key: "branding" },
+  { label: "Social Media", key: "social" },
+  { label: "Business Consulting", key: "consulting" },
 ];
 ---
 
@@ -289,7 +290,7 @@ const FILTER_CHIPS = [
   </section>
 
   <!-- ============ VOS PACKAGES ============ -->
-  <section id="packages" class="band">
+  <section id="packages" class="band" data-package="packages">
     <div class="band__inner">
       <h2 class="section-title2" style="margin-bottom:10px;">virtual operations specialist packages</h2>
       <p class="section-lede2" style="max-width:580px;">
@@ -333,7 +334,7 @@ const FILTER_CHIPS = [
   </section>
 
   <!-- ============ BRANDING PACKAGES ============ -->
-  <section id="branding" class="section section--pad-top">
+  <section id="branding" class="section section--pad-top" data-package="branding">
     <h2 class="section-title2" style="margin-bottom:10px;">branding packages</h2>
     <p class="section-lede2" style="max-width:580px;">Everything your business needs to look consistent everywhere it shows up.</p>
     <div class="tier-grid tier-grid--branding">
@@ -357,7 +358,7 @@ const FILTER_CHIPS = [
   </section>
 
   <!-- ============ SOCIAL MEDIA PACKAGES ============ -->
-  <section id="social" class="section">
+  <section id="social" class="section" data-package="social">
     <h2 class="section-title2" style="margin-bottom:10px;">social media management packages</h2>
     <p class="section-lede2" style="max-width:580px;">
       For businesses that want the posting handled, not just planned. We create, and you approve!
@@ -403,7 +404,7 @@ const FILTER_CHIPS = [
   </section>
 
   <!-- ============ BUSINESS CONSULTING PACKAGES ============ -->
-  <section id="consulting" class="section">
+  <section id="consulting" class="section" data-package="consulting">
     <h2 class="section-title2" style="margin-bottom:10px;">business consulting</h2>
     <p class="section-lede2">
       Coaching and strategic consulting for owners who want clarity before they build. Choose the experience
@@ -485,60 +486,77 @@ const FILTER_CHIPS = [
 </BaseLayout>
 
 <script>
-  // Filters the A-to-Z services list (the roman-numeral pillar accordions were removed).
-  // Search matches a service name or description; the chips narrow by pillar category.
+  // The chips filter the package SECTIONS (show/hide) — key matches each section's
+  // data-package. The search box independently filters the A-to-Z services list below.
   const searchInput = document.querySelector<HTMLInputElement>("[data-search-input]");
   const clearBtn = document.querySelector<HTMLButtonElement>("[data-search-clear]");
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter-chip]"));
   const resultLine = document.querySelector<HTMLElement>("[data-result-line]");
   const noResultsEl = document.querySelector<HTMLElement>("[data-no-results]");
   const items = Array.from(document.querySelectorAll<HTMLElement>("[data-service-item]"));
+  const packages = Array.from(document.querySelectorAll<HTMLElement>("[data-package]"));
 
   const TOTAL = items.length;
-  let activeCategory = "All";
+  const PACKAGE_LABELS: Record<string, string> = {
+    packages: "Virtual Operations Specialist",
+    branding: "Branding",
+    social: "Social Media Management",
+    consulting: "Business Consulting",
+  };
+  let activePackage = "All";
 
-  function applyFilters() {
+  // Chips: show only the selected package section (or all).
+  function applyPackageFilter() {
+    packages.forEach((sec) => {
+      sec.hidden = !(activePackage === "All" || sec.dataset.package === activePackage);
+    });
+  }
+
+  // Search: filter the A-to-Z list by name/description.
+  function applySearch() {
     if (!searchInput) return;
     const q = searchInput.value.trim().toLowerCase();
     let visible = 0;
 
     items.forEach((item) => {
-      const matchesCategory = activeCategory === "All" || item.dataset.serviceCategory === activeCategory;
-      const matchesQuery =
+      const show =
         !q || (item.dataset.serviceName ?? "").includes(q) || (item.dataset.serviceDesc ?? "").includes(q);
-      const show = matchesCategory && matchesQuery;
       item.hidden = !show;
       if (show) visible += 1;
     });
 
     if (noResultsEl) noResultsEl.hidden = visible > 0;
     if (clearBtn) clearBtn.hidden = !q;
+    updateResultLine(q, visible);
+  }
 
-    if (resultLine) {
-      const raw = searchInput.value.trim();
-      if (q && visible === 0) resultLine.textContent = `No services matched "${raw}".`;
-      else if (q) resultLine.textContent = `Showing ${visible} of ${TOTAL} services matching "${raw}".`;
-      else if (activeCategory !== "All") resultLine.textContent = `Showing ${visible} of ${TOTAL} services.`;
-      else resultLine.textContent = `Showing all ${TOTAL} services.`;
-    }
+  function updateResultLine(q: string, visible: number) {
+    if (!resultLine || !searchInput) return;
+    const raw = searchInput.value.trim();
+    if (q && visible === 0) resultLine.textContent = `No services matched "${raw}".`;
+    else if (q) resultLine.textContent = `Showing ${visible} of ${TOTAL} services matching "${raw}".`;
+    else if (activePackage !== "All") resultLine.textContent = `Showing ${PACKAGE_LABELS[activePackage] ?? ""} packages.`;
+    else resultLine.textContent = `Showing all ${TOTAL} services.`;
   }
 
   chips.forEach((chip) => {
     chip.addEventListener("click", () => {
-      activeCategory = chip.dataset.filterChip ?? "All";
+      activePackage = chip.dataset.filterChip ?? "All";
       chips.forEach((c) => c.classList.toggle("is-active", c === chip));
-      applyFilters();
+      applyPackageFilter();
+      updateResultLine(searchInput?.value.trim().toLowerCase() ?? "", items.filter((i) => !i.hidden).length);
     });
   });
 
-  searchInput?.addEventListener("input", applyFilters);
+  searchInput?.addEventListener("input", applySearch);
   clearBtn?.addEventListener("click", () => {
     if (searchInput) searchInput.value = "";
-    applyFilters();
+    applySearch();
     searchInput?.focus();
   });
 
-  applyFilters();
+  applyPackageFilter();
+  applySearch();
 </script>
 
 <style>

@@ -50,47 +50,6 @@ const AGENDA = [
   { num: "V", text: "Real examples of good and bad emails" },
 ];
 
-const EMAIL_TYPES = [
-  {
-    num: "I",
-    title: "Story or personal experience",
-    desc: "A real moment, the lesson in it, and how that ties back to what you offer. Longer and narrative driven.",
-  },
-  {
-    num: "II",
-    title: "Tips or helpful emails",
-    desc: "Short, direct, and practical. Quick wins your reader can put to work the same week.",
-  },
-  {
-    num: "III",
-    title: "Soft connection or support",
-    desc: "Validation and encouragement. These remind your audience you understand them.",
-  },
-];
-
-const DONTS = [
-  {
-    num: "I",
-    title: "Only emailing when you sell",
-    desc: "If the only time someone hears from you is when you want money, your emails feel transactional. Build trust first.",
-  },
-  {
-    num: "II",
-    title: "Writing like a robot",
-    desc: '"Hello valued subscriber" sounds cold and impersonal. Your emails should sound like a real conversation.',
-  },
-  {
-    num: "III",
-    title: "Overcomplicating the email",
-    desc: "Too many topics, too many links, huge blocks of text, no clear direction. One email, one purpose.",
-  },
-  {
-    num: "IV",
-    title: "Oversharing personal struggles",
-    desc: "There is a line between connection and desperation. Your audience wants honesty and confidence in your expertise.",
-  },
-];
-
 const FOR_YOU = [
   "You run a service based business",
   "You have a list but rarely email it",
@@ -153,7 +112,7 @@ const eventPlace = "Live on Zoom";
         </div>
 
         <a href="#register" class="wb-btn">Reserve Your Spot</a>
-        <p class="wb-hero__note">Can't make it live? Everyone who pays gets the replay.</p>
+        <p class="wb-hero__note">Everyone who registers gets the replay.</p>
       </div>
 
       <ImagePlate
@@ -183,44 +142,6 @@ const eventPlace = "Live on Zoom";
     </div>
   </section>
 
-  <!-- ============ THREE EMAIL TYPES ============ -->
-  <section class="wb-section">
-    <h2 class="wb-h2">The three emails that work for service businesses</h2>
-    <p class="wb-section__lede">
-      Each one does a different job. We'll break down the structure of all three, with real examples.
-    </p>
-    <div class="wb-cards">
-      {
-        EMAIL_TYPES.map((t) => (
-          <div class="wb-card">
-            <p class="wb-num">{t.num}</p>
-            <h3 class="wb-card__title">{t.title}</h3>
-            <p class="wb-card__desc">{t.desc}</p>
-          </div>
-        ))
-      }
-    </div>
-  </section>
-
-  <!-- ============ THE DON'TS ============ -->
-  <section class="wb-dark">
-    <div class="wb-dark__inner">
-      <p class="wb-dark__kicker">The Don'ts</p>
-      <h2 class="wb-dark__h2">Four mistakes that quietly cost you subscribers</h2>
-      <p class="wb-dark__lede">We'll look at real emails that got these wrong, and what to do instead.</p>
-      <div class="wb-grid-bordered wb-grid-bordered--dark">
-        {
-          DONTS.map((d) => (
-            <div class="wb-cell wb-cell--dark">
-              <p class="wb-num wb-num--dark">{d.num}</p>
-              <h3 class="wb-cell__title wb-cell__title--dark">{d.title}</h3>
-              <p class="wb-cell__desc wb-cell__desc--dark">{d.desc}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
 
   <!-- ============ WHO IT'S FOR + HOST ============ -->
   <section class="wb-section">
