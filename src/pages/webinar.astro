@@ -207,7 +207,7 @@ const eventPlace = "Live on Zoom";
           </div>
         </div>
 
-        <form class="wb-form" data-webinar-form novalidate>
+        <form class="wb-form" data-webinar-form data-stripe-url={checkoutReady ? activeStripeUrl : ""} novalidate>
           <div class="wb-form__row">
             <label class="wb-field">
               <span class="wb-field__label">First Name</span>
@@ -302,8 +302,9 @@ const eventPlace = "Live on Zoom";
 
   // Two-step flow (README): this submit HOLDS the spot (createSubmission → contact + "holding
   // your spot" automation). It must not send the Zoom link — that's a separate Stripe-payment
-  // automation. On success we reveal the pre-rendered "Your spot is held" panel, whose price
-  // tier + Stripe link were already decided server-side (never recomputed here).
+  // automation. On success we go STRAIGHT to the Stripe checkout (the price tier + link were
+  // decided server-side and passed in via data-stripe-url; never recomputed here). If no link
+  // is set yet, we fall back to revealing the pre-rendered "Your spot is held" panel.
   const form = document.querySelector<HTMLFormElement>("[data-webinar-form]");
   const formWrap = document.querySelector<HTMLElement>("[data-register-form]");
   const successPanel = document.querySelector<HTMLElement>("[data-register-success]");
@@ -333,13 +334,21 @@ const eventPlace = "Live on Zoom";
       if (!firstName) return showError("Please add your first name.");
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError("Please enter a valid email address.");
 
+      const stripeUrl = form.dataset.stripeUrl ?? "";
+
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = "Holding your spot…";
+        submitBtn.textContent = stripeUrl ? "Taking you to checkout…" : "Holding your spot…";
       }
 
       try {
         await submitWebinarRegistration(firstName, email, businessName, frequency);
+        if (stripeUrl) {
+          // Spot held — send them straight to Stripe to complete payment.
+          window.location.href = stripeUrl;
+          return;
+        }
+        // No payment link set yet: fall back to the "spot held" panel.
         formWrap.hidden = true;
         successPanel.hidden = false;
         successPanel.scrollIntoView({ behavior: "smooth", block: "center" });
