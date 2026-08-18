@@ -26,6 +26,9 @@ export interface Project {
   /** How the cover fills the 4/3 plate. "contain" for logos/brand marks (show the whole
    * thing, letterboxed); "cover" (default) for full-bleed screenshots. */
   imageFit?: "cover" | "contain";
+  /** Extra plate padding for a wide "contain" logo that would otherwise run edge to edge —
+   * insets it so it sits smaller with breathing room. Any CSS padding value. */
+  imagePadding?: string;
   /** Text shown inside the placeholder plate when coverImage is null. */
   imageLabel: string;
   /** External link to the live site; "#" for a not-yet-linked placeholder. */
@@ -41,6 +44,8 @@ const PROJECTS: Project[] = [
     title: "Travel Visions Aloha for the Blind",
     coverImage: "/images/portfolio-travel-visions.png",
     imageFit: "contain",
+    // This logo is very wide (≈4:1); extra horizontal inset keeps it off the plate edges.
+    imagePadding: "18px 15%",
     imageLabel: "Screenshot of travelvisionsaloha.org",
     liveUrl: "https://travelvisionsaloha.org/",
     linkLabel: "Visit travelvisionsaloha.org",
@@ -57,12 +62,13 @@ const PROJECTS: Project[] = [
     order: 2,
   },
   {
-    category: "Branding",
-    title: "[Project name]",
-    coverImage: null,
-    imageLabel: "Logo or brand board",
-    liveUrl: "#",
-    linkLabel: "View the project",
+    category: "Website Design · E-Commerce",
+    title: "Danielle's Closet",
+    coverImage: "/images/portfolio-danielles-closet.jpg",
+    imageFit: "cover",
+    imageLabel: "Screenshot of daniellesclosetllc.com",
+    liveUrl: "https://www.daniellesclosetllc.com/",
+    linkLabel: "Visit daniellesclosetllc.com",
     order: 3,
   },
   {

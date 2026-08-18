@@ -65,6 +65,7 @@ const PROJECTS = getPortfolioProjects();
                 fit={p.imageFit ?? "cover"}
                 filtered={false}
                 matColor={p.imageFit === "contain" ? "#ffffff" : undefined}
+                padding={p.imagePadding}
               />
               <div>
                 <p class="pf-card__category">{p.category}</p>

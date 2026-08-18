@@ -34,6 +34,10 @@ export interface Props {
    * the source ratio doesn't match the slot. Default (unset) centers the crop; e.g.
    * "center 20%" keeps the top of a portrait in frame so a head isn't cut off. */
   objectPosition?: string;
+  /** Overrides the plate's default 6px mat padding — e.g. a wide "contain" logo that would
+   * otherwise run edge to edge gets extra inset so it sits smaller with breathing room.
+   * Any CSS padding value ("28px", "10% 20%", …). */
+  padding?: string;
 }
 
 const {
@@ -48,12 +52,16 @@ const {
   imgBorder,
   matColor,
   objectPosition,
+  padding,
 } = Astro.props;
 
 const imgStyle =
   [imgBorder ? `border:${imgBorder};` : "", objectPosition ? `object-position:${objectPosition};` : ""]
     .join("") || undefined;
-const figureStyle = `aspect-ratio:${aspectRatio};${matColor ? ` --plate-mat-bg:${matColor};` : ""}`;
+const figureStyle =
+  `aspect-ratio:${aspectRatio};` +
+  (matColor ? ` --plate-mat-bg:${matColor};` : "") +
+  (padding ? ` padding:${padding};` : "");
 ---
 
 <figure class:list={["plate", { "plate--bare": bare }]} style={figureStyle}>
