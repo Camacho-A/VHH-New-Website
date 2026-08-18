@@ -1,0 +1,165 @@
+---
+// TEMPORARY post-payment confirmation page for the webinar (comes down with the webinar page
+// after the Sept 2 event). Stripe's Payment Links are configured to redirect here after a
+// successful payment. Deliberately does NOT verify the payment/session (no Stripe secret on
+// this hosting) — it's reassurance only; the real gate is the Zapier → Zoom flow that emails
+// the join link only to people who actually paid.
+//
+// Renders WITHOUT the shared site nav (BaseLayout `bare`), matching src/pages/webinar.astro.
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  bare
+  currentPage="webinar"
+  title="You're Registered | Send With Purpose Webinar | The Virtual Helping Hand"
+  description="Payment received for the Send With Purpose email marketing webinar. Check your inbox for your Zoom link and calendar invite."
+>
+  <!-- ============ MINIMAL HEADER ============ -->
+  <header class="wc-header">
+    <div class="wc-header__bar">
+      <a href="/" class="wc-header__logo">The Virtual Helping Hand</a>
+      <a href="/" class="wc-header__link">Back to home</a>
+    </div>
+  </header>
+
+  <!-- ============ CONFIRMATION ============ -->
+  <section class="wc-section">
+    <div class="wc-card">
+      <p class="wc-eyebrow">Payment received</p>
+      <h1 class="wc-title">You're registered</h1>
+      <p class="wc-body">
+        Check your inbox for your Zoom link and a calendar invite — they're on the way. If they haven't
+        arrived in a few minutes, check your promotions or spam folder.
+      </p>
+      <p class="wc-meta">Send With Purpose · Tuesday, September 2 · 11:00 AM Eastern · Live on Zoom</p>
+      <a href="/" class="wc-btn">Back to home</a>
+    </div>
+  </section>
+
+  <!-- ============ MINIMAL FOOTER ============ -->
+  <footer class="wc-footer">
+    <div class="wc-footer__inner">
+      <p class="wc-footer__copy">© 2026 The Virtual Helping Hand</p>
+      <p class="wc-footer__powered">Proudly powered by military spouses and stay at home moms</p>
+    </div>
+  </footer>
+</BaseLayout>
+
+<style>
+  .wc-header {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .wc-header__bar {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 20px var(--section-pad-x);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .wc-header__logo {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--text);
+  }
+
+  .wc-header__link {
+    font-size: 13.5px;
+    color: var(--accent-deep);
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
+  }
+
+  .wc-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(56px, 9vw, 120px) var(--section-pad-x);
+  }
+
+  .wc-card {
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-card);
+    background: var(--bg-alt);
+    padding: clamp(32px, 5vw, 56px);
+    text-align: center;
+  }
+
+  .wc-eyebrow {
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 18px;
+  }
+
+  .wc-title {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0 0 20px;
+  }
+
+  .wc-body {
+    font-size: 16.5px;
+    line-height: 1.78;
+    color: var(--text-body);
+    margin: 0 auto 22px;
+    max-width: 460px;
+    text-wrap: pretty;
+  }
+
+  .wc-meta {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0 0 30px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wc-btn {
+    border: 1px solid var(--accent);
+    color: var(--accent-deep);
+    padding: 14px 28px;
+    border-radius: var(--radius-control);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 16px;
+    display: inline-block;
+  }
+
+  .wc-btn:hover {
+    background: var(--accent-tint-strong);
+    color: var(--accent-deep);
+  }
+
+  .wc-footer {
+    border-top: 1px solid var(--rule);
+    padding: 32px var(--section-pad-x);
+  }
+
+  .wc-footer__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .wc-footer__copy,
+  .wc-footer__powered {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+</style>
