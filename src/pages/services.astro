@@ -98,8 +98,14 @@ const PILLARS = [
   },
 ];
 
-const TOTAL_SERVICES = PILLARS.reduce((n, p) => n + p.services.length, 0);
-const ALPHABETICAL = PILLARS.flatMap((p) => p.services.map((s) => s.name)).sort((a, b) => a.localeCompare(b));
+// The roman-numeral pillar accordions were removed (testing a packages-only Services page),
+// but PILLARS stays as the source for the searchable A-to-Z list at the bottom, which the
+// filter box now drives instead of the accordions. Each service carries its pillar as a
+// category so the filter chips can narrow the list.
+const ALL_SERVICES = PILLARS.flatMap((p) =>
+  p.services.map((s) => ({ name: s.name, desc: s.desc, category: p.key }))
+).sort((a, b) => a.name.localeCompare(b.name));
+const TOTAL_SERVICES = ALL_SERVICES.length;
 
 const CONSULTING_TIERS = [
   {
@@ -240,19 +246,19 @@ const FILTER_CHIPS = [
 <BaseLayout
   currentPage="services"
   title="Services | The Virtual Helping Hand"
-  description="Every service we offer sits inside one of four pillars: Operations, Support, Consulting, and Brand."
+  description="Packages for virtual operations, branding, social media management, and business consulting — plus the full A-to-Z list of services."
 >
   <!-- ============ HERO ============ -->
   <section id="top" class="hero">
     <p class="kicker kicker--rule" style="margin-bottom:26px;">Services</p>
     <h1 class="hero__title">let's find exactly what your business needs.</h1>
     <p class="hero__lede">
-      Every service we offer sits inside one of four pillars. Browse by what you're trying to solve, or search
-      below if you already have something specific in mind.
+      Browse our packages below, from behind-the-scenes operations to branding, social media, and business
+      consulting. Or scan the full A-to-Z list of everything we offer.
     </p>
   </section>
 
-  <!-- ============ FILTER ============ -->
+  <!-- ============ FILTER (searches the A-to-Z list at the bottom of the page) ============ -->
   <section class="section section--tight">
     <div class="filter-box">
       <div class="filter-box__search">
@@ -278,79 +284,8 @@ const FILTER_CHIPS = [
           ))
         }
       </div>
-      <p class="filter-box__result" data-result-line>Showing all {TOTAL_SERVICES} services across four pillars.</p>
+      <p class="filter-box__result" data-result-line>Showing all {TOTAL_SERVICES} services.</p>
     </div>
-  </section>
-
-  <!-- ============ SERVICE PILLARS ============ -->
-  <section class="section">
-    {
-      PILLARS.map((p) => (
-        <div id={`pillar-${p.key.toLowerCase()}`} class="pillar" data-pillar={p.key}>
-          <button type="button" data-pillar-toggle aria-expanded="false" class="pillar__toggle">
-            <span class="pillar__numeral">{p.numeral}</span>
-            <h2 class="pillar__title">{p.title}</h2>
-            <span class="pillar__count" data-pillar-count>
-              {p.services.length} services
-            </span>
-            <span class="pillar__sign" data-pillar-sign aria-hidden="true">
-              +
-            </span>
-          </button>
-          <p class="pillar__problem">{p.problem}</p>
-          <p class="pillar__promise">{p.promise}</p>
-          <div class="pillar__services" data-pillar-services hidden>
-            {p.services.map((s) => (
-              <div class="service-row" data-service-name={s.name.toLowerCase()} data-service-desc={s.desc.toLowerCase()}>
-                <h3 class="service-row__name">{s.name}</h3>
-                <p class="service-row__desc">{s.desc}</p>
-                <p class="service-row__price">{s.price}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))
-    }
-    <div class="no-results" data-no-results hidden>
-      <p class="no-results__title">Nothing matched that search.</p>
-      <p class="no-results__body">
-        If you need something that isn't listed, ask. Much of what we do started as a custom request.
-      </p>
-      <a href={CTA_HREF} class="btn btn--sm">Ask About a Custom Service</a>
-    </div>
-  </section>
-
-  <!-- ============ BUSINESS CONSULTING PACKAGES ============ -->
-  <section class="section">
-    <h2 class="section-title2" style="margin-bottom:10px;">business consulting</h2>
-    <p class="section-lede2">
-      Coaching and strategic consulting for owners who want clarity before they build. Choose the experience
-      that fits where you are right now.
-    </p>
-    <div class="tier-grid tier-grid--consulting">
-      {
-        CONSULTING_TIERS.map((t) => (
-          <div class="tier-card">
-            <div class="tier-card__meta">
-              <p class="tier-card__term">{t.term}</p>
-              {t.popular && <span class="tier-card__badge">Most Popular</span>}
-            </div>
-            <h3 class="tier-card__name">{t.name}</h3>
-            <p class="tier-card__price">{t.price}</p>
-            <p class="tier-card__desc">{t.desc}</p>
-            <div class="tier-card__features">
-              {t.features.map((f) => (
-                <p class="tier-card__feature">{f}</p>
-              ))}
-            </div>
-            <a href={CTA_HREF} class="btn btn--sm tier-card__cta">
-              Get Started
-            </a>
-          </div>
-        ))
-      }
-    </div>
-    <p class="tier-footnote">Built for you, not a blueprint. Every plan is shaped around your goals during the consultation.</p>
   </section>
 
   <!-- ============ VOS PACKAGES ============ -->
@@ -394,6 +329,30 @@ const FILTER_CHIPS = [
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ BRANDING PACKAGES ============ -->
+  <section id="branding" class="section">
+    <h2 class="section-title2" style="margin-bottom:10px;">branding packages</h2>
+    <p class="section-lede2" style="max-width:580px;">Everything your business needs to look consistent everywhere it shows up.</p>
+    <div class="tier-grid tier-grid--branding">
+      {
+        BRANDING_TIERS.map((t) => (
+          <div class="tier-card tier-card--muted">
+            <p class="tier-card__term">{t.name}</p>
+            <p class="tier-card__price tier-card__price--lg">{t.price}</p>
+            <div class="tier-card__features">
+              {t.features.map((f) => (
+                <p class="tier-card__feature">{f}</p>
+              ))}
+            </div>
+            <a href="#contact" class="tier-card__link">
+              Start This Package
+            </a>
+          </div>
+        ))
+      }
     </div>
   </section>
 
@@ -443,28 +402,37 @@ const FILTER_CHIPS = [
     </div>
   </section>
 
-  <!-- ============ BRANDING PACKAGES ============ -->
-  <section id="branding" class="section">
-    <h2 class="section-title2" style="margin-bottom:10px;">branding packages</h2>
-    <p class="section-lede2" style="max-width:580px;">Everything your business needs to look consistent everywhere it shows up.</p>
-    <div class="tier-grid tier-grid--branding">
+  <!-- ============ BUSINESS CONSULTING PACKAGES ============ -->
+  <section class="section">
+    <h2 class="section-title2" style="margin-bottom:10px;">business consulting</h2>
+    <p class="section-lede2">
+      Coaching and strategic consulting for owners who want clarity before they build. Choose the experience
+      that fits where you are right now.
+    </p>
+    <div class="tier-grid tier-grid--consulting">
       {
-        BRANDING_TIERS.map((t) => (
-          <div class="tier-card tier-card--muted">
-            <p class="tier-card__term">{t.name}</p>
-            <p class="tier-card__price tier-card__price--lg">{t.price}</p>
+        CONSULTING_TIERS.map((t) => (
+          <div class="tier-card">
+            <div class="tier-card__meta">
+              <p class="tier-card__term">{t.term}</p>
+              {t.popular && <span class="tier-card__badge">Most Popular</span>}
+            </div>
+            <h3 class="tier-card__name">{t.name}</h3>
+            <p class="tier-card__price">{t.price}</p>
+            <p class="tier-card__desc">{t.desc}</p>
             <div class="tier-card__features">
               {t.features.map((f) => (
                 <p class="tier-card__feature">{f}</p>
               ))}
             </div>
-            <a href="#contact" class="tier-card__link">
-              Start This Package
+            <a href={CTA_HREF} class="btn btn--sm tier-card__cta">
+              Get Started
             </a>
           </div>
         ))
       }
     </div>
+    <p class="tier-footnote">Built for you, not a blueprint. Every plan is shaped around your goals during the consultation.</p>
   </section>
 
   <!-- ============ FULL INDEX ============ -->
@@ -475,7 +443,25 @@ const FILTER_CHIPS = [
         Every service, alphabetically, for anyone who would rather just scan.
       </p>
       <div class="az-list">
-        {ALPHABETICAL.map((s) => <p>{s}</p>)}
+        {
+          ALL_SERVICES.map((s) => (
+            <p
+              data-service-item
+              data-service-name={s.name.toLowerCase()}
+              data-service-desc={s.desc.toLowerCase()}
+              data-service-category={s.category}
+            >
+              {s.name}
+            </p>
+          ))
+        }
+      </div>
+      <div class="no-results" data-no-results hidden>
+        <p class="no-results__title">Nothing matched that search.</p>
+        <p class="no-results__body">
+          If you need something that isn't listed, ask. Much of what we do started as a custom request.
+        </p>
+        <a href={CTA_HREF} class="btn btn--sm">Ask About a Custom Service</a>
       </div>
     </div>
   </section>
@@ -499,74 +485,47 @@ const FILTER_CHIPS = [
 </BaseLayout>
 
 <script>
-  const pillars = Array.from(document.querySelectorAll<HTMLElement>("[data-pillar]"));
+  // Filters the A-to-Z services list (the roman-numeral pillar accordions were removed).
+  // Search matches a service name or description; the chips narrow by pillar category.
   const searchInput = document.querySelector<HTMLInputElement>("[data-search-input]");
   const clearBtn = document.querySelector<HTMLButtonElement>("[data-search-clear]");
   const chips = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter-chip]"));
   const resultLine = document.querySelector<HTMLElement>("[data-result-line]");
   const noResultsEl = document.querySelector<HTMLElement>("[data-no-results]");
+  const items = Array.from(document.querySelectorAll<HTMLElement>("[data-service-item]"));
 
-  const TOTAL = document.querySelectorAll("[data-service-name]").length;
-  let activePillarKey = "All";
+  const TOTAL = items.length;
+  let activeCategory = "All";
 
   function applyFilters() {
     if (!searchInput) return;
     const q = searchInput.value.trim().toLowerCase();
-    let totalVisible = 0;
-    const forced = Boolean(q) || activePillarKey !== "All";
+    let visible = 0;
 
-    pillars.forEach((pillarEl) => {
-      const key = pillarEl.dataset.pillar!;
-      const matchesPillarFilter = activePillarKey === "All" || activePillarKey === key;
-      const rows = Array.from(pillarEl.querySelectorAll<HTMLElement>("[data-service-name]"));
-      let visibleInPillar = 0;
-
-      rows.forEach((row) => {
-        const matchesQuery = !q || (row.dataset.serviceName ?? "").includes(q) || (row.dataset.serviceDesc ?? "").includes(q);
-        const show = matchesPillarFilter && matchesQuery;
-        row.hidden = !show;
-        if (show) visibleInPillar += 1;
-      });
-
-      totalVisible += matchesPillarFilter ? visibleInPillar : 0;
-      pillarEl.hidden = !(matchesPillarFilter && visibleInPillar > 0);
-
-      const isOpen = forced || pillarEl.dataset.manuallyOpen === "true";
-      const servicesEl = pillarEl.querySelector<HTMLElement>("[data-pillar-services]");
-      const toggle = pillarEl.querySelector<HTMLButtonElement>("[data-pillar-toggle]");
-      const sign = pillarEl.querySelector<HTMLElement>("[data-pillar-sign]");
-      if (servicesEl) servicesEl.hidden = !isOpen;
-      if (toggle) toggle.setAttribute("aria-expanded", String(isOpen));
-      if (sign) sign.textContent = isOpen ? "−" : "+";
-
-      const countLabel = pillarEl.querySelector<HTMLElement>("[data-pillar-count]");
-      if (countLabel) countLabel.textContent = `${visibleInPillar} service${visibleInPillar === 1 ? "" : "s"}`;
+    items.forEach((item) => {
+      const matchesCategory = activeCategory === "All" || item.dataset.serviceCategory === activeCategory;
+      const matchesQuery =
+        !q || (item.dataset.serviceName ?? "").includes(q) || (item.dataset.serviceDesc ?? "").includes(q);
+      const show = matchesCategory && matchesQuery;
+      item.hidden = !show;
+      if (show) visible += 1;
     });
 
-    if (noResultsEl) noResultsEl.hidden = totalVisible > 0;
+    if (noResultsEl) noResultsEl.hidden = visible > 0;
     if (clearBtn) clearBtn.hidden = !q;
 
     if (resultLine) {
       const raw = searchInput.value.trim();
-      if (q && totalVisible === 0) resultLine.textContent = `No services matched "${raw}".`;
-      else if (q) resultLine.textContent = `Showing ${totalVisible} of ${TOTAL} services matching "${raw}".`;
-      else if (activePillarKey !== "All") resultLine.textContent = `Showing ${totalVisible} services in this pillar.`;
-      else resultLine.textContent = `Showing all ${TOTAL} services across four pillars.`;
+      if (q && visible === 0) resultLine.textContent = `No services matched "${raw}".`;
+      else if (q) resultLine.textContent = `Showing ${visible} of ${TOTAL} services matching "${raw}".`;
+      else if (activeCategory !== "All") resultLine.textContent = `Showing ${visible} of ${TOTAL} services.`;
+      else resultLine.textContent = `Showing all ${TOTAL} services.`;
     }
   }
 
-  pillars.forEach((pillarEl) => {
-    const toggle = pillarEl.querySelector<HTMLButtonElement>("[data-pillar-toggle]");
-    toggle?.addEventListener("click", () => {
-      const isManuallyOpen = pillarEl.dataset.manuallyOpen === "true";
-      pillarEl.dataset.manuallyOpen = String(!isManuallyOpen);
-      applyFilters();
-    });
-  });
-
   chips.forEach((chip) => {
     chip.addEventListener("click", () => {
-      activePillarKey = chip.dataset.filterChip ?? "All";
+      activeCategory = chip.dataset.filterChip ?? "All";
       chips.forEach((c) => c.classList.toggle("is-active", c === chip));
       applyFilters();
     });
@@ -579,25 +538,6 @@ const FILTER_CHIPS = [
     searchInput?.focus();
   });
 
-  // Deep link: /services#pillar-brand opens that pillar and scrolls to it, accounting
-  // for the sticky header.
-  function openFromHash() {
-    const match = (window.location.hash || "").match(/^#pillar-(.+)$/);
-    if (!match) return;
-    const key = ["Consulting", "Brand", "Operations", "Support"].find((k) => k.toLowerCase() === match[1].toLowerCase());
-    if (!key) return;
-    const pillarEl = document.getElementById(`pillar-${key.toLowerCase()}`);
-    if (!pillarEl) return;
-    pillarEl.dataset.manuallyOpen = "true";
-    applyFilters();
-    requestAnimationFrame(() => {
-      const y = pillarEl.getBoundingClientRect().top + window.scrollY - 96;
-      window.scrollTo({ top: y });
-    });
-  }
-
-  window.addEventListener("hashchange", openFromHash);
-  openFromHash();
   applyFilters();
 </script>
 
