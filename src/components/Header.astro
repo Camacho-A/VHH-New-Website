@@ -38,13 +38,14 @@ const servicesHref =
   currentPage === "home" ? "/services" : currentPage === "services" ? "#top" : "/services";
 const servicesActive = currentPage === "services";
 
-// Pillar titles/order per the client's rename — anchors are unchanged so existing deep
-// links keep working; only the display title, numeral, and list order moved.
-const PILLARS = [
-  { href: "/services#pillar-operations", title: "Business Operations" },
-  { href: "/services#pillar-support", title: "Ongoing Business Support" },
-  { href: "/services#pillar-consulting", title: "Business Consulting" },
-  { href: "/services#pillar-brand", title: "Brand & Digital Presence" },
+// Services dropdown — points at the package sections on the Services page (the roman-numeral
+// pillar accordions were removed, so the old #pillar-* anchors are gone). Order matches the
+// page: Virtual Operations Specialist, Branding, Social Media Management, Business Consulting.
+const SERVICE_MENU = [
+  { href: "/services#packages", title: "Virtual Operations Specialist" },
+  { href: "/services#branding", title: "Branding" },
+  { href: "/services#social", title: "Social Media Management" },
+  { href: "/services#consulting", title: "Business Consulting" },
 ];
 
 const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
@@ -68,7 +69,7 @@ const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
             </a>
             <div class="nav-services__menu">
               <div class="nav-services__panel">
-                {PILLARS.map((p) => (
+                {SERVICE_MENU.map((p) => (
                   <a href={p.href} class="nav-services__item">
                     {p.title}
                   </a>
