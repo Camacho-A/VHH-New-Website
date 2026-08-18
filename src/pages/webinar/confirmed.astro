@@ -47,6 +47,52 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   </footer>
 </BaseLayout>
 
+<script>
+  import { submitWebinarPaidConfirmation } from "../../lib/wixWebinarPaidForm";
+
+  // Soft-gated post-payment email trigger. Stripe redirects here with ?session_id=... after a
+  // successful Payment Link checkout; that submits the "Webinar Paid Confirmation" Wix form,
+  // whose automation emails the Zoom link. Fires at most once per checkout, using the
+  // name/email stashed at registration (webinar.astro → localStorage "vhh_webinar_reg").
+  //
+  // NOT payment-verified (no Stripe secret on this hosting): the session_id requirement + the
+  // once-per-session guard only stop casual/accidental fires from a direct visit or a refresh.
+  const sessionId = new URLSearchParams(window.location.search).get("session_id");
+
+  if (sessionId) {
+    const firedKey = `vhh_webinar_paid_fired_${sessionId}`;
+    let alreadyFired = false;
+    try {
+      alreadyFired = localStorage.getItem(firedKey) === "1";
+    } catch {
+      /* storage disabled */
+    }
+
+    if (!alreadyFired) {
+      let reg: { firstName?: string; email?: string } | null = null;
+      try {
+        reg = JSON.parse(localStorage.getItem("vhh_webinar_reg") ?? "null");
+      } catch {
+        /* nothing stashed */
+      }
+
+      const email = reg?.email ?? "";
+      const firstName = reg?.firstName ?? "";
+      if (email) {
+        submitWebinarPaidConfirmation(firstName, email)
+          .then(() => {
+            try {
+              localStorage.setItem(firedKey, "1");
+            } catch {
+              /* storage disabled */
+            }
+          })
+          .catch((err) => console.error("Webinar paid-confirmation trigger failed:", err));
+      }
+    }
+  }
+</script>
+
 <style>
   .wc-header {
     border-bottom: 1px solid var(--rule);
