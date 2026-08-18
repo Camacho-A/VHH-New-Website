@@ -56,7 +56,15 @@ const PROJECTS = getPortfolioProjects();
               class="pf-card"
               class:list={{ "pf-card--placeholder": p.liveUrl === "#" }}
             >
-              <ImagePlate src={p.coverImage ?? undefined} alt={p.title} aspectRatio="4/3" label={p.imageLabel} />
+              <ImagePlate
+                src={p.coverImage ?? undefined}
+                alt={p.title}
+                aspectRatio="4/3"
+                label={p.imageLabel}
+                fit={p.imageFit ?? "cover"}
+                filtered={false}
+                matColor={p.imageFit === "contain" ? "#ffffff" : undefined}
+              />
               <div>
                 <p class="pf-card__category">{p.category}</p>
                 <h2 class="pf-card__title">{p.title}</h2>

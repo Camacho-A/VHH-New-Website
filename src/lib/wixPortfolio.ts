@@ -23,6 +23,9 @@ export interface Project {
   title: string;
   /** Cover image URL, or null to render a labeled placeholder plate. */
   coverImage: string | null;
+  /** How the cover fills the 4/3 plate. "contain" for logos/brand marks (show the whole
+   * thing, letterboxed); "cover" (default) for full-bleed screenshots. */
+  imageFit?: "cover" | "contain";
   /** Text shown inside the placeholder plate when coverImage is null. */
   imageLabel: string;
   /** External link to the live site; "#" for a not-yet-linked placeholder. */
@@ -36,7 +39,8 @@ const PROJECTS: Project[] = [
   {
     category: "Website Design · Non-Profit",
     title: "Travel Visions Aloha for the Blind",
-    coverImage: null,
+    coverImage: "/images/portfolio-travel-visions.png",
+    imageFit: "contain",
     imageLabel: "Screenshot of travelvisionsaloha.org",
     liveUrl: "https://travelvisionsaloha.org/",
     linkLabel: "Visit travelvisionsaloha.org",
@@ -45,7 +49,8 @@ const PROJECTS: Project[] = [
   {
     category: "Website Design · Financial Services",
     title: "Sovereign Legacy Financial Group",
-    coverImage: null,
+    coverImage: "/images/portfolio-sovereign.avif",
+    imageFit: "contain",
     imageLabel: "Screenshot of sovereignlegacyfg.com",
     liveUrl: "https://www.sovereignlegacyfg.com/",
     linkLabel: "Visit sovereignlegacyfg.com",
