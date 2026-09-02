@@ -9,9 +9,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import ImagePlate from "../components/ImagePlate.astro";
 import Quote from "../components/Quote.astro";
 
-const CTA_HREF = "https://calendly.com/thevirtualhelpinghand";
+const CTA_HREF = "https://hello.dubsado.com/public/appointment-scheduler/673619b021b4cd003aba67b7/schedule";
 // Content Concierge's "Subscribe" CTA goes to its own Dubsado intake form, not the
-// Calendly consultation link every other CTA on this page uses.
+// Dubsado consultation scheduler link every other CTA on this page uses.
 const CONCIERGE_SUBSCRIBE_HREF = "https://portal.dubsado.com/public/form/view/6a6cf645d9d1d65b27fd79dc";
 
 // Order mirrors the Services page (which ends with Business Consulting): Business Operations,
@@ -128,8 +128,8 @@ const CREDENTIAL_BADGES = [
       </div>
       <div class="hero__photo">
         <ImagePlate
-          src="/images/hero-minimalist-desk.jpg"
-          alt="A minimalist styled desk with a laptop, keyboard, and dried flowers"
+          src="/images/hero-espresso-laptop.jpg"
+          alt="An open laptop and a fresh espresso on a sleek desk beside a stone lamp"
           aspectRatio="3/4"
           eager
         />
@@ -259,7 +259,7 @@ const CREDENTIAL_BADGES = [
         business runs smoothly with or without you in the room.
       </p>
       <a href="/services" class="btn btn--sm">Explore Operations &amp; Systems</a>
-      <p class="feature__note">Book the <strong>Virtual Operations Specialist</strong> consultation.</p>
+      <p class="feature__note">Book a free consultation to map out your systems.</p>
     </div>
   </section>
 
@@ -280,9 +280,7 @@ const CREDENTIAL_BADGES = [
         <span class="chip">Copywriting</span>
       </div>
       <a href="/services#pillar-brand" class="btn btn--sm">Explore Website &amp; Digital Services</a>
-      <p class="feature__note">
-        Book the <strong>Logo and Web Design</strong> or <strong>Branding &amp; Rebranding</strong> consultation.
-      </p>
+      <p class="feature__note">Book a free consultation to talk through your site.</p>
     </div>
   </section>
 
@@ -341,7 +339,7 @@ const CREDENTIAL_BADGES = [
         planning to bring structure, clarity, and balance to where your business is headed next.
       </p>
       <a href="/business-consulting" class="btn btn--sm">Explore Business Consulting</a>
-      <p class="feature__note">Book the <strong>BEE Consultation</strong> for business coaching.</p>
+      <p class="feature__note">Book a free consultation to plan your next move.</p>
     </div>
   </section>
 
@@ -422,8 +420,7 @@ const CREDENTIAL_BADGES = [
     </p>
     <a href={CTA_HREF} class="btn btn--lg">Schedule Your FREE Consultation</a>
     <p class="final-cta__note">
-      Four consultations to choose from: business coaching, virtual operations, branding &amp; rebranding,
-      or logo &amp; web design.
+      One free 30-minute consultation to figure out exactly what your business needs next.
     </p>
   </section>
 </BaseLayout>
