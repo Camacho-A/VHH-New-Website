@@ -207,7 +207,13 @@ const eventPlace = "Live on Zoom";
           </div>
         </div>
 
-        <form class="wb-form" data-webinar-form data-stripe-url={checkoutReady ? activeStripeUrl : ""} novalidate>
+        <form
+          class="wb-form"
+          data-webinar-form
+          data-stripe-url={checkoutReady ? activeStripeUrl : ""}
+          data-price={isEarly ? "20" : "27"}
+          novalidate
+        >
           <div class="wb-form__row">
             <label class="wb-field">
               <span class="wb-field__label">First Name</span>
@@ -343,11 +349,20 @@ const eventPlace = "Live on Zoom";
 
       try {
         await submitWebinarRegistration(firstName, email, businessName, frequency);
-        // Carry the registrant's name/email to the post-payment confirm page (soft-gated),
-        // which fires the Wix "paid confirmation" email after Stripe redirects back — the
-        // confirm page has no other way to know who paid.
+        // Meta Pixel: registration is a Lead (interest captured, before payment).
         try {
-          localStorage.setItem("vhh_webinar_reg", JSON.stringify({ firstName, email }));
+          (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq?.("track", "Lead");
+        } catch {
+          /* pixel blocked */
+        }
+        // Carry the registrant's name/email (+ the price tier, for the confirm page's Purchase
+        // event) to the post-payment confirm page (soft-gated) — the confirm page has no other
+        // way to know who paid or how much.
+        try {
+          localStorage.setItem(
+            "vhh_webinar_reg",
+            JSON.stringify({ firstName, email, price: form.dataset.price ?? "" })
+          );
         } catch {
           /* private mode / storage disabled — the confirm page just won't fire the email */
         }

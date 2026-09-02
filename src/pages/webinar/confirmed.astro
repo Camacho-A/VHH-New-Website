@@ -60,6 +60,36 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
   const sessionId = new URLSearchParams(window.location.search).get("session_id");
 
   if (sessionId) {
+    let reg: { firstName?: string; email?: string; price?: string } | null = null;
+    try {
+      reg = JSON.parse(localStorage.getItem("vhh_webinar_reg") ?? "null");
+    } catch {
+      /* nothing stashed */
+    }
+
+    // Meta Pixel: reaching the confirm page from Stripe = a Purchase. Fire once per checkout,
+    // with the price tier ($20/$27) stashed at registration so ad ROAS is tracked.
+    const purchaseKey = `vhh_webinar_purchase_${sessionId}`;
+    let purchaseFired = false;
+    try {
+      purchaseFired = localStorage.getItem(purchaseKey) === "1";
+    } catch {
+      /* storage disabled */
+    }
+    if (!purchaseFired) {
+      const fbq = (window as unknown as { fbq?: (...a: unknown[]) => void }).fbq;
+      if (typeof fbq === "function") {
+        const value = Number(reg?.price);
+        if (value > 0) fbq("track", "Purchase", { value, currency: "USD" });
+        else fbq("track", "Purchase", { currency: "USD" });
+      }
+      try {
+        localStorage.setItem(purchaseKey, "1");
+      } catch {
+        /* storage disabled */
+      }
+    }
+
     const firedKey = `vhh_webinar_paid_fired_${sessionId}`;
     let alreadyFired = false;
     try {
@@ -69,13 +99,6 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     }
 
     if (!alreadyFired) {
-      let reg: { firstName?: string; email?: string } | null = null;
-      try {
-        reg = JSON.parse(localStorage.getItem("vhh_webinar_reg") ?? "null");
-      } catch {
-        /* nothing stashed */
-      }
-
       const email = reg?.email ?? "";
       const firstName = reg?.firstName ?? "";
       if (email) {
