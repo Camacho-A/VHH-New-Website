@@ -14,7 +14,7 @@
 //    pages rather than carrying over the source's inconsistent per-page inclusion of it.
 
 export interface Props {
-  currentPage?: "home" | "about" | "services" | "business-consulting" | "portfolio" | "workbook" | "webinar" | "blog";
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "portfolio" | "workbook" | "blog";
 }
 
 const { currentPage = "home" } = Astro.props;
@@ -30,9 +30,6 @@ const businessConsultingHref = linkTo("business-consulting", "/business-consulti
 // it's just no longer the nav target.
 const portfolioHref = linkTo("portfolio", "/portfolio");
 const blogHref = linkTo("blog", "/blog");
-// Temporary "Webinar" nav item — comes down after the Sept 2 event (README § Webinar
-// retirement). The webinar page itself has no site nav, so this never resolves to "#top".
-const webinarHref = "/webinar";
 
 const servicesHref =
   currentPage === "home" ? "/services" : currentPage === "services" ? "#top" : "/services";
@@ -102,9 +99,6 @@ const CTA_HREF = "https://hello.dubsado.com/public/appointment-scheduler/673619b
       <a href={blogHref} class="site-nav__link" class:list={{ "is-active": currentPage === "blog" }}>
         Blog
       </a>
-      <a href={webinarHref} class="site-nav__link" class:list={{ "is-active": currentPage === "webinar" }}>
-        Webinar
-      </a>
     </nav>
 
     <a href={CTA_HREF} class="nav-cta desktop-only">
@@ -143,9 +137,6 @@ const CTA_HREF = "https://hello.dubsado.com/public/appointment-scheduler/673619b
     <a href={portfolioHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "portfolio" }}>Portfolio</a>
     <a href={blogHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "blog" }}>
       Blog
-    </a>
-    <a href={webinarHref} class="mobile-panel__link" class:list={{ "is-active": currentPage === "webinar" }}>
-      Webinar
     </a>
     <a href={CTA_HREF} class="mobile-panel__cta">
       Schedule a Consultation

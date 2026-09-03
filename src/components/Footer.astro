@@ -8,7 +8,7 @@
 // on --bg-alt here, matching the Homepage and Services sources.
 
 export interface Props {
-  currentPage?: "home" | "about" | "services" | "business-consulting" | "portfolio" | "workbook" | "webinar" | "blog";
+  currentPage?: "home" | "about" | "services" | "business-consulting" | "portfolio" | "workbook" | "blog";
 }
 
 const { currentPage = "home" } = Astro.props;
@@ -57,8 +57,6 @@ const year = new Date().getFullYear();
       <div class="site-footer__links">
         <a href={workbookHref}>Free Workbook</a>
         <a href={conciergeHref}>Content Concierge</a>
-        {/* Temporary — comes down after the Sept 2 event (README § Webinar retirement). */}
-        <a href="/webinar">Send With Purpose Webinar</a>
         <a href={blogHref}>Blog</a>
         <a href="#contact">Contact</a>
       </div>
