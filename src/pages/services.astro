@@ -86,7 +86,7 @@ const PILLARS = [
     promise: "Create a brand and online presence that supports your growth.",
     services: [
       { name: "Logo Design", desc: "The right mark for your business, with unlimited edits until it is right.", price: "$297" },
-      { name: "Build a Website", desc: "Built on Wix, Shopify, or Squarespace around how customers actually move through your business.", price: "From $1,150" },
+      { name: "Build a Website", desc: "Built on Wix, Shopify, or Squarespace around how customers actually move through your business.", price: "Starting at $1,195" },
       { name: "Website Maintenance", desc: "Keeping your site updated, secure, and running smoothly.", price: "$297" },
       { name: "Email Marketing", desc: "Campaign design and automated sequences set up for you.", price: "$397, or $1,000 for 3 months" },
       { name: "Graphic Design", desc: "Social posts, announcements, banners, and one-off pieces.", price: "$65 to $75" },
@@ -238,9 +238,47 @@ const BRANDING_TIERS = [
 const FILTER_CHIPS = [
   { label: "All Services", key: "All" },
   { label: "Virtual Operations", key: "packages" },
+  { label: "Website Design", key: "website" },
   { label: "Branding", key: "branding" },
   { label: "Social Media", key: "social" },
   { label: "Business Consulting", key: "consulting" },
+];
+
+// ── Website Design & Development (featured under Brand & Digital Presence) ──
+// Approved inclusion list from the client brief. Do not add functionality VHH doesn't offer.
+const WEBSITE_INCLUDED = [
+  "Custom website design",
+  "Responsive desktop, tablet & mobile design",
+  "Strategic page layout",
+  "Navigation setup",
+  "Contact form integration",
+  "Basic on-page SEO setup",
+  "Page titles & meta descriptions",
+  "Image alt text",
+  "Social media integration",
+  "Domain connection / launch assistance",
+  "Basic website functionality setup",
+  "Testing before launch",
+  "Client review / revision process",
+  "Website launch",
+];
+
+// VHH recommends the platform based on the client's needs — never one as universally "better".
+const WEBSITE_PLATFORMS = [
+  {
+    name: "Wix",
+    bestFor:
+      "Service businesses, entrepreneurs, professional services, flexible business websites, and businesses that want an easy-to-manage platform.",
+  },
+  {
+    name: "Squarespace",
+    bestFor:
+      "Service providers, creatives, personal brands, and businesses wanting a streamlined, content-focused website.",
+  },
+  {
+    name: "Shopify",
+    bestFor: "E-commerce businesses and brands primarily focused on selling products online.",
+  },
 ];
 ---
 
@@ -333,8 +371,81 @@ const FILTER_CHIPS = [
     </div>
   </section>
 
+  <!-- ============ WEBSITE DESIGN & DEVELOPMENT (featured — Brand & Digital Presence) ============ -->
+  <section id="website" class="section section--pad-top" data-package="website">
+    <p class="kicker" style="margin-bottom:14px;">Brand &amp; Digital Presence</p>
+    <h2 class="section-title2" style="margin-bottom:10px;">website design &amp; development</h2>
+    <p class="section-lede2" style="max-width:660px;">
+      Your website is often the first real impression of your business. We design strategic, professional
+      websites that represent your brand, guide your visitors, and support where your business is going —
+      built to work beautifully across desktop, tablet, and mobile.
+    </p>
+
+    <div class="wd-top">
+      <div class="wd-price">
+        <p class="wd-price__label">Full Website Design &amp; Development</p>
+        <p class="wd-price__amount"><span class="wd-price__from">Starting at</span>$1,195</p>
+        <p class="wd-price__note">
+          Every business is different. Final pricing depends on your website's size, functionality, platform,
+          integrations, e-commerce needs, and overall scope.
+        </p>
+        <div class="wd-price__platforms">
+          <span class="chip">Wix</span>
+          <span class="chip">Squarespace</span>
+          <span class="chip">Shopify</span>
+        </div>
+        <a href={CTA_HREF} class="btn wd-price__cta">Book a Free Consultation</a>
+      </div>
+
+      <div class="wd-maint" role="note" aria-label="Complimentary post-launch maintenance">
+        <p class="wd-maint__big">30 Days</p>
+        <p class="wd-maint__title">Complimentary Post-Launch Website Maintenance</p>
+        <p class="wd-maint__desc">
+          Your support doesn't end at launch. Every full website project includes 30 days of complimentary
+          maintenance immediately after your site goes live, so you have support while you settle in.
+        </p>
+        <p class="wd-maint__fine">
+          Intended for reasonable post-launch maintenance and support on your completed website — not
+          redesigns, major new pages, or new functionality.
+        </p>
+      </div>
+    </div>
+
+    <div class="wd-included">
+      <p class="wd-subhead">What's included</p>
+      <div class="wd-included__grid">
+        {WEBSITE_INCLUDED.map((item) => <p class="wd-included__item">{item}</p>)}
+      </div>
+    </div>
+
+    <div class="wd-platforms">
+      <p class="wd-subhead">Built on the platform that fits your business</p>
+      <div class="wd-platforms__grid">
+        {
+          WEBSITE_PLATFORMS.map((p) => (
+            <div class="wd-platform">
+              <p class="wd-platform__name">{p.name}</p>
+              <p class="wd-platform__label">Best for</p>
+              <p class="wd-platform__desc">{p.bestFor}</p>
+            </div>
+          ))
+        }
+      </div>
+      <div class="wd-help">
+        <div class="wd-help__copy">
+          <p class="wd-help__title">Not sure which platform you need?</p>
+          <p class="wd-help__desc">
+            You don't need to figure that out before reaching out. We'll look at your business, goals,
+            functionality, and future plans, and recommend the platform that makes the most sense.
+          </p>
+        </div>
+        <a href={CTA_HREF} class="btn btn--sm">Let's Talk About Your Website</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ BRANDING PACKAGES ============ -->
-  <section id="branding" class="section section--pad-top" data-package="branding">
+  <section id="branding" class="section" data-package="branding">
     <h2 class="section-title2" style="margin-bottom:10px;">branding packages</h2>
     <p class="section-lede2" style="max-width:580px;">Everything your business needs to look consistent everywhere it shows up.</p>
     <div class="tier-grid tier-grid--branding">
@@ -497,6 +608,7 @@ const FILTER_CHIPS = [
   const TOTAL = items.length;
   const PACKAGE_LABELS: Record<string, string> = {
     packages: "Virtual Operations Specialist",
+    website: "Website Design & Development",
     branding: "Branding",
     social: "Social Media Management",
     consulting: "Business Consulting",
@@ -1116,5 +1228,235 @@ const FILTER_CHIPS = [
     color: var(--text-muted);
     margin: 20px auto 0;
     max-width: 560px;
+  }
+
+  /* Anchor targets (Services dropdown / homepage links to #packages, #website, …) clear the
+     sticky header so the section heading isn't tucked underneath it on jump. */
+  [data-package] {
+    scroll-margin-top: 96px;
+  }
+
+  /* ---- Website Design & Development (featured section) ---- */
+  .wd-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: clamp(20px, 3vw, 32px);
+    margin: clamp(32px, 4vw, 48px) 0 clamp(40px, 5vw, 60px);
+  }
+
+  .wd-price {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    padding: clamp(28px, 3.5vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .wd-price__label {
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0;
+  }
+
+  .wd-price__amount {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(44px, 6vw, 60px);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .wd-price__from {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+  }
+
+  .wd-price__note {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 0;
+    max-width: 440px;
+  }
+
+  .wd-price__platforms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 2px;
+  }
+
+  .wd-price__cta {
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+
+  .wd-maint {
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-card);
+    background: var(--accent-tint);
+    padding: clamp(28px, 3.5vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .wd-maint__big {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(40px, 5.5vw, 54px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--accent-deep);
+    margin: 0;
+  }
+
+  .wd-maint__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.3;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .wd-maint__desc {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text-body);
+    margin: 0;
+  }
+
+  .wd-maint__fine {
+    font-size: 12.5px;
+    line-height: 1.6;
+    font-style: italic;
+    color: var(--text-muted);
+    margin: 4px 0 0;
+  }
+
+  .wd-subhead {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin: 0 0 24px;
+  }
+
+  .wd-included {
+    margin-bottom: clamp(40px, 5vw, 60px);
+  }
+
+  .wd-included__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+  }
+
+  .wd-included__item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 16px 18px;
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--text-body);
+  }
+
+  .wd-included__item::before {
+    content: "✓";
+    flex: 0 0 auto;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--accent-deep);
+  }
+
+  .wd-platforms__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+    border-top: 1px solid var(--rule);
+    border-left: 1px solid var(--rule);
+    margin-bottom: 28px;
+  }
+
+  .wd-platform {
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .wd-platform__name {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 24px;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .wd-platform__label {
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0;
+  }
+
+  .wd-platform__desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .wd-help {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-card);
+    background: var(--bg-alt);
+    padding: clamp(24px, 3vw, 32px);
+  }
+
+  .wd-help__copy {
+    max-width: 620px;
+  }
+
+  .wd-help__title {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 21px;
+    color: var(--text);
+    margin: 0 0 6px;
+  }
+
+  .wd-help__desc {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: var(--text-muted);
+    margin: 0;
   }
 </style>
